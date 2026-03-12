@@ -21,632 +21,157 @@
 }
 
 * { margin: 0; padding: 0; box-sizing: border-box; }
-
 html { scroll-behavior: smooth; }
-
-body {
-  font-family: 'Jost', sans-serif;
-  background: var(--warm);
-  color: var(--charcoal);
-  overflow-x: hidden;
-}
+body { font-family: 'Jost', sans-serif; background: var(--warm); color: var(--charcoal); overflow-x: hidden; }
 
 /* ===== NAV ===== */
-nav {
-  position: fixed; top: 0; left: 0; right: 0;
-  z-index: 100;
-  padding: 20px 60px;
-  display: flex; align-items: center; justify-content: space-between;
-  transition: all 0.4s;
-}
-
-nav.scrolled {
-  background: rgba(248,244,237,0.95);
-  backdrop-filter: blur(12px);
-  padding: 14px 60px;
-  box-shadow: 0 2px 20px rgba(0,0,0,0.08);
-}
-
-.nav-logo {
-  font-family: 'Cormorant Garamond', serif;
-  font-size: 22px;
-  font-weight: 600;
-  color: var(--forest);
-  display: flex; align-items: center; gap: 10px;
-}
-
-.nav-logo-leaf {
-  width: 32px; height: 32px;
-  background: linear-gradient(135deg, var(--sage), var(--forest));
-  border-radius: 50% 50% 50% 10%;
-  transform: rotate(-30deg);
-  display: flex; align-items: center; justify-content: center;
-  font-size: 14px;
-}
-
-.nav-links {
-  display: flex; align-items: center; gap: 36px;
-  list-style: none;
-}
-
-.nav-links a {
-  text-decoration: none;
-  color: var(--forest);
-  font-size: 14px;
-  font-weight: 500;
-  letter-spacing: 0.04em;
-  opacity: 0.75;
-  transition: opacity 0.2s;
-}
-
+nav { position: fixed; top: 0; left: 0; right: 0; z-index: 100; padding: 20px 60px; display: flex; align-items: center; justify-content: space-between; transition: all 0.4s; }
+nav.scrolled { background: rgba(248,244,237,0.95); backdrop-filter: blur(12px); padding: 14px 60px; box-shadow: 0 2px 20px rgba(0,0,0,0.08); }
+.nav-logo { font-family: 'Cormorant Garamond', serif; font-size: 22px; font-weight: 600; color: var(--forest); display: flex; align-items: center; gap: 10px; }
+.nav-logo-leaf { width: 32px; height: 32px; background: linear-gradient(135deg, var(--sage), var(--forest)); border-radius: 50% 50% 50% 10%; transform: rotate(-30deg); display: flex; align-items: center; justify-content: center; font-size: 14px; }
+.nav-links { display: flex; align-items: center; gap: 36px; list-style: none; }
+.nav-links a { text-decoration: none; color: var(--forest); font-size: 14px; font-weight: 500; letter-spacing: 0.04em; opacity: 0.75; transition: opacity 0.2s; }
 .nav-links a:hover { opacity: 1; }
-
 .nav-actions { display: flex; gap: 12px; align-items: center; }
 
-.btn {
-  font-family: 'Jost', sans-serif;
-  font-size: 13px;
-  font-weight: 600;
-  padding: 10px 22px;
-  border-radius: 50px;
-  border: none;
-  cursor: pointer;
-  letter-spacing: 0.04em;
-  text-decoration: none;
-  display: inline-flex; align-items: center; gap: 8px;
-  transition: all 0.25s;
-}
-
-.btn-outline {
-  background: transparent;
-  border: 1.5px solid var(--forest);
-  color: var(--forest);
-}
+.btn { font-family: 'Jost', sans-serif; font-size: 13px; font-weight: 600; padding: 10px 22px; border-radius: 50px; border: none; cursor: pointer; letter-spacing: 0.04em; text-decoration: none; display: inline-flex; align-items: center; gap: 8px; transition: all 0.25s; }
+.btn-outline { background: transparent; border: 1.5px solid var(--forest); color: var(--forest); }
 .btn-outline:hover { background: var(--forest); color: #fff; }
-
-.btn-solid {
-  background: var(--forest);
-  color: #fff;
-  box-shadow: 0 4px 14px rgba(45,74,50,0.3);
-}
+.btn-solid { background: var(--forest); color: #fff; box-shadow: 0 4px 14px rgba(45,74,50,0.3); }
 .btn-solid:hover { background: var(--sage); transform: translateY(-1px); box-shadow: 0 6px 18px rgba(45,74,50,0.35); }
-
-.btn-clay {
-  background: var(--clay);
-  color: #fff;
-  box-shadow: 0 4px 14px rgba(196,132,90,0.35);
-}
+.btn-clay { background: var(--clay); color: #fff; box-shadow: 0 4px 14px rgba(196,132,90,0.35); }
 .btn-clay:hover { transform: translateY(-1px); box-shadow: 0 6px 18px rgba(196,132,90,0.45); }
-
 .btn-lg { padding: 15px 36px; font-size: 15px; }
+.btn-full { width: 100%; justify-content: center; border-radius: 12px; padding: 13px; font-size: 14px; }
+.btn:disabled { opacity: 0.6; cursor: not-allowed; transform: none !important; }
 
 /* ===== HERO ===== */
-.hero {
-  min-height: 100vh;
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  position: relative;
-  overflow: hidden;
-}
+.hero { min-height: 100vh; display: grid; grid-template-columns: 1fr 1fr; position: relative; overflow: hidden; }
+.hero-left { background: var(--forest); display: flex; flex-direction: column; justify-content: center; padding: 140px 70px 80px; position: relative; }
+.hero-left::after { content: ''; position: absolute; top: 0; right: -80px; bottom: 0; width: 160px; background: var(--forest); clip-path: polygon(0 0, 50% 0, 100% 50%, 50% 100%, 0 100%); z-index: 2; }
+.hero-eyebrow { font-size: 11px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--sage-light); margin-bottom: 20px; opacity: 0; animation: fadeUp 0.8s 0.2s forwards; }
+.hero-title { font-family: 'Cormorant Garamond', serif; font-size: clamp(46px, 5vw, 68px); font-weight: 600; color: #fff; line-height: 1.1; margin-bottom: 24px; opacity: 0; animation: fadeUp 0.8s 0.4s forwards; }
+.hero-title em { font-style: italic; color: var(--sage-light); }
+.hero-body { font-size: 17px; line-height: 1.7; color: rgba(255,255,255,0.65); max-width: 420px; margin-bottom: 44px; opacity: 0; animation: fadeUp 0.8s 0.6s forwards; }
+.hero-ctas { display: flex; gap: 14px; flex-wrap: wrap; opacity: 0; animation: fadeUp 0.8s 0.8s forwards; }
+.hero-right { background: var(--cream); display: flex; align-items: center; justify-content: center; position: relative; overflow: hidden; }
+.hero-image-mosaic { position: absolute; inset: 0; background: radial-gradient(ellipse at 30% 40%, rgba(122,158,126,0.15) 0%, transparent 60%), radial-gradient(ellipse at 70% 70%, rgba(201,168,76,0.12) 0%, transparent 50%); }
 
-.hero-left {
-  background: var(--forest);
-  display: flex; flex-direction: column; justify-content: center;
-  padding: 140px 70px 80px;
-  position: relative;
-}
-
-.hero-left::after {
-  content: '';
-  position: absolute;
-  top: 0; right: -80px; bottom: 0;
-  width: 160px;
-  background: var(--forest);
-  clip-path: polygon(0 0, 50% 0, 100% 50%, 50% 100%, 0 100%);
-  z-index: 2;
-}
-
-.hero-eyebrow {
-  font-size: 11px;
-  letter-spacing: 0.2em;
-  text-transform: uppercase;
-  color: var(--sage-light);
-  margin-bottom: 20px;
-  opacity: 0;
-  animation: fadeUp 0.8s 0.2s forwards;
-}
-
-.hero-title {
-  font-family: 'Cormorant Garamond', serif;
-  font-size: clamp(46px, 5vw, 68px);
-  font-weight: 600;
-  color: #fff;
-  line-height: 1.1;
-  margin-bottom: 24px;
-  opacity: 0;
-  animation: fadeUp 0.8s 0.4s forwards;
-}
-
-.hero-title em {
-  font-style: italic;
-  color: var(--sage-light);
-}
-
-.hero-body {
-  font-size: 17px;
-  line-height: 1.7;
-  color: rgba(255,255,255,0.65);
-  max-width: 420px;
-  margin-bottom: 44px;
-  opacity: 0;
-  animation: fadeUp 0.8s 0.6s forwards;
-}
-
-.hero-ctas {
-  display: flex; gap: 14px; flex-wrap: wrap;
-  opacity: 0;
-  animation: fadeUp 0.8s 0.8s forwards;
-}
-
-.hero-right {
-  background: var(--cream);
-  display: flex; align-items: center; justify-content: center;
-  position: relative;
-  overflow: hidden;
-}
-
-.hero-image-mosaic {
-  position: absolute; inset: 0;
-  background: 
-    radial-gradient(ellipse at 30% 40%, rgba(122,158,126,0.15) 0%, transparent 60%),
-    radial-gradient(ellipse at 70% 70%, rgba(201,168,76,0.12) 0%, transparent 50%);
-}
-
-.hero-card-float {
-  position: relative;
-  z-index: 5;
-  background: #fff;
-  border-radius: 24px;
-  padding: 36px;
-  width: 380px;
-  box-shadow: 0 20px 60px rgba(0,0,0,0.1), 0 4px 20px rgba(0,0,0,0.06);
-  opacity: 0;
-  animation: fadeUp 0.9s 0.5s forwards;
-}
-
-.login-tab-row {
-  display: flex; gap: 0;
-  background: rgba(0,0,0,0.05);
-  border-radius: 12px;
-  padding: 4px;
-  margin-bottom: 28px;
-}
-
-.login-tab {
-  flex: 1;
-  padding: 9px;
-  border-radius: 9px;
-  text-align: center;
-  font-size: 13px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.2s;
-  color: var(--mid);
-}
-
-.login-tab.active {
-  background: #fff;
-  color: var(--forest);
-  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-}
-
-.card-title {
-  font-family: 'Cormorant Garamond', serif;
-  font-size: 26px;
-  font-weight: 600;
-  margin-bottom: 6px;
-}
-
+.hero-card-float { position: relative; z-index: 5; background: #fff; border-radius: 24px; padding: 36px; width: 380px; box-shadow: 0 20px 60px rgba(0,0,0,0.1), 0 4px 20px rgba(0,0,0,0.06); opacity: 0; animation: fadeUp 0.9s 0.5s forwards; }
+.login-tab-row { display: flex; background: rgba(0,0,0,0.05); border-radius: 12px; padding: 4px; margin-bottom: 28px; }
+.login-tab { flex: 1; padding: 9px; border-radius: 9px; text-align: center; font-size: 13px; font-weight: 600; cursor: pointer; transition: all 0.2s; color: var(--mid); }
+.login-tab.active { background: #fff; color: var(--forest); box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+.card-title { font-family: 'Cormorant Garamond', serif; font-size: 26px; font-weight: 600; margin-bottom: 6px; }
 .card-sub { font-size: 13px; color: var(--mid); margin-bottom: 24px; }
 
 .form-group { margin-bottom: 14px; }
-
-.form-label {
-  font-size: 11px;
-  font-weight: 600;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: var(--mid);
-  display: block;
-  margin-bottom: 6px;
-}
-
-.form-input {
-  width: 100%;
-  padding: 11px 14px;
-  border-radius: 10px;
-  border: 1.5px solid rgba(0,0,0,0.1);
-  font-family: 'Jost', sans-serif;
-  font-size: 14px;
-  background: var(--warm);
-  outline: none;
-  transition: border-color 0.2s, box-shadow 0.2s;
-}
-
-.form-input:focus {
-  border-color: var(--sage);
-  box-shadow: 0 0 0 3px rgba(122,158,126,0.15);
-  background: #fff;
-}
-
+.form-label { font-size: 11px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--mid); display: block; margin-bottom: 6px; }
+.form-input { width: 100%; padding: 11px 14px; border-radius: 10px; border: 1.5px solid rgba(0,0,0,0.1); font-family: 'Jost', sans-serif; font-size: 14px; background: var(--warm); outline: none; transition: border-color 0.2s, box-shadow 0.2s; }
+.form-input:focus { border-color: var(--sage); box-shadow: 0 0 0 3px rgba(122,158,126,0.15); background: #fff; }
+.form-select { width: 100%; padding: 11px 14px; border-radius: 10px; border: 1.5px solid rgba(0,0,0,0.1); font-family: 'Jost', sans-serif; font-size: 14px; background: var(--warm); outline: none; appearance: none; }
+.form-select:focus { border-color: var(--sage); }
 .forgot { font-size: 12px; color: var(--sage); text-align: right; display: block; margin-top: -8px; margin-bottom: 14px; text-decoration: none; }
 
-.btn-full { width: 100%; justify-content: center; border-radius: 12px; padding: 13px; font-size: 14px; }
+/* Login type toggle */
+.login-type-toggle { display: flex; gap: 8px; background: rgba(0,0,0,0.04); border-radius: 10px; padding: 4px; margin-bottom: 20px; }
+.ltt-btn { flex: 1; text-align: center; padding: 8px; border-radius: 8px; font-size: 12px; font-weight: 600; cursor: pointer; color: var(--mid); transition: all 0.2s; }
+.ltt-btn.active { background: #fff; color: var(--forest); box-shadow: 0 1px 4px rgba(0,0,0,0.1); }
 
-.divider {
-  display: flex; align-items: center; gap: 12px;
-  margin: 18px 0;
-  color: var(--mid); font-size: 12px;
-}
+/* Error message */
+.auth-error { background: rgba(200,60,60,0.08); border: 1px solid rgba(200,60,60,0.2); color: #b03030; border-radius: 8px; padding: 10px 12px; font-size: 13px; margin-bottom: 14px; display: none; }
+
+/* Loading spinner */
+.spinner { display: inline-block; width: 14px; height: 14px; border: 2px solid rgba(255,255,255,0.4); border-top-color: #fff; border-radius: 50%; animation: spin 0.7s linear infinite; }
+@keyframes spin { to { transform: rotate(360deg); } }
+
+.divider { display: flex; align-items: center; gap: 12px; margin: 18px 0; color: var(--mid); font-size: 12px; }
 .divider::before, .divider::after { content: ''; flex: 1; height: 1px; background: rgba(0,0,0,0.1); }
-
 .signup-link { text-align: center; font-size: 13px; color: var(--mid); margin-top: 14px; }
 .signup-link a { color: var(--forest); font-weight: 600; text-decoration: none; }
 
 /* ===== STATS BAR ===== */
-.stats-bar {
-  background: var(--sand);
-  padding: 32px 80px;
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 0;
-}
-
-.stat-item {
-  text-align: center;
-  padding: 0 20px;
-  border-right: 1px solid rgba(0,0,0,0.1);
-}
+.stats-bar { background: var(--sand); padding: 32px 80px; display: grid; grid-template-columns: repeat(4, 1fr); }
+.stat-item { text-align: center; padding: 0 20px; border-right: 1px solid rgba(0,0,0,0.1); }
 .stat-item:last-child { border-right: none; }
-
-.stat-num {
-  font-family: 'Cormorant Garamond', serif;
-  font-size: 42px;
-  font-weight: 700;
-  color: var(--forest);
-  line-height: 1;
-}
-
+.stat-num { font-family: 'Cormorant Garamond', serif; font-size: 42px; font-weight: 700; color: var(--forest); line-height: 1; }
 .stat-label { font-size: 13px; color: var(--mid); margin-top: 4px; font-weight: 500; }
 
 /* ===== SERVICES ===== */
 .section { padding: 100px 80px; }
-
-.section-eyebrow {
-  font-size: 11px;
-  letter-spacing: 0.2em;
-  text-transform: uppercase;
-  color: var(--clay);
-  margin-bottom: 14px;
-}
-
-.section-title {
-  font-family: 'Cormorant Garamond', serif;
-  font-size: clamp(36px, 4vw, 52px);
-  font-weight: 600;
-  color: var(--charcoal);
-  line-height: 1.15;
-  max-width: 600px;
-}
-
+.section-eyebrow { font-size: 11px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--clay); margin-bottom: 14px; }
+.section-title { font-family: 'Cormorant Garamond', serif; font-size: clamp(36px, 4vw, 52px); font-weight: 600; color: var(--charcoal); line-height: 1.15; max-width: 600px; }
 .section-title em { font-style: italic; color: var(--sage); }
-
-.services-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 24px;
-  margin-top: 60px;
-}
-
-.service-card {
-  background: #fff;
-  border-radius: 20px;
-  padding: 36px 30px;
-  border: 1px solid rgba(0,0,0,0.05);
-  box-shadow: 0 4px 20px rgba(0,0,0,0.05);
-  transition: all 0.3s;
-  position: relative;
-  overflow: hidden;
-}
-
-.service-card::before {
-  content: '';
-  position: absolute;
-  bottom: 0; left: 0; right: 0;
-  height: 4px;
-  opacity: 0;
-  transition: opacity 0.3s;
-}
-
+.services-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; margin-top: 60px; }
+.service-card { background: #fff; border-radius: 20px; padding: 36px 30px; border: 1px solid rgba(0,0,0,0.05); box-shadow: 0 4px 20px rgba(0,0,0,0.05); transition: all 0.3s; position: relative; overflow: hidden; }
+.service-card::before { content: ''; position: absolute; bottom: 0; left: 0; right: 0; height: 4px; opacity: 0; transition: opacity 0.3s; }
 .service-card.green::before { background: linear-gradient(90deg, var(--forest), var(--sage)); }
 .service-card.clay::before { background: linear-gradient(90deg, var(--clay), var(--clay-light)); }
 .service-card.gold::before { background: linear-gradient(90deg, var(--gold), #e8d080); }
-
 .service-card:hover { transform: translateY(-4px); box-shadow: 0 12px 40px rgba(0,0,0,0.1); }
 .service-card:hover::before { opacity: 1; }
-
-.service-icon {
-  font-size: 36px;
-  margin-bottom: 20px;
-  display: block;
-}
-
-.service-title {
-  font-family: 'Cormorant Garamond', serif;
-  font-size: 24px;
-  font-weight: 600;
-  margin-bottom: 12px;
-  color: var(--charcoal);
-}
-
-.service-desc {
-  font-size: 14px;
-  line-height: 1.7;
-  color: var(--mid);
-  margin-bottom: 20px;
-}
-
-.service-price {
-  font-size: 22px;
-  font-weight: 700;
-  color: var(--forest);
-  font-family: 'Cormorant Garamond', serif;
-}
-
+.service-icon { font-size: 36px; margin-bottom: 20px; display: block; }
+.service-title { font-family: 'Cormorant Garamond', serif; font-size: 24px; font-weight: 600; margin-bottom: 12px; }
+.service-desc { font-size: 14px; line-height: 1.7; color: var(--mid); margin-bottom: 20px; }
+.service-price { font-size: 22px; font-weight: 700; color: var(--forest); font-family: 'Cormorant Garamond', serif; }
 .service-price span { font-size: 14px; font-family: 'Jost', sans-serif; color: var(--mid); font-weight: 400; }
 
 /* ===== HOW IT WORKS ===== */
-.how-section {
-  background: var(--forest);
-  padding: 100px 80px;
-  position: relative;
-  overflow: hidden;
-}
-
-.how-section::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background: radial-gradient(ellipse at 80% 50%, rgba(122,158,126,0.15) 0%, transparent 60%);
-}
-
-.how-grid {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 40px;
-  margin-top: 60px;
-  position: relative;
-}
-
-.how-step {
-  text-align: center;
-  position: relative;
-}
-
-.how-step::after {
-  content: '→';
-  position: absolute;
-  right: -24px;
-  top: 22px;
-  font-size: 20px;
-  color: rgba(255,255,255,0.2);
-}
+.how-section { background: var(--forest); padding: 100px 80px; position: relative; overflow: hidden; }
+.how-section::before { content: ''; position: absolute; inset: 0; background: radial-gradient(ellipse at 80% 50%, rgba(122,158,126,0.15) 0%, transparent 60%); }
+.how-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 40px; margin-top: 60px; position: relative; }
+.how-step { text-align: center; position: relative; }
+.how-step::after { content: '→'; position: absolute; right: -24px; top: 22px; font-size: 20px; color: rgba(255,255,255,0.2); }
 .how-step:last-child::after { display: none; }
-
-.how-num {
-  width: 52px; height: 52px;
-  background: rgba(255,255,255,0.1);
-  border: 1.5px solid rgba(255,255,255,0.2);
-  border-radius: 50%;
-  display: flex; align-items: center; justify-content: center;
-  margin: 0 auto 20px;
-  font-family: 'Cormorant Garamond', serif;
-  font-size: 22px;
-  font-weight: 700;
-  color: var(--sage-light);
-}
-
+.how-num { width: 52px; height: 52px; background: rgba(255,255,255,0.1); border: 1.5px solid rgba(255,255,255,0.2); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px; font-family: 'Cormorant Garamond', serif; font-size: 22px; font-weight: 700; color: var(--sage-light); }
 .how-title { font-size: 16px; font-weight: 600; color: #fff; margin-bottom: 10px; }
 .how-desc { font-size: 13px; line-height: 1.6; color: rgba(255,255,255,0.55); }
 
 /* ===== TESTIMONIALS ===== */
-.testimonials-section {
-  padding: 100px 80px;
-  background: var(--cream);
-}
-
-.testimonials-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 24px;
-  margin-top: 60px;
-}
-
-.testimonial-card {
-  background: #fff;
-  border-radius: 20px;
-  padding: 32px;
-  border: 1px solid rgba(0,0,0,0.05);
-  box-shadow: 0 4px 16px rgba(0,0,0,0.04);
-}
-
+.testimonials-section { padding: 100px 80px; background: var(--cream); }
+.testimonials-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; margin-top: 60px; }
+.testimonial-card { background: #fff; border-radius: 20px; padding: 32px; border: 1px solid rgba(0,0,0,0.05); box-shadow: 0 4px 16px rgba(0,0,0,0.04); }
 .testimonial-stars { color: var(--gold); font-size: 14px; margin-bottom: 16px; letter-spacing: 2px; }
-
-.testimonial-text {
-  font-family: 'Cormorant Garamond', serif;
-  font-size: 18px;
-  line-height: 1.6;
-  font-style: italic;
-  color: var(--charcoal);
-  margin-bottom: 20px;
-}
-
+.testimonial-text { font-family: 'Cormorant Garamond', serif; font-size: 18px; line-height: 1.6; font-style: italic; color: var(--charcoal); margin-bottom: 20px; }
 .testimonial-author { display: flex; align-items: center; gap: 12px; }
-
-.author-avatar {
-  width: 42px; height: 42px;
-  border-radius: 50%;
-  display: flex; align-items: center; justify-content: center;
-  font-weight: 700; font-size: 14px; color: #fff;
-}
-
+.author-avatar { width: 42px; height: 42px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 14px; color: #fff; }
 .author-name { font-size: 14px; font-weight: 600; }
 .author-role { font-size: 12px; color: var(--mid); }
 
-/* ===== SIGNUP CTA ===== */
-.signup-section {
-  padding: 100px 80px;
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 80px;
-  align-items: center;
-}
-
-.signup-form-card {
-  background: #fff;
-  border-radius: 24px;
-  padding: 44px;
-  box-shadow: 0 8px 40px rgba(0,0,0,0.08);
-  border: 1px solid rgba(0,0,0,0.05);
-}
-
+/* ===== SIGNUP SECTION ===== */
+.signup-section { padding: 100px 80px; display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: center; }
+.signup-form-card { background: #fff; border-radius: 24px; padding: 44px; box-shadow: 0 8px 40px rgba(0,0,0,0.08); border: 1px solid rgba(0,0,0,0.05); }
 .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
-
-.form-select {
-  width: 100%;
-  padding: 11px 14px;
-  border-radius: 10px;
-  border: 1.5px solid rgba(0,0,0,0.1);
-  font-family: 'Jost', sans-serif;
-  font-size: 14px;
-  background: var(--warm);
-  outline: none;
-  transition: border-color 0.2s;
-  appearance: none;
-}
-
-.form-select:focus { border-color: var(--sage); box-shadow: 0 0 0 3px rgba(122,158,126,0.15); }
-
-.check-row {
-  display: flex; align-items: flex-start; gap: 10px;
-  margin-bottom: 10px;
-  font-size: 13px;
-  color: var(--mid);
-}
-
+.check-row { display: flex; align-items: flex-start; gap: 10px; margin-bottom: 10px; font-size: 13px; color: var(--mid); }
 .check-row input[type=checkbox] { margin-top: 2px; accent-color: var(--sage); }
 
 /* ===== FOOTER ===== */
-footer {
-  background: var(--charcoal);
-  padding: 60px 80px 30px;
-}
-
-.footer-grid {
-  display: grid;
-  grid-template-columns: 2fr 1fr 1fr 1fr;
-  gap: 60px;
-  margin-bottom: 50px;
-}
-
+footer { background: var(--charcoal); padding: 60px 80px 30px; }
+.footer-grid { display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 60px; margin-bottom: 50px; }
 .footer-brand p { font-size: 14px; color: rgba(255,255,255,0.45); line-height: 1.7; margin-top: 14px; max-width: 280px; }
-
 .footer-col-title { font-size: 11px; letter-spacing: 0.15em; text-transform: uppercase; color: rgba(255,255,255,0.35); margin-bottom: 16px; }
-
 .footer-links { list-style: none; }
 .footer-links li { margin-bottom: 10px; }
-.footer-links a { font-size: 14px; color: rgba(255,255,255,0.55); text-decoration: none; transition: color 0.2s; }
+.footer-links a { font-size: 14px; color: rgba(255,255,255,0.55); text-decoration: none; transition: color 0.2s; cursor: pointer; }
 .footer-links a:hover { color: var(--sage-light); }
-
-.footer-bottom {
-  border-top: 1px solid rgba(255,255,255,0.08);
-  padding-top: 24px;
-  display: flex; justify-content: space-between; align-items: center;
-}
-
+.footer-bottom { border-top: 1px solid rgba(255,255,255,0.08); padding-top: 24px; display: flex; justify-content: space-between; align-items: center; }
 .footer-bottom p { font-size: 12px; color: rgba(255,255,255,0.3); }
 
 /* ===== MODAL ===== */
-.modal-overlay {
-  position: fixed; inset: 0;
-  background: rgba(0,0,0,0.5);
-  backdrop-filter: blur(6px);
-  z-index: 500;
-  display: none; align-items: center; justify-content: center;
-}
+.modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.5); backdrop-filter: blur(6px); z-index: 500; display: none; align-items: center; justify-content: center; }
 .modal-overlay.open { display: flex; }
-
-.modal {
-  background: #fff;
-  border-radius: 24px;
-  width: 480px;
-  max-height: 90vh;
-  overflow-y: auto;
-  box-shadow: 0 24px 80px rgba(0,0,0,0.2);
-  animation: modalIn 0.25s ease;
-}
-
-@keyframes modalIn {
-  from { opacity: 0; transform: scale(0.95) translateY(12px); }
-  to { opacity: 1; transform: scale(1) translateY(0); }
-}
-
-.modal-header {
-  padding: 28px 28px 20px;
-  border-bottom: 1px solid rgba(0,0,0,0.07);
-  display: flex; justify-content: space-between; align-items: center;
-}
-
-.modal-title {
-  font-family: 'Cormorant Garamond', serif;
-  font-size: 26px;
-  font-weight: 600;
-}
-
-.modal-close {
-  width: 34px; height: 34px;
-  border-radius: 50%;
-  background: rgba(0,0,0,0.06);
-  border: none; cursor: pointer;
-  font-size: 16px;
-  display: flex; align-items: center; justify-content: center;
-}
-
+.modal { background: #fff; border-radius: 24px; width: 480px; max-height: 90vh; overflow-y: auto; box-shadow: 0 24px 80px rgba(0,0,0,0.2); animation: modalIn 0.25s ease; }
+@keyframes modalIn { from { opacity: 0; transform: scale(0.95) translateY(12px); } to { opacity: 1; transform: scale(1) translateY(0); } }
+.modal-header { padding: 28px 28px 20px; border-bottom: 1px solid rgba(0,0,0,0.07); display: flex; justify-content: space-between; align-items: center; }
+.modal-title { font-family: 'Cormorant Garamond', serif; font-size: 26px; font-weight: 600; }
+.modal-close { width: 34px; height: 34px; border-radius: 50%; background: rgba(0,0,0,0.06); border: none; cursor: pointer; font-size: 16px; display: flex; align-items: center; justify-content: center; }
 .modal-body { padding: 24px 28px; }
 .modal-footer { padding: 16px 28px 24px; display: flex; gap: 10px; justify-content: flex-end; }
 
-@keyframes fadeUp {
-  from { opacity: 0; transform: translateY(20px); }
-  to { opacity: 1; transform: translateY(0); }
-}
+@keyframes fadeUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
 
-.toast {
-  position: fixed;
-  bottom: 30px; right: 30px;
-  background: var(--forest);
-  color: #fff;
-  padding: 14px 22px;
-  border-radius: 14px;
-  font-size: 14px;
-  font-weight: 500;
-  box-shadow: 0 8px 30px rgba(0,0,0,0.2);
-  z-index: 1000;
-  transform: translateY(80px);
-  opacity: 0;
-  transition: all 0.4s;
-}
+.toast { position: fixed; bottom: 30px; right: 30px; background: var(--forest); color: #fff; padding: 14px 22px; border-radius: 14px; font-size: 14px; font-weight: 500; box-shadow: 0 8px 30px rgba(0,0,0,0.2); z-index: 1000; transform: translateY(80px); opacity: 0; transition: all 0.4s; }
 .toast.show { transform: translateY(0); opacity: 1; }
-
+.toast.error { background: #b03030; }
 </style>
 </head>
 <body>
@@ -677,66 +202,73 @@ footer {
     <p class="hero-body">Active Aging Partners provides personalized walking companionship, appointment transport, and errand support — helping seniors stay active, independent, and connected.</p>
     <div class="hero-ctas">
       <button class="btn btn-solid btn-lg" onclick="document.getElementById('signup').scrollIntoView({behavior:'smooth'})">Get Started Today</button>
-      <button class="btn btn-outline btn-lg" style="border-color:rgba(255,255,255,0.4);color:#fff" onclick="document.getElementById('services').scrollIntoView({behavior:'smooth'})">See Services</button>
+      <button class="btn btn-lg" style="border:1.5px solid rgba(255,255,255,0.4);color:#fff;background:transparent" onclick="document.getElementById('services').scrollIntoView({behavior:'smooth'})">See Services</button>
     </div>
   </div>
+
   <div class="hero-right">
     <div class="hero-image-mosaic"></div>
-    <!-- Login/Signup Card -->
-    <div class="hero-card-float" id="hero-card">
+
+    <!-- HERO LOGIN CARD -->
+    <div class="hero-card-float">
       <div class="login-tab-row">
-        <div class="login-tab active" onclick="switchTab('login')">Log In</div>
-        <div class="login-tab" onclick="switchTab('signup-quick')">Sign Up</div>
+        <div class="login-tab active" onclick="switchHeroTab('login')">Log In</div>
+        <div class="login-tab" onclick="switchHeroTab('signup-quick')">Sign Up</div>
       </div>
 
       <!-- LOGIN PANEL -->
-      <div id="tab-login">
+      <div id="hero-tab-login">
         <div class="card-title">Welcome back 👋</div>
         <div class="card-sub">Log in to your account</div>
 
-        <div style="display:flex;gap:8px;background:rgba(0,0,0,0.04);border-radius:10px;padding:4px;margin-bottom:20px">
-          <div style="flex:1;text-align:center;padding:8px;border-radius:8px;background:#fff;font-size:12px;font-weight:600;cursor:pointer;color:var(--forest);box-shadow:0 1px 4px rgba(0,0,0,0.1)" onclick="setLoginType('client')">👤 Client / Family</div>
-          <div style="flex:1;text-align:center;padding:8px;border-radius:8px;font-size:12px;font-weight:500;cursor:pointer;color:var(--mid)" onclick="setLoginType('staff')">🌿 Staff</div>
+        <!-- Staff / Client toggle -->
+        <div class="login-type-toggle">
+          <div class="ltt-btn active" id="hero-type-client" onclick="setHeroLoginType('client')">👤 Client / Family</div>
+          <div class="ltt-btn" id="hero-type-staff" onclick="setHeroLoginType('staff')">🌿 Staff</div>
         </div>
+
+        <div id="hero-auth-error" class="auth-error">Incorrect email or password. Please try again.</div>
 
         <div class="form-group">
           <label class="form-label">Email</label>
-          <input type="email" class="form-input" placeholder="you@example.com">
+          <input type="email" class="form-input" id="hero-email" placeholder="you@example.com">
         </div>
         <div class="form-group">
           <label class="form-label">Password</label>
-          <input type="password" class="form-input" placeholder="••••••••">
+          <input type="password" class="form-input" id="hero-password" placeholder="••••••••" onkeydown="if(event.key==='Enter') heroLogin()">
         </div>
-        <a href="#" class="forgot">Forgot password?</a>
-        <button class="btn btn-solid btn-full" onclick="handleLogin()">Sign In →</button>
-        <div class="signup-link">New here? <a href="#signup" onclick="document.getElementById('signup').scrollIntoView({behavior:'smooth'})">Create an account</a></div>
+        <a href="#" class="forgot" onclick="handleForgotPassword(event, 'hero-email')">Forgot password?</a>
+
+        <button class="btn btn-solid btn-full" id="hero-login-btn" onclick="heroLogin()">Sign In →</button>
+        <div class="signup-link">New here? <a href="#" onclick="switchHeroTab('signup-quick')">Create an account</a></div>
       </div>
 
       <!-- QUICK SIGNUP PANEL -->
-      <div id="tab-signup-quick" style="display:none">
+      <div id="hero-tab-signup" style="display:none">
         <div class="card-title">Join today 🌿</div>
         <div class="card-sub">Create your free account</div>
+        <div id="hero-signup-error" class="auth-error"></div>
         <div class="form-group">
           <label class="form-label">Full Name</label>
-          <input type="text" class="form-input" placeholder="Your name">
+          <input type="text" class="form-input" id="hero-signup-name" placeholder="Your name">
         </div>
         <div class="form-group">
           <label class="form-label">Email</label>
-          <input type="email" class="form-input" placeholder="you@example.com">
+          <input type="email" class="form-input" id="hero-signup-email" placeholder="you@example.com">
         </div>
         <div class="form-group">
           <label class="form-label">I am a…</label>
-          <select class="form-select" style="width:100%;padding:11px 14px;border-radius:10px;border:1.5px solid rgba(0,0,0,0.1);font-family:'Jost',sans-serif;font-size:14px;background:var(--warm)">
-            <option>Family member / Adult child</option>
-            <option>Senior client (for myself)</option>
+          <select class="form-select" id="hero-signup-role">
+            <option value="client">Family member / Adult child</option>
+            <option value="client">Senior client (for myself)</option>
           </select>
         </div>
         <div class="form-group">
           <label class="form-label">Password</label>
-          <input type="password" class="form-input" placeholder="Choose a password">
+          <input type="password" class="form-input" id="hero-signup-password" placeholder="Choose a password (min 6 chars)">
         </div>
-        <button class="btn btn-clay btn-full" onclick="handleSignup()">Create Account →</button>
-        <div class="signup-link">Already have an account? <a href="#" onclick="switchTab('login')">Log in</a></div>
+        <button class="btn btn-clay btn-full" id="hero-signup-btn" onclick="heroSignup()">Create Account →</button>
+        <div class="signup-link">Already have an account? <a href="#" onclick="switchHeroTab('login')">Log in</a></div>
       </div>
     </div>
   </div>
@@ -744,29 +276,16 @@ footer {
 
 <!-- STATS -->
 <div class="stats-bar">
-  <div class="stat-item">
-    <div class="stat-num">50<span style="font-size:28px">+</span></div>
-    <div class="stat-label">Seniors Served</div>
-  </div>
-  <div class="stat-item">
-    <div class="stat-num">$50</div>
-    <div class="stat-label">Per Hour, All Services</div>
-  </div>
-  <div class="stat-item">
-    <div class="stat-num">4.9★</div>
-    <div class="stat-label">Average Family Rating</div>
-  </div>
-  <div class="stat-item">
-    <div class="stat-num">100<span style="font-size:28px">%</span></div>
-    <div class="stat-label">Background Checked Staff</div>
-  </div>
+  <div class="stat-item"><div class="stat-num">50<span style="font-size:28px">+</span></div><div class="stat-label">Seniors Served</div></div>
+  <div class="stat-item"><div class="stat-num">$50</div><div class="stat-label">Per Hour, All Services</div></div>
+  <div class="stat-item"><div class="stat-num">4.9★</div><div class="stat-label">Average Family Rating</div></div>
+  <div class="stat-item"><div class="stat-num">100<span style="font-size:28px">%</span></div><div class="stat-label">Background Checked Staff</div></div>
 </div>
 
 <!-- SERVICES -->
 <section class="section" id="services">
   <div class="section-eyebrow">What We Offer</div>
   <h2 class="section-title">Services designed for <em>independence</em> and joy</h2>
-
   <div class="services-grid">
     <div class="service-card green">
       <span class="service-icon">🚶</span>
@@ -787,7 +306,6 @@ footer {
       <div class="service-price">$50 <span>/ hour + mileage</span></div>
     </div>
   </div>
-
   <div style="margin-top:36px;padding:24px 28px;background:rgba(122,158,126,0.1);border-radius:16px;border-left:4px solid var(--sage);max-width:560px">
     <div style="font-size:13px;font-weight:600;color:var(--forest);margin-bottom:4px">Gas Surcharge Policy</div>
     <div style="font-size:13px;color:var(--mid);line-height:1.6">For transport services, a mileage surcharge of <strong>$0.67/mile</strong> (current IRS rate) is added for miles driven on your behalf. Calculated from client's home and back. Always itemized on your invoice.</div>
@@ -800,26 +318,10 @@ footer {
     <div class="section-eyebrow" style="color:var(--sage-light)">Simple Process</div>
     <h2 class="section-title" style="color:#fff">Getting started is <em>easy</em></h2>
     <div class="how-grid">
-      <div class="how-step">
-        <div class="how-num">1</div>
-        <div class="how-title">Sign Up</div>
-        <div class="how-desc">Create a free account for yourself or your loved one. Provide basic info and preferences.</div>
-      </div>
-      <div class="how-step">
-        <div class="how-num">2</div>
-        <div class="how-title">Book a Session</div>
-        <div class="how-desc">Browse available times and book the service you need directly from your client portal.</div>
-      </div>
-      <div class="how-step">
-        <div class="how-num">3</div>
-        <div class="how-title">We Show Up</div>
-        <div class="how-desc">Your companion arrives on time. You'll get SMS and email reminders before every session.</div>
-      </div>
-      <div class="how-step">
-        <div class="how-num">4</div>
-        <div class="how-title">Receive a Report</div>
-        <div class="how-desc">After every session, a detailed report is sent to your inbox and saved in your portal.</div>
-      </div>
+      <div class="how-step"><div class="how-num">1</div><div class="how-title">Sign Up</div><div class="how-desc">Create a free account for yourself or your loved one. Provide basic info and preferences.</div></div>
+      <div class="how-step"><div class="how-num">2</div><div class="how-title">Book a Session</div><div class="how-desc">Browse available times and book the service you need directly from your client portal.</div></div>
+      <div class="how-step"><div class="how-num">3</div><div class="how-title">We Show Up</div><div class="how-desc">Your companion arrives on time. You'll get SMS and email reminders before every session.</div></div>
+      <div class="how-step"><div class="how-num">4</div><div class="how-title">Receive a Report</div><div class="how-desc">After every session, a detailed report is sent to your inbox and saved in your portal.</div></div>
     </div>
   </div>
 </section>
@@ -832,35 +334,17 @@ footer {
     <div class="testimonial-card">
       <div class="testimonial-stars">★★★★★</div>
       <p class="testimonial-text">"Mom has been so much more energetic since starting her walks. The session reports give us such peace of mind — we always know exactly how she's doing."</p>
-      <div class="testimonial-author">
-        <div class="author-avatar" style="background:linear-gradient(135deg,#7a9e7e,#4d7352)">SR</div>
-        <div>
-          <div class="author-name">Sarah Reynolds</div>
-          <div class="author-role">Daughter of Margaret, 78</div>
-        </div>
-      </div>
+      <div class="testimonial-author"><div class="author-avatar" style="background:linear-gradient(135deg,#7a9e7e,#4d7352)">SR</div><div><div class="author-name">Sarah Reynolds</div><div class="author-role">Daughter of Margaret, 78</div></div></div>
     </div>
     <div class="testimonial-card">
       <div class="testimonial-stars">★★★★★</div>
       <p class="testimonial-text">"Dad used to dread his doctor appointments. Now he actually looks forward to them. Having a familiar, caring companion makes all the difference."</p>
-      <div class="testimonial-author">
-        <div class="author-avatar" style="background:linear-gradient(135deg,#c4845a,#9a5530)">JB</div>
-        <div>
-          <div class="author-name">James Baker</div>
-          <div class="author-role">Son of Harold, 83</div>
-        </div>
-      </div>
+      <div class="testimonial-author"><div class="author-avatar" style="background:linear-gradient(135deg,#c4845a,#9a5530)">JB</div><div><div class="author-name">James Baker</div><div class="author-role">Son of Harold, 83</div></div></div>
     </div>
     <div class="testimonial-card">
       <div class="testimonial-stars">★★★★★</div>
       <p class="testimonial-text">"The app makes everything so easy to manage. I can book sessions, read reports, and pay invoices all in one place. Couldn't recommend this more highly."</p>
-      <div class="testimonial-author">
-        <div class="author-avatar" style="background:linear-gradient(135deg,#c9a84c,#8a6a10)">TW</div>
-        <div>
-          <div class="author-name">Tom Wilson</div>
-          <div class="author-role">Son of Eleanor, 75</div>
-        </div>
-      </div>
+      <div class="testimonial-author"><div class="author-avatar" style="background:linear-gradient(135deg,#c9a84c,#8a6a10)">TW</div><div><div class="author-name">Tom Wilson</div><div class="author-role">Son of Eleanor, 75</div></div></div>
     </div>
   </div>
 </section>
@@ -871,86 +355,31 @@ footer {
     <div class="section-eyebrow">Ready to Begin?</div>
     <h2 class="section-title">Give your loved one the gift of <em>movement</em></h2>
     <p style="font-size:16px;color:var(--mid);line-height:1.7;margin:24px 0 36px">Join families across Atlanta who trust Active Aging Partners to keep their loved ones active, independent, and cared for.</p>
-
     <div style="display:flex;flex-direction:column;gap:14px">
-      <div style="display:flex;gap:12px;align-items:center">
-        <div style="width:36px;height:36px;border-radius:50%;background:rgba(122,158,126,0.15);display:flex;align-items:center;justify-content:center;flex-shrink:0">✓</div>
-        <div style="font-size:14px;color:var(--mid)">No commitment required — book one session at a time</div>
-      </div>
-      <div style="display:flex;gap:12px;align-items:center">
-        <div style="width:36px;height:36px;border-radius:50%;background:rgba(122,158,126,0.15);display:flex;align-items:center;justify-content:center;flex-shrink:0">✓</div>
-        <div style="font-size:14px;color:var(--mid)">Detailed session reports after every visit</div>
-      </div>
-      <div style="display:flex;gap:12px;align-items:center">
-        <div style="width:36px;height:36px;border-radius:50%;background:rgba(122,158,126,0.15);display:flex;align-items:center;justify-content:center;flex-shrink:0">✓</div>
-        <div style="font-size:14px;color:var(--mid)">Secure payments via Stripe — invoices automatically sent</div>
-      </div>
-      <div style="display:flex;gap:12px;align-items:center">
-        <div style="width:36px;height:36px;border-radius:50%;background:rgba(122,158,126,0.15);display:flex;align-items:center;justify-content:center;flex-shrink:0">✓</div>
-        <div style="font-size:14px;color:var(--mid)">SMS & email reminders for every session</div>
-      </div>
+      <div style="display:flex;gap:12px;align-items:center"><div style="width:36px;height:36px;border-radius:50%;background:rgba(122,158,126,0.15);display:flex;align-items:center;justify-content:center;flex-shrink:0">✓</div><div style="font-size:14px;color:var(--mid)">No commitment required — book one session at a time</div></div>
+      <div style="display:flex;gap:12px;align-items:center"><div style="width:36px;height:36px;border-radius:50%;background:rgba(122,158,126,0.15);display:flex;align-items:center;justify-content:center;flex-shrink:0">✓</div><div style="font-size:14px;color:var(--mid)">Detailed session reports after every visit</div></div>
+      <div style="display:flex;gap:12px;align-items:center"><div style="width:36px;height:36px;border-radius:50%;background:rgba(122,158,126,0.15);display:flex;align-items:center;justify-content:center;flex-shrink:0">✓</div><div style="font-size:14px;color:var(--mid)">Secure payments via Stripe — invoices automatically sent</div></div>
+      <div style="display:flex;gap:12px;align-items:center"><div style="width:36px;height:36px;border-radius:50%;background:rgba(122,158,126,0.15);display:flex;align-items:center;justify-content:center;flex-shrink:0">✓</div><div style="font-size:14px;color:var(--mid)">SMS & email reminders for every session</div></div>
     </div>
   </div>
 
   <div class="signup-form-card">
     <div style="font-family:'Cormorant Garamond',serif;font-size:28px;font-weight:600;margin-bottom:6px">Create Your Account</div>
     <div style="font-size:13px;color:var(--mid);margin-bottom:28px">Free to join. Pay only when you book.</div>
-
+    <div id="full-signup-error" class="auth-error"></div>
     <div class="form-row" style="margin-bottom:14px">
-      <div class="form-group" style="margin-bottom:0">
-        <label class="form-label">Your First Name</label>
-        <input type="text" class="form-input" placeholder="First">
-      </div>
-      <div class="form-group" style="margin-bottom:0">
-        <label class="form-label">Last Name</label>
-        <input type="text" class="form-input" placeholder="Last">
-      </div>
+      <div class="form-group" style="margin-bottom:0"><label class="form-label">First Name</label><input type="text" class="form-input" id="fs-first" placeholder="First"></div>
+      <div class="form-group" style="margin-bottom:0"><label class="form-label">Last Name</label><input type="text" class="form-input" id="fs-last" placeholder="Last"></div>
     </div>
-
-    <div class="form-group">
-      <label class="form-label">Email Address</label>
-      <input type="email" class="form-input" placeholder="you@example.com">
-    </div>
-
-    <div class="form-group">
-      <label class="form-label">Phone (for SMS reminders)</label>
-      <input type="tel" class="form-input" placeholder="(404) 555-0000">
-    </div>
-
-    <div class="form-group">
-      <label class="form-label">I am signing up as…</label>
-      <select class="form-select">
-        <option>Family member / Adult child</option>
-        <option>Senior client (for myself)</option>
-      </select>
-    </div>
-
-    <div class="form-group">
-      <label class="form-label">Senior's Name (if different)</label>
-      <input type="text" class="form-input" placeholder="e.g. Margaret Reynolds">
-    </div>
-
-    <div class="form-group">
-      <label class="form-label">Password</label>
-      <input type="password" class="form-input" placeholder="Create a password">
-    </div>
-
-    <div class="check-row" style="margin:16px 0 10px">
-      <input type="checkbox" id="terms" checked>
-      <label for="terms">I agree to the <a href="#" style="color:var(--forest)">Terms of Service</a> and <a href="#" style="color:var(--forest)">Privacy Policy</a></label>
-    </div>
-
-    <div class="check-row">
-      <input type="checkbox" id="sms" checked>
-      <label for="sms">Send me SMS reminders and notifications</label>
-    </div>
-
-    <div class="check-row">
-      <input type="checkbox" id="email-notif" checked>
-      <label for="email-notif">Send me email notifications and session reports</label>
-    </div>
-
-    <button class="btn btn-solid btn-full" style="margin-top:20px;border-radius:12px;padding:14px;font-size:15px" onclick="handleFullSignup()">
+    <div class="form-group"><label class="form-label">Email Address</label><input type="email" class="form-input" id="fs-email" placeholder="you@example.com"></div>
+    <div class="form-group"><label class="form-label">Phone (for SMS reminders)</label><input type="tel" class="form-input" id="fs-phone" placeholder="(404) 555-0000"></div>
+    <div class="form-group"><label class="form-label">I am signing up as…</label><select class="form-select" id="fs-role"><option value="client">Family member / Adult child</option><option value="client">Senior client (for myself)</option></select></div>
+    <div class="form-group"><label class="form-label">Senior's Name (if different)</label><input type="text" class="form-input" id="fs-senior" placeholder="e.g. Margaret Reynolds"></div>
+    <div class="form-group"><label class="form-label">Password</label><input type="password" class="form-input" id="fs-password" placeholder="Create a password (min 6 chars)"></div>
+    <div class="check-row" style="margin:16px 0 10px"><input type="checkbox" id="terms" checked><label for="terms">I agree to the <a href="#" style="color:var(--forest)">Terms of Service</a> and <a href="#" style="color:var(--forest)">Privacy Policy</a></label></div>
+    <div class="check-row"><input type="checkbox" id="sms-opt" checked><label for="sms-opt">Send me SMS reminders and notifications</label></div>
+    <div class="check-row"><input type="checkbox" id="email-opt" checked><label for="email-opt">Send me email notifications and session reports</label></div>
+    <button class="btn btn-solid btn-full" id="full-signup-btn" style="margin-top:20px;padding:14px;font-size:15px" onclick="fullSignup()">
       Create My Account & Get Started →
     </button>
   </div>
@@ -960,38 +389,20 @@ footer {
 <footer>
   <div class="footer-grid">
     <div class="footer-brand">
-      <div class="nav-logo" style="font-size:18px">
-        <div class="nav-logo-leaf">🌿</div>
-        Active Aging Partners
-      </div>
+      <div class="nav-logo" style="font-size:18px"><div class="nav-logo-leaf">🌿</div>Active Aging Partners</div>
       <p>Helping seniors across Atlanta live fully, move freely, and age boldly — one walk at a time.</p>
     </div>
     <div>
       <div class="footer-col-title">Services</div>
-      <ul class="footer-links">
-        <li><a href="#">Walking & Wellness</a></li>
-        <li><a href="#">Medical Appointments</a></li>
-        <li><a href="#">Grocery & Errands</a></li>
-        <li><a href="#">Pricing</a></li>
-      </ul>
+      <ul class="footer-links"><li><a href="#services">Walking & Wellness</a></li><li><a href="#services">Medical Appointments</a></li><li><a href="#services">Grocery & Errands</a></li><li><a href="#services">Pricing</a></li></ul>
     </div>
     <div>
       <div class="footer-col-title">Account</div>
-      <ul class="footer-links">
-        <li><a href="#" onclick="openModal('login-modal')">Client Login</a></li>
-        <li><a href="#" onclick="openModal('login-modal')">Staff Login</a></li>
-        <li><a href="#signup">Sign Up</a></li>
-        <li><a href="#">Reset Password</a></li>
-      </ul>
+      <ul class="footer-links"><li><a onclick="openModal('login-modal')">Client Login</a></li><li><a onclick="openModal('login-modal')">Staff Login</a></li><li><a href="#signup">Sign Up</a></li><li><a href="#" onclick="showForgotModal()">Reset Password</a></li></ul>
     </div>
     <div>
       <div class="footer-col-title">Company</div>
-      <ul class="footer-links">
-        <li><a href="#">About Us</a></li>
-        <li><a href="#">Contact</a></li>
-        <li><a href="#">Privacy Policy</a></li>
-        <li><a href="#">Terms of Service</a></li>
-      </ul>
+      <ul class="footer-links"><li><a href="#">About Us</a></li><li><a href="#">Contact</a></li><li><a href="#">Privacy Policy</a></li><li><a href="#">Terms of Service</a></li></ul>
     </div>
   </div>
   <div class="footer-bottom">
@@ -1000,7 +411,7 @@ footer {
   </div>
 </footer>
 
-<!-- LOGIN MODAL (separate from hero card) -->
+<!-- LOGIN MODAL -->
 <div class="modal-overlay" id="login-modal">
   <div class="modal">
     <div class="modal-header">
@@ -1008,58 +419,289 @@ footer {
       <button class="modal-close" onclick="closeModal('login-modal')">✕</button>
     </div>
     <div class="modal-body">
-      <div style="display:flex;gap:8px;background:rgba(0,0,0,0.04);border-radius:10px;padding:4px;margin-bottom:20px">
-        <div id="modal-tab-client" style="flex:1;text-align:center;padding:9px;border-radius:8px;background:#fff;font-size:13px;font-weight:600;cursor:pointer;color:var(--forest);box-shadow:0 1px 4px rgba(0,0,0,0.1)" onclick="setModalTab('client')">👤 Client / Family</div>
-        <div id="modal-tab-staff" style="flex:1;text-align:center;padding:9px;border-radius:8px;font-size:13px;font-weight:500;cursor:pointer;color:var(--mid)" onclick="setModalTab('staff')">🌿 Staff</div>
+      <div class="login-type-toggle">
+        <div class="ltt-btn active" id="modal-type-client" onclick="setModalLoginType('client')">👤 Client / Family</div>
+        <div class="ltt-btn" id="modal-type-staff" onclick="setModalLoginType('staff')">🌿 Staff</div>
       </div>
-      <div class="form-group">
-        <label class="form-label">Email</label>
-        <input type="email" class="form-input" placeholder="you@example.com">
-      </div>
-      <div class="form-group">
-        <label class="form-label">Password</label>
-        <input type="password" class="form-input" placeholder="••••••••">
-      </div>
-      <a href="#" class="forgot">Forgot your password?</a>
+      <div id="modal-auth-error" class="auth-error"></div>
+      <div class="form-group"><label class="form-label">Email</label><input type="email" class="form-input" id="modal-email" placeholder="you@example.com"></div>
+      <div class="form-group"><label class="form-label">Password</label><input type="password" class="form-input" id="modal-password" placeholder="••••••••" onkeydown="if(event.key==='Enter') modalLogin()"></div>
+      <a href="#" class="forgot" onclick="handleForgotPassword(event, 'modal-email')">Forgot your password?</a>
     </div>
     <div class="modal-footer">
       <button class="btn btn-outline" onclick="closeModal('login-modal')">Cancel</button>
-      <button class="btn btn-solid" onclick="handleLogin()">Sign In →</button>
+      <button class="btn btn-solid" id="modal-login-btn" onclick="modalLogin()">Sign In →</button>
+    </div>
+  </div>
+</div>
+
+<!-- FORGOT PASSWORD MODAL -->
+<div class="modal-overlay" id="forgot-modal">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title">Reset Password</div>
+      <button class="modal-close" onclick="closeModal('forgot-modal')">✕</button>
+    </div>
+    <div class="modal-body">
+      <p style="font-size:14px;color:var(--mid);margin-bottom:18px;line-height:1.6">Enter your email address and we'll send you a link to reset your password.</p>
+      <div id="forgot-error" class="auth-error"></div>
+      <div id="forgot-success" style="background:rgba(45,74,50,0.08);border:1px solid rgba(45,74,50,0.2);color:var(--forest);border-radius:8px;padding:10px 12px;font-size:13px;margin-bottom:14px;display:none">✓ Reset email sent! Check your inbox.</div>
+      <div class="form-group"><label class="form-label">Email Address</label><input type="email" class="form-input" id="forgot-email" placeholder="you@example.com"></div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-outline" onclick="closeModal('forgot-modal')">Cancel</button>
+      <button class="btn btn-solid" id="forgot-btn" onclick="sendPasswordReset()">Send Reset Email</button>
     </div>
   </div>
 </div>
 
 <div class="toast" id="toast"></div>
 
+<!-- ============================================================
+     FIREBASE AUTHENTICATION
+     ============================================================ -->
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+  import {
+    getAuth,
+    signInWithEmailAndPassword,
+    createUserWithEmailAndPassword,
+    sendPasswordResetEmail,
+    onAuthStateChanged,
+    updateProfile
+  } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+
+  // ---- YOUR FIREBASE CONFIG ----
+  const firebaseConfig = {
+    apiKey: "AIzaSyAuXMMnVjij0x1X5sQ5Jm1NuJUvquwDb0k",
+    authDomain: "active-aging-partners.firebaseapp.com",
+    projectId: "active-aging-partners",
+    storageBucket: "active-aging-partners.firebasestorage.app",
+    messagingSenderId: "239822066888",
+    appId: "1:239822066888:web:8599d14fce0388d510c1fd"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+
+  // Staff email addresses — add yours here
+  // Anyone NOT in this list is treated as a client
+  const STAFF_EMAILS = [
+     "cynthia@breakingin.org",
+  ];
+
+  function isStaff(email) {
+    return STAFF_EMAILS.includes(email.toLowerCase());
+  }
+
+  // ---- If already logged in, redirect to correct portal ----
+  onAuthStateChanged(auth, (user) => {
+    if (user) {
+      if (isStaff(user.email)) {
+        window.location.href = 'staff-dashboard.html';
+      } else {
+        window.location.href = 'client-portal.html';
+      }
+    }
+  });
+
+  // ---- SHARED LOGIN LOGIC ----
+  async function doLogin(email, password, btnEl, errorEl) {
+    if (!email || !password) {
+      showError(errorEl, 'Please enter your email and password.');
+      return;
+    }
+    setLoading(btnEl, true);
+    hideError(errorEl);
+    try {
+      const result = await signInWithEmailAndPassword(auth, email, password);
+      const user = result.user;
+      showToast('✓ Signed in! Redirecting…');
+      setTimeout(() => {
+        if (isStaff(user.email)) {
+          window.location.href = 'staff-dashboard.html';
+        } else {
+          window.location.href = 'client-portal.html';
+        }
+      }, 800);
+    } catch (err) {
+      setLoading(btnEl, false);
+      const msg = friendlyError(err.code);
+      showError(errorEl, msg);
+    }
+  }
+
+  // ---- HERO CARD LOGIN ----
+  window.heroLogin = async function() {
+    const email = document.getElementById('hero-email').value.trim();
+    const password = document.getElementById('hero-password').value;
+    await doLogin(email, password,
+      document.getElementById('hero-login-btn'),
+      document.getElementById('hero-auth-error')
+    );
+  };
+
+  // ---- MODAL LOGIN ----
+  window.modalLogin = async function() {
+    const email = document.getElementById('modal-email').value.trim();
+    const password = document.getElementById('modal-password').value;
+    await doLogin(email, password,
+      document.getElementById('modal-login-btn'),
+      document.getElementById('modal-auth-error')
+    );
+  };
+
+  // ---- HERO QUICK SIGNUP ----
+  window.heroSignup = async function() {
+    const name = document.getElementById('hero-signup-name').value.trim();
+    const email = document.getElementById('hero-signup-email').value.trim();
+    const password = document.getElementById('hero-signup-password').value;
+    const errorEl = document.getElementById('hero-signup-error');
+    const btn = document.getElementById('hero-signup-btn');
+
+    if (!name || !email || !password) { showError(errorEl, 'Please fill in all fields.'); return; }
+    if (password.length < 6) { showError(errorEl, 'Password must be at least 6 characters.'); return; }
+
+    setLoading(btn, true);
+    hideError(errorEl);
+    try {
+      const result = await createUserWithEmailAndPassword(auth, email, password);
+      await updateProfile(result.user, { displayName: name });
+      showToast('🌿 Welcome! Account created. Redirecting…');
+      setTimeout(() => { window.location.href = 'client-portal.html'; }, 1000);
+    } catch (err) {
+      setLoading(btn, false);
+      showError(errorEl, friendlyError(err.code));
+    }
+  };
+
+  // ---- FULL SIGNUP FORM ----
+  window.fullSignup = async function() {
+    const first = document.getElementById('fs-first').value.trim();
+    const last = document.getElementById('fs-last').value.trim();
+    const email = document.getElementById('fs-email').value.trim();
+    const password = document.getElementById('fs-password').value;
+    const errorEl = document.getElementById('full-signup-error');
+    const btn = document.getElementById('full-signup-btn');
+    const terms = document.getElementById('terms').checked;
+
+    if (!first || !last || !email || !password) { showError(errorEl, 'Please fill in all required fields.'); return; }
+    if (!terms) { showError(errorEl, 'Please agree to the Terms of Service to continue.'); return; }
+    if (password.length < 6) { showError(errorEl, 'Password must be at least 6 characters.'); return; }
+
+    setLoading(btn, true);
+    hideError(errorEl);
+    try {
+      const result = await createUserWithEmailAndPassword(auth, email, password);
+      await updateProfile(result.user, { displayName: `${first} ${last}` });
+      showToast('🌿 Welcome to Active Aging Partners! Redirecting…');
+      setTimeout(() => { window.location.href = 'client-portal.html'; }, 1000);
+    } catch (err) {
+      setLoading(btn, false);
+      showError(errorEl, friendlyError(err.code));
+    }
+  };
+
+  // ---- PASSWORD RESET ----
+  window.handleForgotPassword = function(e, emailFieldId) {
+    e.preventDefault();
+    const email = document.getElementById(emailFieldId)?.value?.trim() || '';
+    if (email) document.getElementById('forgot-email').value = email;
+    openModal('forgot-modal');
+  };
+
+  window.showForgotModal = function() { openModal('forgot-modal'); };
+
+  window.sendPasswordReset = async function() {
+    const email = document.getElementById('forgot-email').value.trim();
+    const errorEl = document.getElementById('forgot-error');
+    const successEl = document.getElementById('forgot-success');
+    const btn = document.getElementById('forgot-btn');
+
+    if (!email) { showError(errorEl, 'Please enter your email address.'); return; }
+
+    setLoading(btn, true);
+    hideError(errorEl);
+    successEl.style.display = 'none';
+    try {
+      await sendPasswordResetEmail(auth, email);
+      successEl.style.display = 'block';
+      setLoading(btn, false);
+    } catch (err) {
+      setLoading(btn, false);
+      showError(errorEl, friendlyError(err.code));
+    }
+  };
+
+  // ---- HELPERS ----
+  function friendlyError(code) {
+    const map = {
+      'auth/user-not-found': 'No account found with that email address.',
+      'auth/wrong-password': 'Incorrect password. Please try again.',
+      'auth/invalid-email': 'Please enter a valid email address.',
+      'auth/email-already-in-use': 'An account with this email already exists. Try logging in.',
+      'auth/weak-password': 'Password must be at least 6 characters.',
+      'auth/too-many-requests': 'Too many attempts. Please wait a moment and try again.',
+      'auth/network-request-failed': 'Network error. Please check your connection.',
+      'auth/invalid-credential': 'Incorrect email or password. Please try again.',
+    };
+    return map[code] || 'Something went wrong. Please try again.';
+  }
+
+  function showError(el, msg) {
+    if (!el) return;
+    el.textContent = msg;
+    el.style.display = 'block';
+  }
+
+  function hideError(el) {
+    if (!el) return;
+    el.style.display = 'none';
+  }
+
+  function setLoading(btn, loading) {
+    if (!btn) return;
+    if (loading) {
+      btn.dataset.original = btn.innerHTML;
+      btn.innerHTML = '<span class="spinner"></span> Please wait…';
+      btn.disabled = true;
+    } else {
+      btn.innerHTML = btn.dataset.original || 'Sign In →';
+      btn.disabled = false;
+    }
+  }
+</script>
+
+<!-- NON-AUTH SCRIPTS -->
 <script>
   // Navbar scroll
   window.addEventListener('scroll', () => {
     document.getElementById('navbar').classList.toggle('scrolled', window.scrollY > 50);
   });
 
-  // Tab switch in hero card
-  function switchTab(tab) {
-    document.querySelectorAll('.login-tab').forEach((t,i) => {
-      t.classList.toggle('active', (i===0 && tab==='login') || (i===1 && tab==='signup-quick'));
-    });
-    document.getElementById('tab-login').style.display = tab === 'login' ? 'block' : 'none';
-    document.getElementById('tab-signup-quick').style.display = tab === 'signup-quick' ? 'block' : 'none';
+  // Hero card tab switch
+  function switchHeroTab(tab) {
+    const tabs = document.querySelectorAll('.login-tab');
+    tabs[0].classList.toggle('active', tab === 'login');
+    tabs[1].classList.toggle('active', tab === 'signup-quick');
+    document.getElementById('hero-tab-login').style.display = tab === 'login' ? 'block' : 'none';
+    document.getElementById('hero-tab-signup').style.display = tab === 'signup-quick' ? 'block' : 'none';
   }
 
-  function setLoginType(type) {
-    const btns = document.querySelectorAll('#tab-login > div:nth-child(1) > div');
+  // Hero login type toggle (client vs staff — both use same Firebase auth)
+  let heroLoginType = 'client';
+  function setHeroLoginType(type) {
+    heroLoginType = type;
+    document.getElementById('hero-type-client').classList.toggle('active', type === 'client');
+    document.getElementById('hero-type-staff').classList.toggle('active', type === 'staff');
   }
 
-  function setModalTab(type) {
-    const client = document.getElementById('modal-tab-client');
-    const staff = document.getElementById('modal-tab-staff');
-    if (type === 'client') {
-      client.style.cssText = 'flex:1;text-align:center;padding:9px;border-radius:8px;background:#fff;font-size:13px;font-weight:600;cursor:pointer;color:var(--forest);box-shadow:0 1px 4px rgba(0,0,0,0.1)';
-      staff.style.cssText = 'flex:1;text-align:center;padding:9px;border-radius:8px;font-size:13px;font-weight:500;cursor:pointer;color:var(--mid)';
-    } else {
-      staff.style.cssText = 'flex:1;text-align:center;padding:9px;border-radius:8px;background:#fff;font-size:13px;font-weight:600;cursor:pointer;color:var(--forest);box-shadow:0 1px 4px rgba(0,0,0,0.1)';
-      client.style.cssText = 'flex:1;text-align:center;padding:9px;border-radius:8px;font-size:13px;font-weight:500;cursor:pointer;color:var(--mid)';
-    }
+  // Modal login type toggle
+  let modalLoginType = 'client';
+  function setModalLoginType(type) {
+    modalLoginType = type;
+    document.getElementById('modal-type-client').classList.toggle('active', type === 'client');
+    document.getElementById('modal-type-staff').classList.toggle('active', type === 'staff');
   }
 
   function openModal(id) { document.getElementById(id).classList.add('open'); }
@@ -1069,24 +711,12 @@ footer {
     o.addEventListener('click', e => { if (e.target === o) o.classList.remove('open'); });
   });
 
-  function showToast(msg) {
+  function showToast(msg, isError) {
     const t = document.getElementById('toast');
     t.textContent = msg;
+    t.classList.toggle('error', !!isError);
     t.classList.add('show');
-    setTimeout(() => t.classList.remove('show'), 3000);
-  }
-
-  function handleLogin() {
-    closeModal('login-modal');
-    showToast('✓ Signed in! Redirecting to your portal…');
-  }
-
-  function handleSignup() {
-    showToast('✓ Account created! Check your email to confirm.');
-  }
-
-  function handleFullSignup() {
-    showToast('🌿 Welcome! Your account is being set up — check your email.');
+    setTimeout(() => t.classList.remove('show'), 3500);
   }
 </script>
 </body>
