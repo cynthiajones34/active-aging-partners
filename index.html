@@ -1,0 +1,1093 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Active Aging Partners — Live Fully. Move Freely.</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Jost:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --forest: #2d4a32;
+  --sage: #7a9e7e;
+  --sage-light: #b8d4bb;
+  --cream: #f8f4ed;
+  --warm: #fdf9f3;
+  --sand: #e8dfc8;
+  --clay: #c4845a;
+  --clay-light: #e8b494;
+  --charcoal: #1e2820;
+  --mid: #607060;
+  --gold: #c9a84c;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: 'Jost', sans-serif;
+  background: var(--warm);
+  color: var(--charcoal);
+  overflow-x: hidden;
+}
+
+/* ===== NAV ===== */
+nav {
+  position: fixed; top: 0; left: 0; right: 0;
+  z-index: 100;
+  padding: 20px 60px;
+  display: flex; align-items: center; justify-content: space-between;
+  transition: all 0.4s;
+}
+
+nav.scrolled {
+  background: rgba(248,244,237,0.95);
+  backdrop-filter: blur(12px);
+  padding: 14px 60px;
+  box-shadow: 0 2px 20px rgba(0,0,0,0.08);
+}
+
+.nav-logo {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 22px;
+  font-weight: 600;
+  color: var(--forest);
+  display: flex; align-items: center; gap: 10px;
+}
+
+.nav-logo-leaf {
+  width: 32px; height: 32px;
+  background: linear-gradient(135deg, var(--sage), var(--forest));
+  border-radius: 50% 50% 50% 10%;
+  transform: rotate(-30deg);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 14px;
+}
+
+.nav-links {
+  display: flex; align-items: center; gap: 36px;
+  list-style: none;
+}
+
+.nav-links a {
+  text-decoration: none;
+  color: var(--forest);
+  font-size: 14px;
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  opacity: 0.75;
+  transition: opacity 0.2s;
+}
+
+.nav-links a:hover { opacity: 1; }
+
+.nav-actions { display: flex; gap: 12px; align-items: center; }
+
+.btn {
+  font-family: 'Jost', sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  padding: 10px 22px;
+  border-radius: 50px;
+  border: none;
+  cursor: pointer;
+  letter-spacing: 0.04em;
+  text-decoration: none;
+  display: inline-flex; align-items: center; gap: 8px;
+  transition: all 0.25s;
+}
+
+.btn-outline {
+  background: transparent;
+  border: 1.5px solid var(--forest);
+  color: var(--forest);
+}
+.btn-outline:hover { background: var(--forest); color: #fff; }
+
+.btn-solid {
+  background: var(--forest);
+  color: #fff;
+  box-shadow: 0 4px 14px rgba(45,74,50,0.3);
+}
+.btn-solid:hover { background: var(--sage); transform: translateY(-1px); box-shadow: 0 6px 18px rgba(45,74,50,0.35); }
+
+.btn-clay {
+  background: var(--clay);
+  color: #fff;
+  box-shadow: 0 4px 14px rgba(196,132,90,0.35);
+}
+.btn-clay:hover { transform: translateY(-1px); box-shadow: 0 6px 18px rgba(196,132,90,0.45); }
+
+.btn-lg { padding: 15px 36px; font-size: 15px; }
+
+/* ===== HERO ===== */
+.hero {
+  min-height: 100vh;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  position: relative;
+  overflow: hidden;
+}
+
+.hero-left {
+  background: var(--forest);
+  display: flex; flex-direction: column; justify-content: center;
+  padding: 140px 70px 80px;
+  position: relative;
+}
+
+.hero-left::after {
+  content: '';
+  position: absolute;
+  top: 0; right: -80px; bottom: 0;
+  width: 160px;
+  background: var(--forest);
+  clip-path: polygon(0 0, 50% 0, 100% 50%, 50% 100%, 0 100%);
+  z-index: 2;
+}
+
+.hero-eyebrow {
+  font-size: 11px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--sage-light);
+  margin-bottom: 20px;
+  opacity: 0;
+  animation: fadeUp 0.8s 0.2s forwards;
+}
+
+.hero-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(46px, 5vw, 68px);
+  font-weight: 600;
+  color: #fff;
+  line-height: 1.1;
+  margin-bottom: 24px;
+  opacity: 0;
+  animation: fadeUp 0.8s 0.4s forwards;
+}
+
+.hero-title em {
+  font-style: italic;
+  color: var(--sage-light);
+}
+
+.hero-body {
+  font-size: 17px;
+  line-height: 1.7;
+  color: rgba(255,255,255,0.65);
+  max-width: 420px;
+  margin-bottom: 44px;
+  opacity: 0;
+  animation: fadeUp 0.8s 0.6s forwards;
+}
+
+.hero-ctas {
+  display: flex; gap: 14px; flex-wrap: wrap;
+  opacity: 0;
+  animation: fadeUp 0.8s 0.8s forwards;
+}
+
+.hero-right {
+  background: var(--cream);
+  display: flex; align-items: center; justify-content: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.hero-image-mosaic {
+  position: absolute; inset: 0;
+  background: 
+    radial-gradient(ellipse at 30% 40%, rgba(122,158,126,0.15) 0%, transparent 60%),
+    radial-gradient(ellipse at 70% 70%, rgba(201,168,76,0.12) 0%, transparent 50%);
+}
+
+.hero-card-float {
+  position: relative;
+  z-index: 5;
+  background: #fff;
+  border-radius: 24px;
+  padding: 36px;
+  width: 380px;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.1), 0 4px 20px rgba(0,0,0,0.06);
+  opacity: 0;
+  animation: fadeUp 0.9s 0.5s forwards;
+}
+
+.login-tab-row {
+  display: flex; gap: 0;
+  background: rgba(0,0,0,0.05);
+  border-radius: 12px;
+  padding: 4px;
+  margin-bottom: 28px;
+}
+
+.login-tab {
+  flex: 1;
+  padding: 9px;
+  border-radius: 9px;
+  text-align: center;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  color: var(--mid);
+}
+
+.login-tab.active {
+  background: #fff;
+  color: var(--forest);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.card-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 26px;
+  font-weight: 600;
+  margin-bottom: 6px;
+}
+
+.card-sub { font-size: 13px; color: var(--mid); margin-bottom: 24px; }
+
+.form-group { margin-bottom: 14px; }
+
+.form-label {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--mid);
+  display: block;
+  margin-bottom: 6px;
+}
+
+.form-input {
+  width: 100%;
+  padding: 11px 14px;
+  border-radius: 10px;
+  border: 1.5px solid rgba(0,0,0,0.1);
+  font-family: 'Jost', sans-serif;
+  font-size: 14px;
+  background: var(--warm);
+  outline: none;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.form-input:focus {
+  border-color: var(--sage);
+  box-shadow: 0 0 0 3px rgba(122,158,126,0.15);
+  background: #fff;
+}
+
+.forgot { font-size: 12px; color: var(--sage); text-align: right; display: block; margin-top: -8px; margin-bottom: 14px; text-decoration: none; }
+
+.btn-full { width: 100%; justify-content: center; border-radius: 12px; padding: 13px; font-size: 14px; }
+
+.divider {
+  display: flex; align-items: center; gap: 12px;
+  margin: 18px 0;
+  color: var(--mid); font-size: 12px;
+}
+.divider::before, .divider::after { content: ''; flex: 1; height: 1px; background: rgba(0,0,0,0.1); }
+
+.signup-link { text-align: center; font-size: 13px; color: var(--mid); margin-top: 14px; }
+.signup-link a { color: var(--forest); font-weight: 600; text-decoration: none; }
+
+/* ===== STATS BAR ===== */
+.stats-bar {
+  background: var(--sand);
+  padding: 32px 80px;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0;
+}
+
+.stat-item {
+  text-align: center;
+  padding: 0 20px;
+  border-right: 1px solid rgba(0,0,0,0.1);
+}
+.stat-item:last-child { border-right: none; }
+
+.stat-num {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 42px;
+  font-weight: 700;
+  color: var(--forest);
+  line-height: 1;
+}
+
+.stat-label { font-size: 13px; color: var(--mid); margin-top: 4px; font-weight: 500; }
+
+/* ===== SERVICES ===== */
+.section { padding: 100px 80px; }
+
+.section-eyebrow {
+  font-size: 11px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--clay);
+  margin-bottom: 14px;
+}
+
+.section-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(36px, 4vw, 52px);
+  font-weight: 600;
+  color: var(--charcoal);
+  line-height: 1.15;
+  max-width: 600px;
+}
+
+.section-title em { font-style: italic; color: var(--sage); }
+
+.services-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+  margin-top: 60px;
+}
+
+.service-card {
+  background: #fff;
+  border-radius: 20px;
+  padding: 36px 30px;
+  border: 1px solid rgba(0,0,0,0.05);
+  box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+  transition: all 0.3s;
+  position: relative;
+  overflow: hidden;
+}
+
+.service-card::before {
+  content: '';
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  height: 4px;
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+
+.service-card.green::before { background: linear-gradient(90deg, var(--forest), var(--sage)); }
+.service-card.clay::before { background: linear-gradient(90deg, var(--clay), var(--clay-light)); }
+.service-card.gold::before { background: linear-gradient(90deg, var(--gold), #e8d080); }
+
+.service-card:hover { transform: translateY(-4px); box-shadow: 0 12px 40px rgba(0,0,0,0.1); }
+.service-card:hover::before { opacity: 1; }
+
+.service-icon {
+  font-size: 36px;
+  margin-bottom: 20px;
+  display: block;
+}
+
+.service-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 24px;
+  font-weight: 600;
+  margin-bottom: 12px;
+  color: var(--charcoal);
+}
+
+.service-desc {
+  font-size: 14px;
+  line-height: 1.7;
+  color: var(--mid);
+  margin-bottom: 20px;
+}
+
+.service-price {
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--forest);
+  font-family: 'Cormorant Garamond', serif;
+}
+
+.service-price span { font-size: 14px; font-family: 'Jost', sans-serif; color: var(--mid); font-weight: 400; }
+
+/* ===== HOW IT WORKS ===== */
+.how-section {
+  background: var(--forest);
+  padding: 100px 80px;
+  position: relative;
+  overflow: hidden;
+}
+
+.how-section::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse at 80% 50%, rgba(122,158,126,0.15) 0%, transparent 60%);
+}
+
+.how-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 40px;
+  margin-top: 60px;
+  position: relative;
+}
+
+.how-step {
+  text-align: center;
+  position: relative;
+}
+
+.how-step::after {
+  content: '→';
+  position: absolute;
+  right: -24px;
+  top: 22px;
+  font-size: 20px;
+  color: rgba(255,255,255,0.2);
+}
+.how-step:last-child::after { display: none; }
+
+.how-num {
+  width: 52px; height: 52px;
+  background: rgba(255,255,255,0.1);
+  border: 1.5px solid rgba(255,255,255,0.2);
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  margin: 0 auto 20px;
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--sage-light);
+}
+
+.how-title { font-size: 16px; font-weight: 600; color: #fff; margin-bottom: 10px; }
+.how-desc { font-size: 13px; line-height: 1.6; color: rgba(255,255,255,0.55); }
+
+/* ===== TESTIMONIALS ===== */
+.testimonials-section {
+  padding: 100px 80px;
+  background: var(--cream);
+}
+
+.testimonials-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+  margin-top: 60px;
+}
+
+.testimonial-card {
+  background: #fff;
+  border-radius: 20px;
+  padding: 32px;
+  border: 1px solid rgba(0,0,0,0.05);
+  box-shadow: 0 4px 16px rgba(0,0,0,0.04);
+}
+
+.testimonial-stars { color: var(--gold); font-size: 14px; margin-bottom: 16px; letter-spacing: 2px; }
+
+.testimonial-text {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 18px;
+  line-height: 1.6;
+  font-style: italic;
+  color: var(--charcoal);
+  margin-bottom: 20px;
+}
+
+.testimonial-author { display: flex; align-items: center; gap: 12px; }
+
+.author-avatar {
+  width: 42px; height: 42px;
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-weight: 700; font-size: 14px; color: #fff;
+}
+
+.author-name { font-size: 14px; font-weight: 600; }
+.author-role { font-size: 12px; color: var(--mid); }
+
+/* ===== SIGNUP CTA ===== */
+.signup-section {
+  padding: 100px 80px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 80px;
+  align-items: center;
+}
+
+.signup-form-card {
+  background: #fff;
+  border-radius: 24px;
+  padding: 44px;
+  box-shadow: 0 8px 40px rgba(0,0,0,0.08);
+  border: 1px solid rgba(0,0,0,0.05);
+}
+
+.form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+
+.form-select {
+  width: 100%;
+  padding: 11px 14px;
+  border-radius: 10px;
+  border: 1.5px solid rgba(0,0,0,0.1);
+  font-family: 'Jost', sans-serif;
+  font-size: 14px;
+  background: var(--warm);
+  outline: none;
+  transition: border-color 0.2s;
+  appearance: none;
+}
+
+.form-select:focus { border-color: var(--sage); box-shadow: 0 0 0 3px rgba(122,158,126,0.15); }
+
+.check-row {
+  display: flex; align-items: flex-start; gap: 10px;
+  margin-bottom: 10px;
+  font-size: 13px;
+  color: var(--mid);
+}
+
+.check-row input[type=checkbox] { margin-top: 2px; accent-color: var(--sage); }
+
+/* ===== FOOTER ===== */
+footer {
+  background: var(--charcoal);
+  padding: 60px 80px 30px;
+}
+
+.footer-grid {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr 1fr;
+  gap: 60px;
+  margin-bottom: 50px;
+}
+
+.footer-brand p { font-size: 14px; color: rgba(255,255,255,0.45); line-height: 1.7; margin-top: 14px; max-width: 280px; }
+
+.footer-col-title { font-size: 11px; letter-spacing: 0.15em; text-transform: uppercase; color: rgba(255,255,255,0.35); margin-bottom: 16px; }
+
+.footer-links { list-style: none; }
+.footer-links li { margin-bottom: 10px; }
+.footer-links a { font-size: 14px; color: rgba(255,255,255,0.55); text-decoration: none; transition: color 0.2s; }
+.footer-links a:hover { color: var(--sage-light); }
+
+.footer-bottom {
+  border-top: 1px solid rgba(255,255,255,0.08);
+  padding-top: 24px;
+  display: flex; justify-content: space-between; align-items: center;
+}
+
+.footer-bottom p { font-size: 12px; color: rgba(255,255,255,0.3); }
+
+/* ===== MODAL ===== */
+.modal-overlay {
+  position: fixed; inset: 0;
+  background: rgba(0,0,0,0.5);
+  backdrop-filter: blur(6px);
+  z-index: 500;
+  display: none; align-items: center; justify-content: center;
+}
+.modal-overlay.open { display: flex; }
+
+.modal {
+  background: #fff;
+  border-radius: 24px;
+  width: 480px;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: 0 24px 80px rgba(0,0,0,0.2);
+  animation: modalIn 0.25s ease;
+}
+
+@keyframes modalIn {
+  from { opacity: 0; transform: scale(0.95) translateY(12px); }
+  to { opacity: 1; transform: scale(1) translateY(0); }
+}
+
+.modal-header {
+  padding: 28px 28px 20px;
+  border-bottom: 1px solid rgba(0,0,0,0.07);
+  display: flex; justify-content: space-between; align-items: center;
+}
+
+.modal-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 26px;
+  font-weight: 600;
+}
+
+.modal-close {
+  width: 34px; height: 34px;
+  border-radius: 50%;
+  background: rgba(0,0,0,0.06);
+  border: none; cursor: pointer;
+  font-size: 16px;
+  display: flex; align-items: center; justify-content: center;
+}
+
+.modal-body { padding: 24px 28px; }
+.modal-footer { padding: 16px 28px 24px; display: flex; gap: 10px; justify-content: flex-end; }
+
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.toast {
+  position: fixed;
+  bottom: 30px; right: 30px;
+  background: var(--forest);
+  color: #fff;
+  padding: 14px 22px;
+  border-radius: 14px;
+  font-size: 14px;
+  font-weight: 500;
+  box-shadow: 0 8px 30px rgba(0,0,0,0.2);
+  z-index: 1000;
+  transform: translateY(80px);
+  opacity: 0;
+  transition: all 0.4s;
+}
+.toast.show { transform: translateY(0); opacity: 1; }
+
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav id="navbar">
+  <div class="nav-logo">
+    <div class="nav-logo-leaf">🌿</div>
+    Active Aging Partners
+  </div>
+  <ul class="nav-links">
+    <li><a href="#services">Services</a></li>
+    <li><a href="#how">How It Works</a></li>
+    <li><a href="#testimonials">Stories</a></li>
+    <li><a href="#signup">Get Started</a></li>
+  </ul>
+  <div class="nav-actions">
+    <button class="btn btn-outline" onclick="openModal('login-modal')">Log In</button>
+    <button class="btn btn-clay" onclick="document.getElementById('signup').scrollIntoView({behavior:'smooth'})">Sign Up Free</button>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-left">
+    <div class="hero-eyebrow">Companion Wellness Services · Atlanta, GA</div>
+    <h1 class="hero-title">Live Fully.<br><em>Move Freely.</em><br>Age Boldly.</h1>
+    <p class="hero-body">Active Aging Partners provides personalized walking companionship, appointment transport, and errand support — helping seniors stay active, independent, and connected.</p>
+    <div class="hero-ctas">
+      <button class="btn btn-solid btn-lg" onclick="document.getElementById('signup').scrollIntoView({behavior:'smooth'})">Get Started Today</button>
+      <button class="btn btn-outline btn-lg" style="border-color:rgba(255,255,255,0.4);color:#fff" onclick="document.getElementById('services').scrollIntoView({behavior:'smooth'})">See Services</button>
+    </div>
+  </div>
+  <div class="hero-right">
+    <div class="hero-image-mosaic"></div>
+    <!-- Login/Signup Card -->
+    <div class="hero-card-float" id="hero-card">
+      <div class="login-tab-row">
+        <div class="login-tab active" onclick="switchTab('login')">Log In</div>
+        <div class="login-tab" onclick="switchTab('signup-quick')">Sign Up</div>
+      </div>
+
+      <!-- LOGIN PANEL -->
+      <div id="tab-login">
+        <div class="card-title">Welcome back 👋</div>
+        <div class="card-sub">Log in to your account</div>
+
+        <div style="display:flex;gap:8px;background:rgba(0,0,0,0.04);border-radius:10px;padding:4px;margin-bottom:20px">
+          <div style="flex:1;text-align:center;padding:8px;border-radius:8px;background:#fff;font-size:12px;font-weight:600;cursor:pointer;color:var(--forest);box-shadow:0 1px 4px rgba(0,0,0,0.1)" onclick="setLoginType('client')">👤 Client / Family</div>
+          <div style="flex:1;text-align:center;padding:8px;border-radius:8px;font-size:12px;font-weight:500;cursor:pointer;color:var(--mid)" onclick="setLoginType('staff')">🌿 Staff</div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Email</label>
+          <input type="email" class="form-input" placeholder="you@example.com">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Password</label>
+          <input type="password" class="form-input" placeholder="••••••••">
+        </div>
+        <a href="#" class="forgot">Forgot password?</a>
+        <button class="btn btn-solid btn-full" onclick="handleLogin()">Sign In →</button>
+        <div class="signup-link">New here? <a href="#signup" onclick="document.getElementById('signup').scrollIntoView({behavior:'smooth'})">Create an account</a></div>
+      </div>
+
+      <!-- QUICK SIGNUP PANEL -->
+      <div id="tab-signup-quick" style="display:none">
+        <div class="card-title">Join today 🌿</div>
+        <div class="card-sub">Create your free account</div>
+        <div class="form-group">
+          <label class="form-label">Full Name</label>
+          <input type="text" class="form-input" placeholder="Your name">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Email</label>
+          <input type="email" class="form-input" placeholder="you@example.com">
+        </div>
+        <div class="form-group">
+          <label class="form-label">I am a…</label>
+          <select class="form-select" style="width:100%;padding:11px 14px;border-radius:10px;border:1.5px solid rgba(0,0,0,0.1);font-family:'Jost',sans-serif;font-size:14px;background:var(--warm)">
+            <option>Family member / Adult child</option>
+            <option>Senior client (for myself)</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Password</label>
+          <input type="password" class="form-input" placeholder="Choose a password">
+        </div>
+        <button class="btn btn-clay btn-full" onclick="handleSignup()">Create Account →</button>
+        <div class="signup-link">Already have an account? <a href="#" onclick="switchTab('login')">Log in</a></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- STATS -->
+<div class="stats-bar">
+  <div class="stat-item">
+    <div class="stat-num">50<span style="font-size:28px">+</span></div>
+    <div class="stat-label">Seniors Served</div>
+  </div>
+  <div class="stat-item">
+    <div class="stat-num">$50</div>
+    <div class="stat-label">Per Hour, All Services</div>
+  </div>
+  <div class="stat-item">
+    <div class="stat-num">4.9★</div>
+    <div class="stat-label">Average Family Rating</div>
+  </div>
+  <div class="stat-item">
+    <div class="stat-num">100<span style="font-size:28px">%</span></div>
+    <div class="stat-label">Background Checked Staff</div>
+  </div>
+</div>
+
+<!-- SERVICES -->
+<section class="section" id="services">
+  <div class="section-eyebrow">What We Offer</div>
+  <h2 class="section-title">Services designed for <em>independence</em> and joy</h2>
+
+  <div class="services-grid">
+    <div class="service-card green">
+      <span class="service-icon">🚶</span>
+      <div class="service-title">Walking & Wellness</div>
+      <p class="service-desc">Regular walking sessions to keep seniors active, energized, and socially engaged. Parks, neighborhoods, trails — wherever feels right.</p>
+      <div class="service-price">$50 <span>/ hour</span></div>
+    </div>
+    <div class="service-card clay">
+      <span class="service-icon">🏥</span>
+      <div class="service-title">Medical Appointments</div>
+      <p class="service-desc">Safe, reliable transport and companionship to doctor visits, specialist appointments, physical therapy, and more. We take notes and keep families informed.</p>
+      <div class="service-price">$50 <span>/ hour + mileage</span></div>
+    </div>
+    <div class="service-card gold">
+      <span class="service-icon">🛒</span>
+      <div class="service-title">Errands & Outings</div>
+      <p class="service-desc">Grocery runs, pharmacy pickups, hair and nail appointments, and any other errands that keep life running smoothly and independently.</p>
+      <div class="service-price">$50 <span>/ hour + mileage</span></div>
+    </div>
+  </div>
+
+  <div style="margin-top:36px;padding:24px 28px;background:rgba(122,158,126,0.1);border-radius:16px;border-left:4px solid var(--sage);max-width:560px">
+    <div style="font-size:13px;font-weight:600;color:var(--forest);margin-bottom:4px">Gas Surcharge Policy</div>
+    <div style="font-size:13px;color:var(--mid);line-height:1.6">For transport services, a mileage surcharge of <strong>$0.67/mile</strong> (current IRS rate) is added for miles driven on your behalf. Calculated from client's home and back. Always itemized on your invoice.</div>
+  </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section class="how-section" id="how">
+  <div style="position:relative">
+    <div class="section-eyebrow" style="color:var(--sage-light)">Simple Process</div>
+    <h2 class="section-title" style="color:#fff">Getting started is <em>easy</em></h2>
+    <div class="how-grid">
+      <div class="how-step">
+        <div class="how-num">1</div>
+        <div class="how-title">Sign Up</div>
+        <div class="how-desc">Create a free account for yourself or your loved one. Provide basic info and preferences.</div>
+      </div>
+      <div class="how-step">
+        <div class="how-num">2</div>
+        <div class="how-title">Book a Session</div>
+        <div class="how-desc">Browse available times and book the service you need directly from your client portal.</div>
+      </div>
+      <div class="how-step">
+        <div class="how-num">3</div>
+        <div class="how-title">We Show Up</div>
+        <div class="how-desc">Your companion arrives on time. You'll get SMS and email reminders before every session.</div>
+      </div>
+      <div class="how-step">
+        <div class="how-num">4</div>
+        <div class="how-title">Receive a Report</div>
+        <div class="how-desc">After every session, a detailed report is sent to your inbox and saved in your portal.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TESTIMONIALS -->
+<section class="testimonials-section" id="testimonials">
+  <div class="section-eyebrow">Family Stories</div>
+  <h2 class="section-title">What families <em>say about us</em></h2>
+  <div class="testimonials-grid">
+    <div class="testimonial-card">
+      <div class="testimonial-stars">★★★★★</div>
+      <p class="testimonial-text">"Mom has been so much more energetic since starting her walks. The session reports give us such peace of mind — we always know exactly how she's doing."</p>
+      <div class="testimonial-author">
+        <div class="author-avatar" style="background:linear-gradient(135deg,#7a9e7e,#4d7352)">SR</div>
+        <div>
+          <div class="author-name">Sarah Reynolds</div>
+          <div class="author-role">Daughter of Margaret, 78</div>
+        </div>
+      </div>
+    </div>
+    <div class="testimonial-card">
+      <div class="testimonial-stars">★★★★★</div>
+      <p class="testimonial-text">"Dad used to dread his doctor appointments. Now he actually looks forward to them. Having a familiar, caring companion makes all the difference."</p>
+      <div class="testimonial-author">
+        <div class="author-avatar" style="background:linear-gradient(135deg,#c4845a,#9a5530)">JB</div>
+        <div>
+          <div class="author-name">James Baker</div>
+          <div class="author-role">Son of Harold, 83</div>
+        </div>
+      </div>
+    </div>
+    <div class="testimonial-card">
+      <div class="testimonial-stars">★★★★★</div>
+      <p class="testimonial-text">"The app makes everything so easy to manage. I can book sessions, read reports, and pay invoices all in one place. Couldn't recommend this more highly."</p>
+      <div class="testimonial-author">
+        <div class="author-avatar" style="background:linear-gradient(135deg,#c9a84c,#8a6a10)">TW</div>
+        <div>
+          <div class="author-name">Tom Wilson</div>
+          <div class="author-role">Son of Eleanor, 75</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SIGNUP CTA -->
+<section class="signup-section" id="signup">
+  <div>
+    <div class="section-eyebrow">Ready to Begin?</div>
+    <h2 class="section-title">Give your loved one the gift of <em>movement</em></h2>
+    <p style="font-size:16px;color:var(--mid);line-height:1.7;margin:24px 0 36px">Join families across Atlanta who trust Active Aging Partners to keep their loved ones active, independent, and cared for.</p>
+
+    <div style="display:flex;flex-direction:column;gap:14px">
+      <div style="display:flex;gap:12px;align-items:center">
+        <div style="width:36px;height:36px;border-radius:50%;background:rgba(122,158,126,0.15);display:flex;align-items:center;justify-content:center;flex-shrink:0">✓</div>
+        <div style="font-size:14px;color:var(--mid)">No commitment required — book one session at a time</div>
+      </div>
+      <div style="display:flex;gap:12px;align-items:center">
+        <div style="width:36px;height:36px;border-radius:50%;background:rgba(122,158,126,0.15);display:flex;align-items:center;justify-content:center;flex-shrink:0">✓</div>
+        <div style="font-size:14px;color:var(--mid)">Detailed session reports after every visit</div>
+      </div>
+      <div style="display:flex;gap:12px;align-items:center">
+        <div style="width:36px;height:36px;border-radius:50%;background:rgba(122,158,126,0.15);display:flex;align-items:center;justify-content:center;flex-shrink:0">✓</div>
+        <div style="font-size:14px;color:var(--mid)">Secure payments via Stripe — invoices automatically sent</div>
+      </div>
+      <div style="display:flex;gap:12px;align-items:center">
+        <div style="width:36px;height:36px;border-radius:50%;background:rgba(122,158,126,0.15);display:flex;align-items:center;justify-content:center;flex-shrink:0">✓</div>
+        <div style="font-size:14px;color:var(--mid)">SMS & email reminders for every session</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="signup-form-card">
+    <div style="font-family:'Cormorant Garamond',serif;font-size:28px;font-weight:600;margin-bottom:6px">Create Your Account</div>
+    <div style="font-size:13px;color:var(--mid);margin-bottom:28px">Free to join. Pay only when you book.</div>
+
+    <div class="form-row" style="margin-bottom:14px">
+      <div class="form-group" style="margin-bottom:0">
+        <label class="form-label">Your First Name</label>
+        <input type="text" class="form-input" placeholder="First">
+      </div>
+      <div class="form-group" style="margin-bottom:0">
+        <label class="form-label">Last Name</label>
+        <input type="text" class="form-input" placeholder="Last">
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label class="form-label">Email Address</label>
+      <input type="email" class="form-input" placeholder="you@example.com">
+    </div>
+
+    <div class="form-group">
+      <label class="form-label">Phone (for SMS reminders)</label>
+      <input type="tel" class="form-input" placeholder="(404) 555-0000">
+    </div>
+
+    <div class="form-group">
+      <label class="form-label">I am signing up as…</label>
+      <select class="form-select">
+        <option>Family member / Adult child</option>
+        <option>Senior client (for myself)</option>
+      </select>
+    </div>
+
+    <div class="form-group">
+      <label class="form-label">Senior's Name (if different)</label>
+      <input type="text" class="form-input" placeholder="e.g. Margaret Reynolds">
+    </div>
+
+    <div class="form-group">
+      <label class="form-label">Password</label>
+      <input type="password" class="form-input" placeholder="Create a password">
+    </div>
+
+    <div class="check-row" style="margin:16px 0 10px">
+      <input type="checkbox" id="terms" checked>
+      <label for="terms">I agree to the <a href="#" style="color:var(--forest)">Terms of Service</a> and <a href="#" style="color:var(--forest)">Privacy Policy</a></label>
+    </div>
+
+    <div class="check-row">
+      <input type="checkbox" id="sms" checked>
+      <label for="sms">Send me SMS reminders and notifications</label>
+    </div>
+
+    <div class="check-row">
+      <input type="checkbox" id="email-notif" checked>
+      <label for="email-notif">Send me email notifications and session reports</label>
+    </div>
+
+    <button class="btn btn-solid btn-full" style="margin-top:20px;border-radius:12px;padding:14px;font-size:15px" onclick="handleFullSignup()">
+      Create My Account & Get Started →
+    </button>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-grid">
+    <div class="footer-brand">
+      <div class="nav-logo" style="font-size:18px">
+        <div class="nav-logo-leaf">🌿</div>
+        Active Aging Partners
+      </div>
+      <p>Helping seniors across Atlanta live fully, move freely, and age boldly — one walk at a time.</p>
+    </div>
+    <div>
+      <div class="footer-col-title">Services</div>
+      <ul class="footer-links">
+        <li><a href="#">Walking & Wellness</a></li>
+        <li><a href="#">Medical Appointments</a></li>
+        <li><a href="#">Grocery & Errands</a></li>
+        <li><a href="#">Pricing</a></li>
+      </ul>
+    </div>
+    <div>
+      <div class="footer-col-title">Account</div>
+      <ul class="footer-links">
+        <li><a href="#" onclick="openModal('login-modal')">Client Login</a></li>
+        <li><a href="#" onclick="openModal('login-modal')">Staff Login</a></li>
+        <li><a href="#signup">Sign Up</a></li>
+        <li><a href="#">Reset Password</a></li>
+      </ul>
+    </div>
+    <div>
+      <div class="footer-col-title">Company</div>
+      <ul class="footer-links">
+        <li><a href="#">About Us</a></li>
+        <li><a href="#">Contact</a></li>
+        <li><a href="#">Privacy Policy</a></li>
+        <li><a href="#">Terms of Service</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <p>© 2026 Active Aging Partners · Atlanta, Georgia</p>
+    <p>Powered by Stripe · All payments secure</p>
+  </div>
+</footer>
+
+<!-- LOGIN MODAL (separate from hero card) -->
+<div class="modal-overlay" id="login-modal">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title">Sign In</div>
+      <button class="modal-close" onclick="closeModal('login-modal')">✕</button>
+    </div>
+    <div class="modal-body">
+      <div style="display:flex;gap:8px;background:rgba(0,0,0,0.04);border-radius:10px;padding:4px;margin-bottom:20px">
+        <div id="modal-tab-client" style="flex:1;text-align:center;padding:9px;border-radius:8px;background:#fff;font-size:13px;font-weight:600;cursor:pointer;color:var(--forest);box-shadow:0 1px 4px rgba(0,0,0,0.1)" onclick="setModalTab('client')">👤 Client / Family</div>
+        <div id="modal-tab-staff" style="flex:1;text-align:center;padding:9px;border-radius:8px;font-size:13px;font-weight:500;cursor:pointer;color:var(--mid)" onclick="setModalTab('staff')">🌿 Staff</div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Email</label>
+        <input type="email" class="form-input" placeholder="you@example.com">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Password</label>
+        <input type="password" class="form-input" placeholder="••••••••">
+      </div>
+      <a href="#" class="forgot">Forgot your password?</a>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-outline" onclick="closeModal('login-modal')">Cancel</button>
+      <button class="btn btn-solid" onclick="handleLogin()">Sign In →</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+  // Navbar scroll
+  window.addEventListener('scroll', () => {
+    document.getElementById('navbar').classList.toggle('scrolled', window.scrollY > 50);
+  });
+
+  // Tab switch in hero card
+  function switchTab(tab) {
+    document.querySelectorAll('.login-tab').forEach((t,i) => {
+      t.classList.toggle('active', (i===0 && tab==='login') || (i===1 && tab==='signup-quick'));
+    });
+    document.getElementById('tab-login').style.display = tab === 'login' ? 'block' : 'none';
+    document.getElementById('tab-signup-quick').style.display = tab === 'signup-quick' ? 'block' : 'none';
+  }
+
+  function setLoginType(type) {
+    const btns = document.querySelectorAll('#tab-login > div:nth-child(1) > div');
+  }
+
+  function setModalTab(type) {
+    const client = document.getElementById('modal-tab-client');
+    const staff = document.getElementById('modal-tab-staff');
+    if (type === 'client') {
+      client.style.cssText = 'flex:1;text-align:center;padding:9px;border-radius:8px;background:#fff;font-size:13px;font-weight:600;cursor:pointer;color:var(--forest);box-shadow:0 1px 4px rgba(0,0,0,0.1)';
+      staff.style.cssText = 'flex:1;text-align:center;padding:9px;border-radius:8px;font-size:13px;font-weight:500;cursor:pointer;color:var(--mid)';
+    } else {
+      staff.style.cssText = 'flex:1;text-align:center;padding:9px;border-radius:8px;background:#fff;font-size:13px;font-weight:600;cursor:pointer;color:var(--forest);box-shadow:0 1px 4px rgba(0,0,0,0.1)';
+      client.style.cssText = 'flex:1;text-align:center;padding:9px;border-radius:8px;font-size:13px;font-weight:500;cursor:pointer;color:var(--mid)';
+    }
+  }
+
+  function openModal(id) { document.getElementById(id).classList.add('open'); }
+  function closeModal(id) { document.getElementById(id).classList.remove('open'); }
+
+  document.querySelectorAll('.modal-overlay').forEach(o => {
+    o.addEventListener('click', e => { if (e.target === o) o.classList.remove('open'); });
+  });
+
+  function showToast(msg) {
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.classList.add('show');
+    setTimeout(() => t.classList.remove('show'), 3000);
+  }
+
+  function handleLogin() {
+    closeModal('login-modal');
+    showToast('✓ Signed in! Redirecting to your portal…');
+  }
+
+  function handleSignup() {
+    showToast('✓ Account created! Check your email to confirm.');
+  }
+
+  function handleFullSignup() {
+    showToast('🌿 Welcome! Your account is being set up — check your email.');
+  }
+</script>
+</body>
+</html>
