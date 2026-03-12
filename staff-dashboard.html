@@ -257,8 +257,11 @@ body{font-family:'Jost',sans-serif;background:var(--cream);color:var(--charcoal)
   </div>
   <div class="sb-footer">
     <div class="user-pill" onclick="nav('profile',null)">
-      <div class="uav" id="sb-av"><span id="sb-initials">YO</span><img id="sb-photo" src="" style="display:none"></div>
-      <div><div class="uname">You (Owner)</div><div class="urole">Staff · Atlanta, GA</div></div>
+      <div class="uav" id="sb-av"><span id="sb-initials">…</span><img id="sb-photo" src="" style="display:none"></div>
+      <div><div class="uname" id="sb-name">Loading…</div><div class="urole">Staff · Atlanta, GA</div></div>
+    </div>
+    <div onclick="doLogout()" style="display:flex;align-items:center;gap:8px;padding:9px 10px;margin-top:6px;border-radius:10px;cursor:pointer;color:rgba(255,255,255,0.4);font-size:12px;transition:all 0.2s" onmouseover="this.style.background='rgba(255,255,255,0.07)';this.style.color='rgba(255,255,255,0.8)'" onmouseout="this.style.background='transparent';this.style.color='rgba(255,255,255,0.4)'">
+      <span style="font-size:14px">🚪</span> Sign Out
     </div>
   </div>
 </nav>
@@ -764,6 +767,49 @@ function showToast(msg) {
   setTimeout(()=>t.classList.remove('show'), 3000);
 }
 function saveToast(msg='Changes saved!') { showToast('✓ '+msg); }
+</script>
+
+<!-- FIREBASE AUTH GUARD -->
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+  import { getAuth, onAuthStateChanged, signOut }
+    from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyAuXMMnVjij0x1X5sQ5Jm1NuJUvquwDb0k",
+    authDomain: "active-aging-partners.firebaseapp.com",
+    projectId: "active-aging-partners",
+    storageBucket: "active-aging-partners.firebasestorage.app",
+    messagingSenderId: "239822066888",
+    appId: "1:239822066888:web:8599d14fce0388d510c1fd"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+
+  // 🔒 Guard — if not logged in, send back to login page
+  onAuthStateChanged(auth, (user) => {
+    if (!user) {
+      window.location.href = 'index.html';
+      return;
+    }
+    // ✅ Logged in — populate name and initials in sidebar
+    const displayName = user.displayName || user.email;
+    const initials = displayName
+      .split(' ')
+      .map(w => w[0])
+      .slice(0, 2)
+      .join('')
+      .toUpperCase();
+    document.getElementById('sb-name').textContent = displayName;
+    document.getElementById('sb-initials').textContent = initials;
+  });
+
+  // Logout
+  window.doLogout = async function() {
+    await signOut(auth);
+    window.location.href = 'index.html';
+  };
 </script>
 </body>
 </html>
