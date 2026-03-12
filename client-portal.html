@@ -353,13 +353,16 @@ body { font-family:'Jost',sans-serif; background:var(--cream); color:var(--charc
     <div class="sidebar-footer">
       <div class="user-pill" onclick="nav('profile',null)">
         <div class="user-avatar" id="sidebar-avatar">
-          <span id="sidebar-initials">SR</span>
+          <span id="sidebar-initials">…</span>
           <img id="sidebar-photo" src="" style="display:none">
         </div>
         <div>
-          <div class="user-name">Sarah Reynolds</div>
+          <div class="user-name" id="sidebar-name">Loading…</div>
           <div class="user-role">Family Contact</div>
         </div>
+      </div>
+      <div onclick="doLogout()" style="display:flex;align-items:center;gap:8px;padding:9px 10px;margin-top:6px;border-radius:10px;cursor:pointer;color:rgba(255,255,255,0.4);font-size:12px;transition:all 0.2s" onmouseover="this.style.background='rgba(255,255,255,0.07)';this.style.color='rgba(255,255,255,0.8)'" onmouseout="this.style.background='transparent';this.style.color='rgba(255,255,255,0.4)'">
+        <span style="font-size:14px">🚪</span> Sign Out
       </div>
     </div>
   </nav>
@@ -980,6 +983,54 @@ function showToast(msg) {
 }
 
 function saveToast(msg='Changes saved!') { showToast('✓ ' + msg); }
+</script>
+
+<!-- FIREBASE AUTH GUARD -->
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+  import { getAuth, onAuthStateChanged, signOut }
+    from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyAuXMMnVjij0x1X5sQ5Jm1NuJUvquwDb0k",
+    authDomain: "active-aging-partners.firebaseapp.com",
+    projectId: "active-aging-partners",
+    storageBucket: "active-aging-partners.firebasestorage.app",
+    messagingSenderId: "239822066888",
+    appId: "1:239822066888:web:8599d14fce0388d510c1fd"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+
+  // 🔒 Guard — if not logged in, send back to login page
+  onAuthStateChanged(auth, (user) => {
+    if (!user) {
+      window.location.href = 'index.html';
+      return;
+    }
+    // ✅ Logged in — show real name and initials in sidebar
+    const displayName = user.displayName || user.email;
+    const initials = displayName
+      .split(' ')
+      .map(w => w[0])
+      .slice(0, 2)
+      .join('')
+      .toUpperCase();
+    document.getElementById('sidebar-name').textContent = displayName;
+    document.getElementById('sidebar-initials').textContent = initials;
+    // Also update the profile page name field if it exists
+    const profileName = document.getElementById('profile-display-name');
+    if (profileName) profileName.textContent = displayName;
+    const profileEmail = document.getElementById('profile-email-field');
+    if (profileEmail) profileEmail.value = user.email;
+  });
+
+  // Logout
+  window.doLogout = async function() {
+    await signOut(auth);
+    window.location.href = 'index.html';
+  };
 </script>
 </body>
 </html>
