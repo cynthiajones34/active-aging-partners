@@ -1,0 +1,557 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Contact Us — Active Aging Partners</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Jost:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --forest: #2d4a32;
+  --sage: #7a9e7e;
+  --sage-light: #b8d4bb;
+  --cream: #f8f4ed;
+  --warm: #fdf9f3;
+  --sand: #e8dfc8;
+  --clay: #c4845a;
+  --clay-light: #e8b494;
+  --charcoal: #1e2820;
+  --mid: #607060;
+  --gold: #c9a84c;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body { font-family: 'Jost', sans-serif; background: var(--warm); color: var(--charcoal); overflow-x: hidden; }
+
+/* ===== NAV ===== */
+nav { position: fixed; top: 0; left: 0; right: 0; z-index: 100; padding: 20px 60px; display: flex; align-items: center; justify-content: space-between; background: rgba(248,244,237,0.95); backdrop-filter: blur(12px); box-shadow: 0 2px 20px rgba(0,0,0,0.07); }
+.nav-logo { font-family: 'Cormorant Garamond', serif; font-size: 22px; font-weight: 600; color: var(--forest); display: flex; align-items: center; gap: 10px; text-decoration: none; }
+.nav-logo-leaf { width: 32px; height: 32px; background: linear-gradient(135deg, var(--sage), var(--forest)); border-radius: 50% 50% 50% 10%; transform: rotate(-30deg); display: flex; align-items: center; justify-content: center; font-size: 14px; flex-shrink: 0; }
+.nav-links { display: flex; align-items: center; gap: 36px; list-style: none; }
+.nav-links a { text-decoration: none; color: var(--forest); font-size: 14px; font-weight: 500; letter-spacing: 0.04em; opacity: 0.75; transition: opacity 0.2s; }
+.nav-links a:hover, .nav-links a.active { opacity: 1; }
+.nav-actions { display: flex; gap: 12px; align-items: center; }
+.btn { font-family: 'Jost', sans-serif; font-size: 13px; font-weight: 600; padding: 10px 22px; border-radius: 50px; border: none; cursor: pointer; letter-spacing: 0.04em; text-decoration: none; display: inline-flex; align-items: center; gap: 8px; transition: all 0.25s; }
+.btn-outline { background: transparent; border: 1.5px solid var(--forest); color: var(--forest); }
+.btn-outline:hover { background: var(--forest); color: #fff; }
+.btn-solid { background: var(--forest); color: #fff; box-shadow: 0 4px 14px rgba(45,74,50,0.3); }
+.btn-solid:hover { background: var(--sage); transform: translateY(-1px); }
+.btn-clay { background: var(--clay); color: #fff; box-shadow: 0 4px 14px rgba(196,132,90,0.35); }
+.btn-clay:hover { transform: translateY(-1px); }
+.btn:disabled { opacity: 0.6; cursor: not-allowed; transform: none !important; }
+
+/* ===== PAGE HERO ===== */
+.page-hero {
+  padding: 140px 80px 80px;
+  background: var(--forest);
+  position: relative;
+  overflow: hidden;
+}
+.page-hero::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse at 80% 50%, rgba(122,158,126,0.2) 0%, transparent 60%),
+    radial-gradient(ellipse at 10% 80%, rgba(201,168,76,0.08) 0%, transparent 50%);
+}
+.page-hero-inner { position: relative; max-width: 700px; opacity: 0; animation: fadeUp 0.8s 0.2s forwards; }
+.page-eyebrow { font-size: 11px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--sage-light); margin-bottom: 16px; }
+.page-title { font-family: 'Cormorant Garamond', serif; font-size: clamp(44px, 5vw, 64px); font-weight: 600; color: #fff; line-height: 1.1; margin-bottom: 20px; }
+.page-title em { font-style: italic; color: var(--sage-light); }
+.page-desc { font-size: 17px; line-height: 1.7; color: rgba(255,255,255,0.6); max-width: 520px; }
+
+/* ===== MAIN CONTENT ===== */
+.main-wrap {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 80px 40px 100px;
+  align-items: start;
+}
+
+/* ===== FORM SIDE ===== */
+.form-side { padding-right: 60px; }
+
+.form-card {
+  background: #fff;
+  border-radius: 24px;
+  padding: 44px;
+  box-shadow: 0 8px 40px rgba(0,0,0,0.08);
+  border: 1px solid rgba(0,0,0,0.05);
+  opacity: 0;
+  animation: fadeUp 0.8s 0.3s forwards;
+}
+
+.form-card-title { font-family: 'Cormorant Garamond', serif; font-size: 30px; font-weight: 600; margin-bottom: 6px; }
+.form-card-sub { font-size: 13px; color: var(--mid); margin-bottom: 30px; line-height: 1.6; }
+
+.response-promise {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: rgba(45,74,50,0.06);
+  border-left: 3px solid var(--sage);
+  border-radius: 0 10px 10px 0;
+  padding: 12px 16px;
+  margin-bottom: 28px;
+  font-size: 13px;
+  color: var(--forest);
+}
+.response-promise strong { font-weight: 600; }
+
+.form-group { margin-bottom: 18px; }
+.form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 18px; }
+.form-label { font-size: 11px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--mid); display: block; margin-bottom: 6px; }
+.form-input { width: 100%; padding: 12px 16px; border-radius: 12px; border: 1.5px solid rgba(0,0,0,0.1); font-family: 'Jost', sans-serif; font-size: 14px; background: var(--warm); outline: none; transition: border-color 0.2s, box-shadow 0.2s; }
+.form-input:focus { border-color: var(--sage); box-shadow: 0 0 0 3px rgba(122,158,126,0.15); background: #fff; }
+.form-select { width: 100%; padding: 12px 16px; border-radius: 12px; border: 1.5px solid rgba(0,0,0,0.1); font-family: 'Jost', sans-serif; font-size: 14px; background: var(--warm); outline: none; appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23607060' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 14px center; padding-right: 36px; }
+.form-select:focus { border-color: var(--sage); outline: none; }
+textarea.form-input { resize: vertical; min-height: 130px; line-height: 1.6; }
+
+.form-error { background: rgba(200,60,60,0.07); border: 1px solid rgba(200,60,60,0.2); color: #b03030; border-radius: 10px; padding: 12px 14px; font-size: 13px; margin-bottom: 16px; display: none; }
+.form-success { background: rgba(45,74,50,0.08); border: 1px solid rgba(45,74,50,0.2); color: var(--forest); border-radius: 10px; padding: 20px; font-size: 14px; margin-bottom: 16px; display: none; text-align: center; line-height: 1.6; }
+.form-success .success-icon { font-size: 32px; display: block; margin-bottom: 10px; }
+.form-success strong { font-weight: 600; font-size: 16px; display: block; margin-bottom: 6px; }
+
+.submit-btn {
+  width: 100%;
+  justify-content: center;
+  border-radius: 14px;
+  padding: 15px;
+  font-size: 15px;
+  margin-top: 6px;
+}
+
+.spinner { display: inline-block; width: 14px; height: 14px; border: 2px solid rgba(255,255,255,0.4); border-top-color: #fff; border-radius: 50%; animation: spin 0.7s linear infinite; }
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* ===== INFO SIDE ===== */
+.info-side { padding-left: 20px; opacity: 0; animation: fadeUp 0.8s 0.5s forwards; }
+
+.info-block {
+  margin-bottom: 36px;
+}
+.info-label {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--clay);
+  margin-bottom: 12px;
+}
+.info-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 26px;
+  font-weight: 600;
+  margin-bottom: 10px;
+  line-height: 1.2;
+}
+.info-title em { font-style: italic; color: var(--sage); }
+.info-body { font-size: 14px; line-height: 1.8; color: var(--mid); }
+
+/* ===== SERVICE AREA ===== */
+.service-area-section {
+  background: #fff;
+  border-radius: 20px;
+  padding: 28px;
+  border: 1px solid rgba(0,0,0,0.06);
+  box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+  margin-bottom: 32px;
+}
+.service-area-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 22px;
+  font-weight: 600;
+  margin-bottom: 16px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.area-chips { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 18px; }
+.chip {
+  background: rgba(45,74,50,0.07);
+  color: var(--forest);
+  border: 1px solid rgba(45,74,50,0.15);
+  border-radius: 50px;
+  padding: 6px 14px;
+  font-size: 13px;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.chip::before { content: '📍'; font-size: 11px; }
+
+.map-frame {
+  width: 100%;
+  height: 240px;
+  border-radius: 14px;
+  overflow: hidden;
+  border: 1px solid rgba(0,0,0,0.08);
+}
+.map-frame iframe { width: 100%; height: 100%; border: none; }
+
+.not-listed {
+  margin-top: 14px;
+  font-size: 13px;
+  color: var(--mid);
+  line-height: 1.6;
+  padding: 12px 14px;
+  background: rgba(201,168,76,0.08);
+  border-radius: 10px;
+  border-left: 3px solid var(--gold);
+}
+
+/* ===== FAQ STRIP ===== */
+.faq-strip {
+  background: var(--forest);
+  padding: 70px 80px;
+}
+.faq-inner { max-width: 1120px; margin: 0 auto; }
+.faq-header { text-align: center; margin-bottom: 48px; }
+.faq-eyebrow { font-size: 11px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--sage-light); margin-bottom: 12px; }
+.faq-title { font-family: 'Cormorant Garamond', serif; font-size: 38px; font-weight: 600; color: #fff; }
+.faq-title em { font-style: italic; color: var(--sage-light); }
+.faq-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+.faq-item { background: rgba(255,255,255,0.06); border-radius: 16px; padding: 24px; border: 1px solid rgba(255,255,255,0.08); }
+.faq-q { font-size: 15px; font-weight: 600; color: #fff; margin-bottom: 10px; line-height: 1.4; }
+.faq-a { font-size: 13px; line-height: 1.7; color: rgba(255,255,255,0.55); }
+
+/* ===== FOOTER ===== */
+footer { background: var(--charcoal); padding: 40px 80px; }
+.footer-bottom { display: flex; justify-content: space-between; align-items: center; }
+.footer-bottom p { font-size: 12px; color: rgba(255,255,255,0.3); }
+.footer-links-row { display: flex; gap: 24px; }
+.footer-links-row a { font-size: 12px; color: rgba(255,255,255,0.35); text-decoration: none; transition: color 0.2s; }
+.footer-links-row a:hover { color: var(--sage-light); }
+
+@keyframes fadeUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+
+.toast { position: fixed; bottom: 30px; right: 30px; background: var(--forest); color: #fff; padding: 14px 22px; border-radius: 14px; font-size: 14px; font-weight: 500; box-shadow: 0 8px 30px rgba(0,0,0,0.2); z-index: 1000; transform: translateY(80px); opacity: 0; transition: all 0.4s; }
+.toast.show { transform: translateY(0); opacity: 1; }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a href="index.html" class="nav-logo">
+    <div class="nav-logo-leaf">🌿</div>
+    Active Aging Partners
+  </a>
+  <ul class="nav-links">
+    <li><a href="index.html#services">Services</a></li>
+    <li><a href="index.html#how">How It Works</a></li>
+    <li><a href="index.html#testimonials">Stories</a></li>
+    <li><a href="contact.html" class="active">Contact</a></li>
+  </ul>
+  <div class="nav-actions">
+    <a href="index.html" class="btn btn-outline">Log In</a>
+    <a href="index.html#signup" class="btn btn-clay">Sign Up Free</a>
+  </div>
+</nav>
+
+<!-- PAGE HERO -->
+<section class="page-hero">
+  <div class="page-hero-inner">
+    <div class="page-eyebrow">Get In Touch</div>
+    <h1 class="page-title">We'd love to hear<br><em>from you</em></h1>
+    <p class="page-desc">Have a question about our services, want to learn more about getting started, or just want to say hello? Send us a message and we'll get back to you within one business day.</p>
+  </div>
+</section>
+
+<!-- MAIN -->
+<div class="main-wrap">
+
+  <!-- FORM -->
+  <div class="form-side">
+    <div class="form-card">
+      <div class="form-card-title">Send Us a Message</div>
+      <div class="form-card-sub">Fill out the form below and we'll be in touch shortly.</div>
+
+      <div class="response-promise">
+        <span style="font-size:20px">🕐</span>
+        <div><strong>We respond within 24 business hours.</strong> Messages sent on weekends or holidays will be answered the next business day.</div>
+      </div>
+
+      <div id="form-error" class="form-error"></div>
+
+      <div id="form-success" class="form-success">
+        <span class="success-icon">🌿</span>
+        <strong>Message sent successfully!</strong>
+        Thank you for reaching out. We'll respond to <span id="success-email"></span> within 24 business hours.
+      </div>
+
+      <div id="contact-form">
+        <div class="form-row">
+          <div>
+            <label class="form-label">First Name *</label>
+            <input type="text" class="form-input" id="cf-first" placeholder="First" required>
+          </div>
+          <div>
+            <label class="form-label">Last Name *</label>
+            <input type="text" class="form-input" id="cf-last" placeholder="Last" required>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Email Address *</label>
+          <input type="email" class="form-input" id="cf-email" placeholder="you@example.com" required>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">I am a…</label>
+          <select class="form-select" id="cf-role">
+            <option value="Family member">Family member of a senior</option>
+            <option value="Senior client">Senior (inquiring for myself)</option>
+            <option value="Healthcare provider">Healthcare provider / referral</option>
+            <option value="Other">Other</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Area of Interest</label>
+          <select class="form-select" id="cf-interest">
+            <option value="General inquiry">General inquiry</option>
+            <option value="Walking &amp; Wellness">Walking &amp; Wellness sessions</option>
+            <option value="Medical Appointments">Medical appointment transport</option>
+            <option value="Errands &amp; Outings">Errands &amp; outings</option>
+            <option value="Pricing">Pricing &amp; availability</option>
+            <option value="Service area">Service area question</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Your Message *</label>
+          <textarea class="form-input" id="cf-message" placeholder="Tell us a little about what you're looking for, any questions you have, or how we can help…" required></textarea>
+        </div>
+
+        <button class="btn btn-solid submit-btn" id="submit-btn" onclick="submitForm()">
+          Send Message →
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- INFO -->
+  <div class="info-side">
+
+    <div class="info-block">
+      <div class="info-label">About Our Service</div>
+      <h2 class="info-title">Serving <em>northeast Atlanta</em> with care</h2>
+      <p class="info-body">Active Aging Partners provides in-home companion wellness services to seniors and their families across the Tucker, Decatur, and Brookhaven corridors. We keep our service area intentional so we can show up reliably, on time, and with genuine care for every client we serve.</p>
+    </div>
+
+    <!-- SERVICE AREA CARD -->
+    <div class="service-area-section">
+      <div class="service-area-title">
+        <span>🗺️</span> Our Service Area
+      </div>
+
+      <div class="area-chips">
+        <div class="chip">Tucker</div>
+        <div class="chip">North Decatur</div>
+        <div class="chip">North Druid Hills</div>
+        <div class="chip">Chamblee</div>
+        <div class="chip">Brookhaven</div>
+        <div class="chip">Doraville</div>
+      </div>
+
+      <div class="map-frame">
+        <iframe
+          title="Active Aging Partners Service Area"
+          src="https://www.google.com/maps/embed/v1/search?key=AIzaSyAuXMMnVjij0x1X5sQ5Jm1NuJUvquwDb0k&q=Tucker+OR+Chamblee+OR+Brookhaven+OR+Doraville+OR+North+Decatur+OR+North+Druid+Hills,+GA&zoom=11"
+          allowfullscreen
+          loading="lazy"
+          referrerpolicy="no-referrer-when-downgrade">
+        </iframe>
+      </div>
+
+      <div class="not-listed">
+        📍 <strong>Don't see your area?</strong> Send us a message anyway — we occasionally serve adjacent communities and are happy to discuss your situation.
+      </div>
+    </div>
+
+    <!-- QUICK INFO -->
+    <div style="display:flex;flex-direction:column;gap:14px">
+      <div style="display:flex;align-items:flex-start;gap:14px;padding:16px;background:#fff;border-radius:14px;border:1px solid rgba(0,0,0,0.06)">
+        <div style="width:38px;height:38px;border-radius:10px;background:rgba(122,158,126,0.12);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:18px">📧</div>
+        <div><div style="font-size:12px;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;color:var(--mid);margin-bottom:3px">Email</div><div style="font-size:14px;color:var(--charcoal)">cynthia@breakingin.org</div></div>
+      </div>
+      <div style="display:flex;align-items:flex-start;gap:14px;padding:16px;background:#fff;border-radius:14px;border:1px solid rgba(0,0,0,0.06)">
+        <div style="width:38px;height:38px;border-radius:10px;background:rgba(196,132,90,0.1);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:18px">🕐</div>
+        <div><div style="font-size:12px;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;color:var(--mid);margin-bottom:3px">Response Time</div><div style="font-size:14px;color:var(--charcoal)">Within 24 business hours</div></div>
+      </div>
+      <div style="display:flex;align-items:flex-start;gap:14px;padding:16px;background:#fff;border-radius:14px;border:1px solid rgba(0,0,0,0.06)">
+        <div style="width:38px;height:38px;border-radius:10px;background:rgba(201,168,76,0.1);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:18px">📍</div>
+        <div><div style="font-size:12px;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;color:var(--mid);margin-bottom:3px">Location</div><div style="font-size:14px;color:var(--charcoal)">Atlanta, Georgia</div></div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- FAQ STRIP -->
+<section class="faq-strip">
+  <div class="faq-inner">
+    <div class="faq-header">
+      <div class="faq-eyebrow">Common Questions</div>
+      <h2 class="faq-title">Before you reach out, <em>check these</em></h2>
+    </div>
+    <div class="faq-grid">
+      <div class="faq-item">
+        <div class="faq-q">How much does a session cost?</div>
+        <div class="faq-a">All services are $50/hour. Transport and errand sessions include a $0.67/mile gas surcharge for miles driven on your behalf, itemized on every invoice.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q">How do I book a session?</div>
+        <div class="faq-a">Once you create a free account, you can book directly from your client portal. Pick your service, choose a date and time, and you're all set.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q">What happens after each visit?</div>
+        <div class="faq-a">You'll receive a detailed session report by email — including mood, activities, miles walked, and any notes. Family members can also access reports in the portal anytime.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q">Do I need to commit to a schedule?</div>
+        <div class="faq-a">Not at all. You can book one session at a time, or set up a recurring schedule — whatever works best for your family.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q">How do payments work?</div>
+        <div class="faq-a">Invoices are sent automatically after each session via Stripe. You can pay securely by card directly from your email or client portal.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q">Are you background checked?</div>
+        <div class="faq-a">Yes. All Active Aging Partners staff are fully background checked. Your loved one's safety and your peace of mind are our first priority.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-bottom">
+    <p>© 2026 Active Aging Partners · Atlanta, Georgia</p>
+    <div class="footer-links-row">
+      <a href="index.html">Home</a>
+      <a href="index.html#services">Services</a>
+      <a href="contact.html">Contact</a>
+      <a href="index.html#signup">Sign Up</a>
+    </div>
+  </div>
+</footer>
+
+<div class="toast" id="toast"></div>
+
+<!-- EMAILJS -->
+<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+<script>
+  // ============================================================
+  // EMAILJS SETUP
+  // To activate email sending:
+  // 1. Go to https://www.emailjs.com and create a free account
+  // 2. Add an Email Service (Gmail works great) — copy the Service ID
+  // 3. Create an Email Template with these variables:
+  //      {{from_name}}, {{from_email}}, {{role}}, {{interest}}, {{message}}, {{to_email}}
+  //    Set the "To Email" field in the template to: cynthia@breakingin.org
+  // 4. Copy your Public Key from Account > API Keys
+  // 5. Replace the three placeholder values below
+  // ============================================================
+
+  const EMAILJS_PUBLIC_KEY  = 'YOUR_PUBLIC_KEY';   // from EmailJS Account > API Keys
+  const EMAILJS_SERVICE_ID  = 'YOUR_SERVICE_ID';   // from EmailJS Email Services
+  const EMAILJS_TEMPLATE_ID = 'YOUR_TEMPLATE_ID';  // from EmailJS Email Templates
+
+  emailjs.init({ publicKey: EMAILJS_PUBLIC_KEY });
+
+  async function submitForm() {
+    const first    = document.getElementById('cf-first').value.trim();
+    const last     = document.getElementById('cf-last').value.trim();
+    const email    = document.getElementById('cf-email').value.trim();
+    const role     = document.getElementById('cf-role').value;
+    const interest = document.getElementById('cf-interest').value;
+    const message  = document.getElementById('cf-message').value.trim();
+    const errorEl  = document.getElementById('form-error');
+    const btn      = document.getElementById('submit-btn');
+
+    // Validate
+    hideError();
+    if (!first || !last) { showError('Please enter your first and last name.'); return; }
+    if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { showError('Please enter a valid email address.'); return; }
+    if (!message) { showError('Please enter a message before submitting.'); return; }
+
+    // Check EmailJS is configured
+    if (EMAILJS_PUBLIC_KEY === 'YOUR_PUBLIC_KEY') {
+      // Dev mode — simulate success so you can see the UI flow
+      simulateSuccess(email);
+      return;
+    }
+
+    setLoading(btn, true);
+
+    try {
+      await emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, {
+        from_name:  `${first} ${last}`,
+        from_email: email,
+        role:       role,
+        interest:   interest,
+        message:    message,
+        to_email:   'cynthia@breakingin.org',
+        reply_to:   email,
+      });
+      showSuccess(email);
+    } catch (err) {
+      setLoading(btn, false);
+      showError('Something went wrong sending your message. Please try emailing cynthia@breakingin.org directly.');
+      console.error('EmailJS error:', err);
+    }
+  }
+
+  function simulateSuccess(email) {
+    // Only used in dev mode before EmailJS is configured
+    showSuccess(email);
+  }
+
+  function showSuccess(email) {
+    document.getElementById('contact-form').style.display = 'none';
+    document.getElementById('success-email').textContent = email;
+    const s = document.getElementById('form-success');
+    s.style.display = 'block';
+    s.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  }
+
+  function showError(msg) {
+    const e = document.getElementById('form-error');
+    e.textContent = msg;
+    e.style.display = 'block';
+    e.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  }
+
+  function hideError() {
+    document.getElementById('form-error').style.display = 'none';
+  }
+
+  function setLoading(btn, loading) {
+    if (loading) {
+      btn.dataset.original = btn.innerHTML;
+      btn.innerHTML = '<span class="spinner"></span> Sending…';
+      btn.disabled = true;
+    } else {
+      btn.innerHTML = btn.dataset.original || 'Send Message →';
+      btn.disabled = false;
+    }
+  }
+
+  function showToast(msg) {
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.classList.add('show');
+    setTimeout(() => t.classList.remove('show'), 3500);
+  }
+</script>
+</body>
+</html>
