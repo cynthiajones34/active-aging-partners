@@ -304,7 +304,7 @@ footer { background: var(--charcoal); padding: 40px 80px; }
       <div class="contact-block">
         <h3>Questions about these terms?</h3>
         <p>We respond to all inquiries within 24 business hours. You're always welcome to reach out before signing up if you have any questions about how our services work.</p>
-        <p>Email: <a href="mailto:cynthia@breakingin.org">cynthia@breakingin.org</a><br>
+        <p>Email: <a href="/cdn-cgi/l/email-protection#54372d3a203c3d3514362631353f3d3a333d3a7a3b2633"><span class="__cf_email__" data-cfemail="33504a5d475b5a527351415652585a5d545a5d1d5c4154">[email&#160;protected]</span></a><br>
         Or use our <a href="contact.html">contact form</a>.<br>
         Active Aging Partners · Atlanta, Georgia</p>
       </div>
@@ -319,13 +319,15 @@ footer { background: var(--charcoal); padding: 40px 80px; }
     <div class="footer-links-row">
       <a href="index.html">Home</a>
       <a href="services.html">Services</a>
+      <a href="contact.html">Contact</a>
+      <a href="index.html#signup">Sign Up</a>
       <a href="privacy-policy.html">Privacy Policy</a>
       <a href="terms-of-service.html">Terms of Service</a>
     </div>
   </div>
 </footer>
 
-<script>
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
   const observer = new IntersectionObserver((entries) => {
     entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
   }, { threshold: 0.1 });
@@ -334,12 +336,4 @@ footer { background: var(--charcoal); padding: 40px 80px; }
   const sections = document.querySelectorAll('.doc-section');
   const tocLinks = document.querySelectorAll('.toc-list a');
   window.addEventListener('scroll', () => {
-    let current = '';
-    sections.forEach(s => { if (window.scrollY >= s.offsetTop - 140) current = s.id; });
-    tocLinks.forEach(a => {
-      a.classList.toggle('active', a.getAttribute('href') === '#' + current);
-    });
-  });
-</script>
-</body>
-</html>
+    let 
