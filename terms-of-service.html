@@ -337,4 +337,12 @@ footer { background: var(--charcoal); padding: 40px 80px; }
   const sections = document.querySelectorAll('.doc-section');
   const tocLinks = document.querySelectorAll('.toc-list a');
   window.addEventListener('scroll', () => {
-    let 
+    let current = '';
+    sections.forEach(s => { if (window.scrollY >= s.offsetTop - 140) current = s.id; });
+    tocLinks.forEach(a => {
+      a.classList.toggle('active', a.getAttribute('href') === '#' + current);
+    });
+  });
+</script>
+</body>
+</html>
