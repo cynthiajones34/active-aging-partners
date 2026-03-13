@@ -788,9 +788,22 @@ function saveToast(msg='Changes saved!') { showToast('✓ '+msg); }
   const auth = getAuth(app);
 
   // 🔒 Guard — if not logged in, send back to login page
+  // Staff emails — must match index.html STAFF_EMAILS list
+  const STAFF_EMAILS = [
+    // 👇 Add your staff email address(es) here — must match index.html
+    // "yourname@yourdomain.com",
+  ];
+  function isStaff(email) { return STAFF_EMAILS.includes(email.toLowerCase()); }
+
   onAuthStateChanged(auth, (user) => {
     if (!user) {
       window.location.href = 'index.html';
+      return;
+    }
+    // Staff accounts added manually in Firebase don't need email verification
+    // but unverified non-staff should not reach this page
+    if (!user.emailVerified && !isStaff(user.email)) {
+      window.location.href = 'verify-email.html';
       return;
     }
     // ✅ Logged in — populate name and initials in sidebar
@@ -808,7 +821,7 @@ function saveToast(msg='Changes saved!') { showToast('✓ '+msg); }
   // Logout
   window.doLogout = async function() {
     await signOut(auth);
-    window.location.href = 'index.html';
+    window.location.href = 'logout.html';
   };
 </script>
 </body>
