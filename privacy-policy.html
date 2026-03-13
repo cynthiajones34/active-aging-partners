@@ -277,7 +277,7 @@ footer { background: var(--charcoal); padding: 40px 80px; }
       <ul class="doc-list">
         <li><strong>Access:</strong> You can view and update most of your account information directly in your client portal under My Profile.</li>
         <li><strong>Correction:</strong> You can correct inaccurate information in your profile at any time.</li>
-        <li><strong>Deletion:</strong> You can request deletion of your account and all associated personal data by contacting us at cynthia@breakingin.org.</li>
+        <li><strong>Deletion:</strong> You can request deletion of your account and all associated personal data by contacting us at <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="ff9c86918b97969ebf9d8d9a9e949691989691d1908d98">[email&#160;protected]</a>.</li>
         <li><strong>Notification opt-out:</strong> You can manage SMS and email notification preferences from your portal's Notifications settings at any time.</li>
         <li><strong>Data portability:</strong> You may request a copy of your personal data in a readable format.</li>
       </ul>
@@ -310,7 +310,7 @@ footer { background: var(--charcoal); padding: 40px 80px; }
       <div class="contact-block">
         <h3>Get in touch</h3>
         <p>We're happy to answer any questions about your privacy or how your data is used. We respond to all privacy-related inquiries within 24 business hours.</p>
-        <p>Email: <a href="mailto:cynthia@breakingin.org">cynthia@breakingin.org</a><br>
+        <p>Email: <a href="/cdn-cgi/l/email-protection#5e3d27302a36373f1e3c2c3b3f35373039373070312c39"><span class="__cf_email__" data-cfemail="a6c5dfc8d2cecfc7e6c4d4c3c7cdcfc8c1cfc888c9d4c1">[email&#160;protected]</span></a><br>
         Or use our <a href="contact.html">contact form</a>.<br>
         Active Aging Partners · Atlanta, Georgia</p>
       </div>
@@ -325,13 +325,15 @@ footer { background: var(--charcoal); padding: 40px 80px; }
     <div class="footer-links-row">
       <a href="index.html">Home</a>
       <a href="services.html">Services</a>
+      <a href="contact.html">Contact</a>
+      <a href="index.html#signup">Sign Up</a>
       <a href="privacy-policy.html">Privacy Policy</a>
       <a href="terms-of-service.html">Terms of Service</a>
     </div>
   </div>
 </footer>
 
-<script>
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
   // Scroll-triggered section reveal
   const observer = new IntersectionObserver((entries) => {
     entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
@@ -339,15 +341,4 @@ footer { background: var(--charcoal); padding: 40px 80px; }
   document.querySelectorAll('.doc-section').forEach(el => observer.observe(el));
 
   // Active TOC highlight
-  const sections = document.querySelectorAll('.doc-section');
-  const tocLinks = document.querySelectorAll('.toc-list a');
-  window.addEventListener('scroll', () => {
-    let current = '';
-    sections.forEach(s => { if (window.scrollY >= s.offsetTop - 140) current = s.id; });
-    tocLinks.forEach(a => {
-      a.classList.toggle('active', a.getAttribute('href') === '#' + current);
-    });
-  });
-</script>
-</body>
-</html>
+  const sections = document.querySelectorAll('.doc
