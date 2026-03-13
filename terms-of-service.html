@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Terms of Service — Active Aging Partners</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Jost:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --forest: #2d4a32;
+  --sage: #7a9e7e;
+  --sage-light: #b8d4bb;
+  --cream: #f8f4ed;
+  --warm: #fdf9f3;
+  --sand: #e8dfc8;
+  --clay: #c4845a;
+  --charcoal: #1e2820;
+  --mid: #607060;
+  --gold: #c9a84c;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body { font-family: 'Jost', sans-serif; background: var(--warm); color: var(--charcoal); overflow-x: hidden; }
+
+/* NAV */
+nav { position: fixed; top: 0; left: 0; right: 0; z-index: 100; padding: 20px 60px; display: flex; align-items: center; justify-content: space-between; background: rgba(248,244,237,0.95); backdrop-filter: blur(12px); box-shadow: 0 2px 20px rgba(0,0,0,0.07); }
+.nav-logo { font-family: 'Cormorant Garamond', serif; font-size: 22px; font-weight: 600; color: var(--forest); display: flex; align-items: center; gap: 10px; text-decoration: none; }
+.nav-logo-leaf { width: 32px; height: 32px; background: linear-gradient(135deg, var(--sage), var(--forest)); border-radius: 50% 50% 50% 10%; transform: rotate(-30deg); display: flex; align-items: center; justify-content: center; font-size: 14px; flex-shrink: 0; }
+.nav-links { display: flex; align-items: center; gap: 36px; list-style: none; }
+.nav-links a { text-decoration: none; color: var(--forest); font-size: 14px; font-weight: 500; letter-spacing: 0.04em; opacity: 0.75; transition: opacity 0.2s; }
+.nav-links a:hover { opacity: 1; }
+.nav-actions { display: flex; gap: 12px; }
+.btn { font-family: 'Jost', sans-serif; font-size: 13px; font-weight: 600; padding: 10px 22px; border-radius: 50px; border: none; cursor: pointer; letter-spacing: 0.04em; text-decoration: none; display: inline-flex; align-items: center; gap: 8px; transition: all 0.25s; }
+.btn-outline { background: transparent; border: 1.5px solid var(--forest); color: var(--forest); }
+.btn-outline:hover { background: var(--forest); color: #fff; }
+.btn-clay { background: var(--clay); color: #fff; box-shadow: 0 4px 14px rgba(196,132,90,0.35); }
+.btn-clay:hover { transform: translateY(-1px); }
+
+/* HERO */
+.page-hero { padding: 130px 80px 70px; background: var(--charcoal); position: relative; overflow: hidden; }
+.page-hero::before { content: ''; position: absolute; inset: 0; background: radial-gradient(ellipse at 20% 60%, rgba(45,74,50,0.3) 0%, transparent 55%), radial-gradient(ellipse at 85% 20%, rgba(122,158,126,0.1) 0%, transparent 50%); }
+.page-hero::after { content: ''; position: absolute; bottom: -1px; left: 0; right: 0; height: 50px; background: var(--warm); clip-path: ellipse(55% 100% at 50% 100%); }
+.hero-inner { position: relative; opacity: 0; animation: fadeUp 0.8s 0.2s forwards; }
+.page-eyebrow { font-size: 11px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--sage-light); margin-bottom: 14px; }
+.page-title { font-family: 'Cormorant Garamond', serif; font-size: clamp(38px, 5vw, 56px); font-weight: 600; color: #fff; line-height: 1.1; margin-bottom: 16px; }
+.page-title em { font-style: italic; color: var(--sage-light); }
+.page-meta { font-size: 14px; color: rgba(255,255,255,0.35); }
+
+/* LAYOUT */
+.doc-layout {
+  display: grid;
+  grid-template-columns: 240px 1fr;
+  gap: 60px;
+  max-width: 1100px;
+  margin: 60px auto 100px;
+  padding: 0 60px;
+  align-items: start;
+}
+
+/* SIDEBAR TOC */
+.toc { position: sticky; top: 100px; background: #fff; border-radius: 18px; padding: 24px; border: 1px solid rgba(0,0,0,0.06); box-shadow: 0 4px 20px rgba(0,0,0,0.05); }
+.toc-title { font-size: 11px; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: var(--mid); margin-bottom: 16px; }
+.toc-list { list-style: none; display: flex; flex-direction: column; gap: 2px; }
+.toc-list a { display: block; padding: 7px 10px; border-radius: 8px; font-size: 13px; color: var(--mid); text-decoration: none; transition: all 0.2s; line-height: 1.4; }
+.toc-list a:hover { background: rgba(45,74,50,0.06); color: var(--forest); }
+.toc-list a.active { background: rgba(45,74,50,0.08); color: var(--forest); font-weight: 600; }
+
+/* DOCUMENT BODY */
+.doc-body { min-width: 0; }
+.doc-section { margin-bottom: 52px; opacity: 0; transform: translateY(16px); transition: opacity 0.6s ease, transform 0.6s ease; }
+.doc-section.visible { opacity: 1; transform: translateY(0); }
+.section-number { font-family: 'Cormorant Garamond', serif; font-size: 48px; font-weight: 700; color: rgba(0,0,0,0.04); line-height: 1; margin-bottom: -10px; display: block; }
+.section-title { font-family: 'Cormorant Garamond', serif; font-size: 28px; font-weight: 600; color: var(--charcoal); margin-bottom: 16px; line-height: 1.2; }
+.section-title em { font-style: italic; color: var(--sage); }
+.doc-body p { font-size: 15px; line-height: 1.85; color: var(--mid); margin-bottom: 14px; }
+.doc-body p:last-child { margin-bottom: 0; }
+.doc-body strong { color: var(--charcoal); font-weight: 600; }
+.doc-list { list-style: none; margin: 10px 0 14px; display: flex; flex-direction: column; gap: 8px; }
+.doc-list li { display: flex; align-items: flex-start; gap: 12px; font-size: 15px; color: var(--mid); line-height: 1.6; }
+.doc-list li::before { content: ''; width: 6px; height: 6px; border-radius: 50%; background: var(--sage); flex-shrink: 0; margin-top: 9px; }
+.highlight-box { background: rgba(45,74,50,0.05); border-left: 3px solid var(--sage); border-radius: 0 12px 12px 0; padding: 16px 20px; margin: 18px 0; font-size: 14px; color: var(--mid); line-height: 1.7; }
+.highlight-box strong { color: var(--forest); }
+.warning-box { background: rgba(196,132,90,0.07); border-left: 3px solid var(--clay); border-radius: 0 12px 12px 0; padding: 16px 20px; margin: 18px 0; font-size: 14px; color: var(--mid); line-height: 1.7; }
+.warning-box strong { color: var(--clay); }
+.section-divider { height: 1px; background: rgba(0,0,0,0.07); margin-bottom: 52px; }
+.contact-block { background: var(--forest); border-radius: 20px; padding: 32px; margin-top: 40px; color: #fff; }
+.contact-block h3 { font-family: 'Cormorant Garamond', serif; font-size: 24px; font-weight: 600; margin-bottom: 10px; }
+.contact-block p { font-size: 14px; color: rgba(255,255,255,0.6); line-height: 1.7; margin-bottom: 16px; }
+.contact-block a { color: var(--sage-light); text-decoration: none; font-weight: 600; }
+.contact-block a:hover { text-decoration: underline; }
+
+/* FOOTER */
+footer { background: var(--charcoal); padding: 40px 80px; }
+.footer-bottom { display: flex; justify-content: space-between; align-items: center; }
+.footer-bottom p { font-size: 12px; color: rgba(255,255,255,0.3); }
+.footer-links-row { display: flex; gap: 24px; }
+.footer-links-row a { font-size: 12px; color: rgba(255,255,255,0.35); text-decoration: none; transition: color 0.2s; }
+.footer-links-row a:hover { color: var(--sage-light); }
+
+@keyframes fadeUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="index.html" class="nav-logo">
+    <div class="nav-logo-leaf">🌿</div>
+    Active Aging Partners
+  </a>
+  <ul class="nav-links">
+    <li><a href="services.html">Services</a></li>
+    <li><a href="index.html#how">How It Works</a></li>
+    <li><a href="contact.html">Contact</a></li>
+  </ul>
+  <div class="nav-actions">
+    <a href="index.html" class="btn btn-outline">Log In</a>
+    <a href="index.html#signup" class="btn btn-clay">Sign Up Free</a>
+  </div>
+</nav>
+
+<section class="page-hero">
+  <div class="hero-inner">
+    <div class="page-eyebrow">Legal</div>
+    <h1 class="page-title">Terms of <em>Service</em></h1>
+    <div class="page-meta">Effective date: January 1, 2026 &nbsp;·&nbsp; Last updated: January 1, 2026</div>
+  </div>
+</section>
+
+<div class="doc-layout">
+
+  <aside class="toc">
+    <div class="toc-title">Contents</div>
+    <ul class="toc-list">
+      <li><a href="#s1">1. Acceptance of Terms</a></li>
+      <li><a href="#s2">2. Services Provided</a></li>
+      <li><a href="#s3">3. Booking & Cancellation</a></li>
+      <li><a href="#s4">4. Payments & Billing</a></li>
+      <li><a href="#s5">5. Client Responsibilities</a></li>
+      <li><a href="#s6">6. Scope of Services</a></li>
+      <li><a href="#s7">7. Limitation of Liability</a></li>
+      <li><a href="#s8">8. Account & Termination</a></li>
+      <li><a href="#s9">9. Governing Law</a></li>
+      <li><a href="#s10">10. Changes to Terms</a></li>
+      <li><a href="#s11">11. Contact Us</a></li>
+    </ul>
+  </aside>
+
+  <div class="doc-body">
+
+    <div class="highlight-box" style="margin-bottom:40px">
+      <strong>Plain English summary:</strong> By using our service, you agree to pay for sessions at the agreed rate, give us reasonable notice to cancel, and treat our staff with respect. We're not a medical provider. These terms are governed by Georgia law.
+    </div>
+
+    <p style="font-size:15px;line-height:1.85;color:var(--mid);margin-bottom:40px">These Terms of Service ("Terms") govern your use of the Active Aging Partners website, platform, and companion wellness services ("Services") provided by Active Aging Partners ("we," "our," or "us"), based in Atlanta, Georgia. Please read these Terms carefully before using our Services.</p>
+
+    <!-- S1 -->
+    <div class="doc-section" id="s1">
+      <span class="section-number">01</span>
+      <h2 class="section-title">Acceptance <em>of Terms</em></h2>
+      <p>By creating an account, booking a session, or otherwise using our Services, you agree to be bound by these Terms and our Privacy Policy. If you do not agree to these Terms, please do not use our Services.</p>
+      <p>If you are signing up on behalf of a senior client (for example, as a family member or legal guardian), you represent that you have the authority to agree to these Terms on their behalf.</p>
+    </div>
+    <div class="section-divider"></div>
+
+    <!-- S2 -->
+    <div class="doc-section" id="s2">
+      <span class="section-number">02</span>
+      <h2 class="section-title">Services <em>Provided</em></h2>
+      <p>Active Aging Partners offers in-person companion wellness services to seniors in our service area, including:</p>
+      <ul class="doc-list">
+        <li><strong>Walking & Wellness:</strong> Structured companionship walks in local neighborhoods, parks, and trails</li>
+        <li><strong>Medical Appointment Support:</strong> Transport to and companionship during medical, dental, and therapy appointments</li>
+        <li><strong>Errands & Outings:</strong> Assistance with grocery shopping, pharmacy runs, personal care appointments, and other community errands</li>
+      </ul>
+      <p>All services are provided within our designated service area covering Tucker, North Decatur, North Druid Hills, Chamblee, Brookhaven, and Doraville, Georgia. Services outside this area may be available at our discretion.</p>
+      <div class="warning-box">
+        <strong>Important:</strong> Active Aging Partners provides companion and transportation services only. We are not a medical provider, home health agency, or licensed caregiver service. Our staff do not provide medical advice, administer medications, or perform any medical or clinical functions.
+      </div>
+    </div>
+    <div class="section-divider"></div>
+
+    <!-- S3 -->
+    <div class="doc-section" id="s3">
+      <span class="section-number">03</span>
+      <h2 class="section-title">Booking <em>& Cancellation</em></h2>
+      <p>Sessions may be booked through your client portal. By booking a session, you are confirming your intent to receive the service at the scheduled date and time.</p>
+      <p><strong>Cancellation policy:</strong></p>
+      <ul class="doc-list">
+        <li>Cancellations made at least 24 hours before a scheduled session will not be charged</li>
+        <li>Cancellations made less than 24 hours before a session may be subject to a cancellation fee of up to one hour's service rate ($50)</li>
+        <li>No-shows (client is unavailable at the time of service without prior notice) will be billed at the full session rate</li>
+      </ul>
+      <p>We reserve the right to cancel or reschedule sessions due to staff illness, unsafe weather conditions, or other circumstances beyond our control. We will notify you as soon as possible and reschedule at no charge.</p>
+    </div>
+    <div class="section-divider"></div>
+
+    <!-- S4 -->
+    <div class="doc-section" id="s4">
+      <span class="section-number">04</span>
+      <h2 class="section-title">Payments <em>& Billing</em></h2>
+      <p>All services are billed at a rate of <strong>$50.00 per hour</strong>. Sessions are billed in full-hour increments unless otherwise agreed.</p>
+      <p>For sessions involving transportation (Medical Appointments and Errands & Outings), a mileage surcharge of <strong>$0.67 per mile</strong> (the current IRS standard mileage rate) is added, calculated from the client's home address to the destination and back. Mileage is itemized on every invoice.</p>
+      <ul class="doc-list">
+        <li>Invoices are generated and sent automatically after each session via email through Stripe</li>
+        <li>Payment is due within 7 days of invoice receipt</li>
+        <li>We accept major credit and debit cards through Stripe's secure payment platform</li>
+        <li>Overdue invoices may result in suspension of future bookings until the balance is settled</li>
+      </ul>
+      <p>All prices are in US dollars and are subject to change with 30 days' advance notice to active clients.</p>
+    </div>
+    <div class="section-divider"></div>
+
+    <!-- S5 -->
+    <div class="doc-section" id="s5">
+      <span class="section-number">05</span>
+      <h2 class="section-title">Client <em>Responsibilities</em></h2>
+      <p>To ensure the best possible experience for all parties, clients and their family contacts agree to:</p>
+      <ul class="doc-list">
+        <li>Provide accurate and complete information about the senior client, including any health conditions, mobility limitations, or behavioral considerations relevant to service delivery</li>
+        <li>Ensure the senior client is ready and available at the scheduled session time</li>
+        <li>Treat Active Aging Partners staff with courtesy and respect at all times</li>
+        <li>Maintain a safe environment for staff during home pickups and service delivery</li>
+        <li>Notify us promptly of any changes to the senior client's health or care needs that may affect service</li>
+        <li>Keep account information and contact details up to date</li>
+      </ul>
+      <div class="warning-box">
+        <strong>Zero tolerance:</strong> We reserve the right to terminate services immediately and without refund in cases of abusive, threatening, or harassing behavior directed at our staff.
+      </div>
+    </div>
+    <div class="section-divider"></div>
+
+    <!-- S6 -->
+    <div class="doc-section" id="s6">
+      <span class="section-number">06</span>
+      <h2 class="section-title">Scope <em>of Services</em></h2>
+      <p>Our staff are trained companions, not licensed healthcare professionals. The following are explicitly outside the scope of our services:</p>
+      <ul class="doc-list">
+        <li>Administering, managing, or advising on medications of any kind</li>
+        <li>Providing medical, nursing, or clinical care</li>
+        <li>Physical assistance beyond light steadying support during walks (we do not provide physical therapy or mobility assistance)</li>
+        <li>Emergency medical response — in a medical emergency, our staff will call 911 and notify the family contact</li>
+        <li>Overnight stays or 24-hour care</li>
+        <li>Financial management or legal assistance on behalf of the client</li>
+      </ul>
+      <p>If a senior client's needs exceed the scope of our services, we will notify the family contact and may refer to appropriate licensed care providers.</p>
+    </div>
+    <div class="section-divider"></div>
+
+    <!-- S7 -->
+    <div class="doc-section" id="s7">
+      <span class="section-number">07</span>
+      <h2 class="section-title">Limitation <em>of Liability</em></h2>
+      <p>Active Aging Partners provides companion wellness services with care and diligence. However, to the fullest extent permitted by applicable law:</p>
+      <ul class="doc-list">
+        <li>We are not liable for any injury, accident, or health event occurring during or after a session that is unrelated to our direct negligence</li>
+        <li>We are not responsible for the actions, decisions, or health outcomes of the senior client</li>
+        <li>Our total liability for any claim arising out of or related to our Services shall not exceed the total amount paid by the client for the session(s) in question</li>
+        <li>We are not liable for indirect, incidental, consequential, or punitive damages of any kind</li>
+      </ul>
+      <p>Nothing in these Terms limits liability for gross negligence, willful misconduct, or any liability that cannot be excluded under applicable law.</p>
+    </div>
+    <div class="section-divider"></div>
+
+    <!-- S8 -->
+    <div class="doc-section" id="s8">
+      <span class="section-number">08</span>
+      <h2 class="section-title">Account <em>& Termination</em></h2>
+      <p>You may close your account at any time by contacting us. We will retain records of completed transactions as required by law, but will delete personal data upon request in accordance with our Privacy Policy.</p>
+      <p>We reserve the right to suspend or terminate your account and access to our Services at any time if:</p>
+      <ul class="doc-list">
+        <li>You violate these Terms of Service</li>
+        <li>You have outstanding unpaid invoices</li>
+        <li>Your conduct creates an unsafe environment for our staff</li>
+        <li>We determine, in our sole discretion, that we are unable to safely serve the client's needs</li>
+      </ul>
+      <p>Upon termination, any outstanding invoices become immediately due and payable.</p>
+    </div>
+    <div class="section-divider"></div>
+
+    <!-- S9 -->
+    <div class="doc-section" id="s9">
+      <span class="section-number">09</span>
+      <h2 class="section-title">Governing <em>Law</em></h2>
+      <p>These Terms are governed by and construed in accordance with the laws of the State of Georgia, without regard to its conflict of law provisions. Any disputes arising under these Terms shall be subject to the exclusive jurisdiction of the courts located in DeKalb County, Georgia.</p>
+      <p>You agree to attempt to resolve any dispute informally by contacting us first before initiating any formal legal proceedings.</p>
+    </div>
+    <div class="section-divider"></div>
+
+    <!-- S10 -->
+    <div class="doc-section" id="s10">
+      <span class="section-number">10</span>
+      <h2 class="section-title">Changes <em>to Terms</em></h2>
+      <p>We may update these Terms from time to time. When we make material changes, we will notify active clients by email at least 14 days before the changes take effect, and update the "Last updated" date at the top of this page.</p>
+      <p>Your continued use of our Services after the effective date of any changes constitutes your acceptance of the updated Terms. If you do not agree to the updated Terms, you may close your account prior to the effective date.</p>
+    </div>
+    <div class="section-divider"></div>
+
+    <!-- S11 -->
+    <div class="doc-section" id="s11">
+      <span class="section-number">11</span>
+      <h2 class="section-title">Contact <em>Us</em></h2>
+      <p>If you have any questions about these Terms of Service, please contact us. We're happy to explain anything in plain language.</p>
+      <div class="contact-block">
+        <h3>Questions about these terms?</h3>
+        <p>We respond to all inquiries within 24 business hours. You're always welcome to reach out before signing up if you have any questions about how our services work.</p>
+        <p>Email: <a href="mailto:cynthia@breakingin.org">cynthia@breakingin.org</a><br>
+        Or use our <a href="contact.html">contact form</a>.<br>
+        Active Aging Partners · Atlanta, Georgia</p>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<footer>
+  <div class="footer-bottom">
+    <p>© 2026 Active Aging Partners · Atlanta, Georgia</p>
+    <div class="footer-links-row">
+      <a href="index.html">Home</a>
+      <a href="services.html">Services</a>
+      <a href="privacy-policy.html">Privacy Policy</a>
+      <a href="terms-of-service.html">Terms of Service</a>
+    </div>
+  </div>
+</footer>
+
+<script>
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+  }, { threshold: 0.1 });
+  document.querySelectorAll('.doc-section').forEach(el => observer.observe(el));
+
+  const sections = document.querySelectorAll('.doc-section');
+  const tocLinks = document.querySelectorAll('.toc-list a');
+  window.addEventListener('scroll', () => {
+    let current = '';
+    sections.forEach(s => { if (window.scrollY >= s.offsetTop - 140) current = s.id; });
+    tocLinks.forEach(a => {
+      a.classList.toggle('active', a.getAttribute('href') === '#' + current);
+    });
+  });
+</script>
+</body>
+</html>

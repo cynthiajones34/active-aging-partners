@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Privacy Policy — Active Aging Partners</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Jost:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --forest: #2d4a32;
+  --sage: #7a9e7e;
+  --sage-light: #b8d4bb;
+  --cream: #f8f4ed;
+  --warm: #fdf9f3;
+  --sand: #e8dfc8;
+  --clay: #c4845a;
+  --charcoal: #1e2820;
+  --mid: #607060;
+  --gold: #c9a84c;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body { font-family: 'Jost', sans-serif; background: var(--warm); color: var(--charcoal); overflow-x: hidden; }
+
+/* NAV */
+nav { position: fixed; top: 0; left: 0; right: 0; z-index: 100; padding: 20px 60px; display: flex; align-items: center; justify-content: space-between; background: rgba(248,244,237,0.95); backdrop-filter: blur(12px); box-shadow: 0 2px 20px rgba(0,0,0,0.07); }
+.nav-logo { font-family: 'Cormorant Garamond', serif; font-size: 22px; font-weight: 600; color: var(--forest); display: flex; align-items: center; gap: 10px; text-decoration: none; }
+.nav-logo-leaf { width: 32px; height: 32px; background: linear-gradient(135deg, var(--sage), var(--forest)); border-radius: 50% 50% 50% 10%; transform: rotate(-30deg); display: flex; align-items: center; justify-content: center; font-size: 14px; flex-shrink: 0; }
+.nav-links { display: flex; align-items: center; gap: 36px; list-style: none; }
+.nav-links a { text-decoration: none; color: var(--forest); font-size: 14px; font-weight: 500; letter-spacing: 0.04em; opacity: 0.75; transition: opacity 0.2s; }
+.nav-links a:hover { opacity: 1; }
+.nav-actions { display: flex; gap: 12px; }
+.btn { font-family: 'Jost', sans-serif; font-size: 13px; font-weight: 600; padding: 10px 22px; border-radius: 50px; border: none; cursor: pointer; letter-spacing: 0.04em; text-decoration: none; display: inline-flex; align-items: center; gap: 8px; transition: all 0.25s; }
+.btn-outline { background: transparent; border: 1.5px solid var(--forest); color: var(--forest); }
+.btn-outline:hover { background: var(--forest); color: #fff; }
+.btn-clay { background: var(--clay); color: #fff; box-shadow: 0 4px 14px rgba(196,132,90,0.35); }
+.btn-clay:hover { transform: translateY(-1px); }
+
+/* HERO */
+.page-hero { padding: 130px 80px 70px; background: var(--forest); position: relative; overflow: hidden; }
+.page-hero::before { content: ''; position: absolute; inset: 0; background: radial-gradient(ellipse at 80% 40%, rgba(122,158,126,0.18) 0%, transparent 55%); }
+.page-hero::after { content: ''; position: absolute; bottom: -1px; left: 0; right: 0; height: 50px; background: var(--warm); clip-path: ellipse(55% 100% at 50% 100%); }
+.hero-inner { position: relative; opacity: 0; animation: fadeUp 0.8s 0.2s forwards; }
+.page-eyebrow { font-size: 11px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--sage-light); margin-bottom: 14px; }
+.page-title { font-family: 'Cormorant Garamond', serif; font-size: clamp(38px, 5vw, 56px); font-weight: 600; color: #fff; line-height: 1.1; margin-bottom: 16px; }
+.page-title em { font-style: italic; color: var(--sage-light); }
+.page-meta { font-size: 14px; color: rgba(255,255,255,0.45); }
+
+/* LAYOUT */
+.doc-layout {
+  display: grid;
+  grid-template-columns: 240px 1fr;
+  gap: 60px;
+  max-width: 1100px;
+  margin: 60px auto 100px;
+  padding: 0 60px;
+  align-items: start;
+}
+
+/* SIDEBAR TOC */
+.toc {
+  position: sticky;
+  top: 100px;
+  background: #fff;
+  border-radius: 18px;
+  padding: 24px;
+  border: 1px solid rgba(0,0,0,0.06);
+  box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+}
+.toc-title { font-size: 11px; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: var(--mid); margin-bottom: 16px; }
+.toc-list { list-style: none; display: flex; flex-direction: column; gap: 2px; }
+.toc-list a { display: block; padding: 7px 10px; border-radius: 8px; font-size: 13px; color: var(--mid); text-decoration: none; transition: all 0.2s; line-height: 1.4; }
+.toc-list a:hover { background: rgba(45,74,50,0.06); color: var(--forest); }
+.toc-list a.active { background: rgba(45,74,50,0.08); color: var(--forest); font-weight: 600; }
+
+/* DOCUMENT BODY */
+.doc-body { min-width: 0; }
+
+.doc-section {
+  margin-bottom: 52px;
+  opacity: 0;
+  transform: translateY(16px);
+  transition: opacity 0.6s ease, transform 0.6s ease;
+}
+.doc-section.visible { opacity: 1; transform: translateY(0); }
+
+.section-number { font-family: 'Cormorant Garamond', serif; font-size: 48px; font-weight: 700; color: rgba(0,0,0,0.04); line-height: 1; margin-bottom: -10px; display: block; }
+.section-title { font-family: 'Cormorant Garamond', serif; font-size: 28px; font-weight: 600; color: var(--charcoal); margin-bottom: 16px; line-height: 1.2; }
+.section-title em { font-style: italic; color: var(--sage); }
+
+.doc-body p { font-size: 15px; line-height: 1.85; color: var(--mid); margin-bottom: 14px; }
+.doc-body p:last-child { margin-bottom: 0; }
+.doc-body strong { color: var(--charcoal); font-weight: 600; }
+
+.doc-list { list-style: none; margin: 10px 0 14px; display: flex; flex-direction: column; gap: 8px; }
+.doc-list li { display: flex; align-items: flex-start; gap: 12px; font-size: 15px; color: var(--mid); line-height: 1.6; }
+.doc-list li::before { content: ''; width: 6px; height: 6px; border-radius: 50%; background: var(--sage); flex-shrink: 0; margin-top: 9px; }
+
+.highlight-box {
+  background: rgba(45,74,50,0.05);
+  border-left: 3px solid var(--sage);
+  border-radius: 0 12px 12px 0;
+  padding: 16px 20px;
+  margin: 18px 0;
+  font-size: 14px;
+  color: var(--mid);
+  line-height: 1.7;
+}
+.highlight-box strong { color: var(--forest); }
+
+.section-divider { height: 1px; background: rgba(0,0,0,0.07); margin-bottom: 52px; }
+
+/* CONTACT BLOCK */
+.contact-block {
+  background: var(--forest);
+  border-radius: 20px;
+  padding: 32px;
+  margin-top: 40px;
+  color: #fff;
+}
+.contact-block h3 { font-family: 'Cormorant Garamond', serif; font-size: 24px; font-weight: 600; margin-bottom: 10px; }
+.contact-block p { font-size: 14px; color: rgba(255,255,255,0.6); line-height: 1.7; margin-bottom: 16px; }
+.contact-block a { color: var(--sage-light); text-decoration: none; font-weight: 600; }
+.contact-block a:hover { text-decoration: underline; }
+
+/* FOOTER */
+footer { background: var(--charcoal); padding: 40px 80px; }
+.footer-bottom { display: flex; justify-content: space-between; align-items: center; }
+.footer-bottom p { font-size: 12px; color: rgba(255,255,255,0.3); }
+.footer-links-row { display: flex; gap: 24px; }
+.footer-links-row a { font-size: 12px; color: rgba(255,255,255,0.35); text-decoration: none; transition: color 0.2s; }
+.footer-links-row a:hover { color: var(--sage-light); }
+
+@keyframes fadeUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="index.html" class="nav-logo">
+    <div class="nav-logo-leaf">🌿</div>
+    Active Aging Partners
+  </a>
+  <ul class="nav-links">
+    <li><a href="services.html">Services</a></li>
+    <li><a href="index.html#how">How It Works</a></li>
+    <li><a href="contact.html">Contact</a></li>
+  </ul>
+  <div class="nav-actions">
+    <a href="index.html" class="btn btn-outline">Log In</a>
+    <a href="index.html#signup" class="btn btn-clay">Sign Up Free</a>
+  </div>
+</nav>
+
+<section class="page-hero">
+  <div class="hero-inner">
+    <div class="page-eyebrow">Legal</div>
+    <h1 class="page-title">Privacy <em>Policy</em></h1>
+    <div class="page-meta">Effective date: January 1, 2026 &nbsp;·&nbsp; Last updated: January 1, 2026</div>
+  </div>
+</section>
+
+<div class="doc-layout">
+
+  <!-- TABLE OF CONTENTS -->
+  <aside class="toc">
+    <div class="toc-title">Contents</div>
+    <ul class="toc-list">
+      <li><a href="#s1">1. Information We Collect</a></li>
+      <li><a href="#s2">2. How We Use Your Information</a></li>
+      <li><a href="#s3">3. How We Share Information</a></li>
+      <li><a href="#s4">4. Data Storage & Security</a></li>
+      <li><a href="#s5">5. Cookies & Tracking</a></li>
+      <li><a href="#s6">6. Your Rights & Choices</a></li>
+      <li><a href="#s7">7. Children's Privacy</a></li>
+      <li><a href="#s8">8. Changes to This Policy</a></li>
+      <li><a href="#s9">9. Contact Us</a></li>
+    </ul>
+  </aside>
+
+  <!-- DOCUMENT BODY -->
+  <div class="doc-body">
+
+    <div class="highlight-box" style="margin-bottom:40px">
+      <strong>Plain English summary:</strong> We collect only what we need to operate our service — your name, email, and session information. We never sell your data. We use trusted third-party services (Firebase, Stripe) to keep your information secure. You can request deletion of your data at any time.
+    </div>
+
+    <p style="font-size:15px;line-height:1.85;color:var(--mid);margin-bottom:40px">Active Aging Partners ("we," "our," or "us") is committed to protecting your privacy. This Privacy Policy explains how we collect, use, and safeguard information when you use our website and services. By using our platform, you agree to the practices described below.</p>
+
+    <!-- SECTION 1 -->
+    <div class="doc-section" id="s1">
+      <span class="section-number">01</span>
+      <h2 class="section-title">Information <em>We Collect</em></h2>
+      <p>We collect information you provide directly to us, as well as certain information automatically when you use our platform.</p>
+      <p><strong>Information you provide:</strong></p>
+      <ul class="doc-list">
+        <li>Name, email address, and password when you create an account</li>
+        <li>Phone number if provided for SMS notifications</li>
+        <li>Information about the senior client in your care (name, address, health notes relevant to service delivery)</li>
+        <li>Payment information processed securely through Stripe — we do not store full card numbers</li>
+        <li>Messages sent through our platform between clients and staff</li>
+        <li>Any information submitted through our contact form</li>
+      </ul>
+      <p><strong>Information collected automatically:</strong></p>
+      <ul class="doc-list">
+        <li>Log data such as browser type, pages visited, and time of access</li>
+        <li>Device information including operating system and screen size</li>
+        <li>IP address and approximate location (city/region level)</li>
+      </ul>
+    </div>
+    <div class="section-divider"></div>
+
+    <!-- SECTION 2 -->
+    <div class="doc-section" id="s2">
+      <span class="section-number">02</span>
+      <h2 class="section-title">How We Use <em>Your Information</em></h2>
+      <p>We use the information we collect solely to provide, maintain, and improve our services. Specifically, we use your information to:</p>
+      <ul class="doc-list">
+        <li>Create and manage your account</li>
+        <li>Schedule, confirm, and deliver sessions</li>
+        <li>Send session reports, invoices, and notifications</li>
+        <li>Process payments through Stripe</li>
+        <li>Respond to your questions and support requests</li>
+        <li>Send SMS and email reminders (only if you have opted in)</li>
+        <li>Improve the quality and reliability of our services</li>
+        <li>Comply with legal obligations</li>
+      </ul>
+      <div class="highlight-box">
+        <strong>We do not sell, rent, or trade your personal information to third parties for marketing purposes — ever.</strong>
+      </div>
+    </div>
+    <div class="section-divider"></div>
+
+    <!-- SECTION 3 -->
+    <div class="doc-section" id="s3">
+      <span class="section-number">03</span>
+      <h2 class="section-title">How We Share <em>Information</em></h2>
+      <p>We share your information only in the following limited circumstances:</p>
+      <ul class="doc-list">
+        <li><strong>Service providers:</strong> We use Firebase (Google) for authentication and data storage, and Stripe for payment processing. These providers have their own privacy policies and security standards.</li>
+        <li><strong>Within your care team:</strong> Information about a senior client may be shared between the client, their designated family contacts, and Active Aging Partners staff as necessary to deliver services.</li>
+        <li><strong>Legal requirements:</strong> We may disclose your information if required by law, court order, or government authority.</li>
+        <li><strong>Business transfers:</strong> In the event of a merger, acquisition, or sale of assets, your information may be transferred. We will notify you before your information is subject to a different privacy policy.</li>
+      </ul>
+    </div>
+    <div class="section-divider"></div>
+
+    <!-- SECTION 4 -->
+    <div class="doc-section" id="s4">
+      <span class="section-number">04</span>
+      <h2 class="section-title">Data Storage <em>& Security</em></h2>
+      <p>Your data is stored securely using Google Firebase, which provides industry-standard encryption in transit and at rest. Payment data is handled exclusively by Stripe, a PCI-compliant payment processor — we never store full credit card numbers on our servers.</p>
+      <p>We take reasonable technical and organizational measures to protect your information against unauthorized access, alteration, disclosure, or destruction. However, no method of transmission over the internet is 100% secure, and we cannot guarantee absolute security.</p>
+      <p>We retain your personal information for as long as your account is active or as needed to provide services. You may request deletion of your account and associated data at any time by contacting us.</p>
+    </div>
+    <div class="section-divider"></div>
+
+    <!-- SECTION 5 -->
+    <div class="doc-section" id="s5">
+      <span class="section-number">05</span>
+      <h2 class="section-title">Cookies <em>& Tracking</em></h2>
+      <p>Our website uses cookies and similar technologies to maintain your login session and remember your preferences. We do not use third-party advertising cookies or behavioral tracking.</p>
+      <ul class="doc-list">
+        <li><strong>Session cookies:</strong> Used to keep you logged in during your visit. These expire when you close your browser or log out.</li>
+        <li><strong>Preference cookies:</strong> Used to remember settings like notification preferences.</li>
+      </ul>
+      <p>You can control cookies through your browser settings. Disabling cookies may affect your ability to log in and use certain features of the platform.</p>
+    </div>
+    <div class="section-divider"></div>
+
+    <!-- SECTION 6 -->
+    <div class="doc-section" id="s6">
+      <span class="section-number">06</span>
+      <h2 class="section-title">Your Rights <em>& Choices</em></h2>
+      <p>You have the following rights regarding your personal information:</p>
+      <ul class="doc-list">
+        <li><strong>Access:</strong> You can view and update most of your account information directly in your client portal under My Profile.</li>
+        <li><strong>Correction:</strong> You can correct inaccurate information in your profile at any time.</li>
+        <li><strong>Deletion:</strong> You can request deletion of your account and all associated personal data by contacting us at cynthia@breakingin.org.</li>
+        <li><strong>Notification opt-out:</strong> You can manage SMS and email notification preferences from your portal's Notifications settings at any time.</li>
+        <li><strong>Data portability:</strong> You may request a copy of your personal data in a readable format.</li>
+      </ul>
+      <p>To exercise any of these rights, please contact us using the information in Section 9 below. We will respond to all requests within 30 days.</p>
+    </div>
+    <div class="section-divider"></div>
+
+    <!-- SECTION 7 -->
+    <div class="doc-section" id="s7">
+      <span class="section-number">07</span>
+      <h2 class="section-title">Children's <em>Privacy</em></h2>
+      <p>Our services are designed for adults and are not directed to individuals under the age of 18. We do not knowingly collect personal information from children under 18. If we become aware that we have inadvertently collected such information, we will take steps to delete it promptly. If you believe a minor has provided us with personal information, please contact us immediately.</p>
+    </div>
+    <div class="section-divider"></div>
+
+    <!-- SECTION 8 -->
+    <div class="doc-section" id="s8">
+      <span class="section-number">08</span>
+      <h2 class="section-title">Changes to <em>This Policy</em></h2>
+      <p>We may update this Privacy Policy from time to time to reflect changes in our practices or for legal, operational, or regulatory reasons. When we make material changes, we will notify you by email and update the "Last updated" date at the top of this page.</p>
+      <p>We encourage you to review this policy periodically. Your continued use of our services after any changes constitutes your acceptance of the updated policy.</p>
+    </div>
+    <div class="section-divider"></div>
+
+    <!-- SECTION 9 -->
+    <div class="doc-section" id="s9">
+      <span class="section-number">09</span>
+      <h2 class="section-title">Contact <em>Us</em></h2>
+      <p>If you have any questions, concerns, or requests regarding this Privacy Policy or how we handle your data, please reach out to us.</p>
+      <div class="contact-block">
+        <h3>Get in touch</h3>
+        <p>We're happy to answer any questions about your privacy or how your data is used. We respond to all privacy-related inquiries within 24 business hours.</p>
+        <p>Email: <a href="mailto:cynthia@breakingin.org">cynthia@breakingin.org</a><br>
+        Or use our <a href="contact.html">contact form</a>.<br>
+        Active Aging Partners · Atlanta, Georgia</p>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<footer>
+  <div class="footer-bottom">
+    <p>© 2026 Active Aging Partners · Atlanta, Georgia</p>
+    <div class="footer-links-row">
+      <a href="index.html">Home</a>
+      <a href="services.html">Services</a>
+      <a href="privacy-policy.html">Privacy Policy</a>
+      <a href="terms-of-service.html">Terms of Service</a>
+    </div>
+  </div>
+</footer>
+
+<script>
+  // Scroll-triggered section reveal
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+  }, { threshold: 0.1 });
+  document.querySelectorAll('.doc-section').forEach(el => observer.observe(el));
+
+  // Active TOC highlight
+  const sections = document.querySelectorAll('.doc-section');
+  const tocLinks = document.querySelectorAll('.toc-list a');
+  window.addEventListener('scroll', () => {
+    let current = '';
+    sections.forEach(s => { if (window.scrollY >= s.offsetTop - 140) current = s.id; });
+    tocLinks.forEach(a => {
+      a.classList.toggle('active', a.getAttribute('href') === '#' + current);
+    });
+  });
+</script>
+</body>
+</html>
