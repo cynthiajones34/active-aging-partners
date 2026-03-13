@@ -1009,6 +1009,11 @@ function saveToast(msg='Changes saved!') { showToast('✓ ' + msg); }
       window.location.href = 'index.html';
       return;
     }
+    // Guard: must have verified email
+    if (!user.emailVerified) {
+      window.location.href = 'verify-email.html';
+      return;
+    }
     // ✅ Logged in — show real name and initials in sidebar
     const displayName = user.displayName || user.email;
     const initials = displayName
@@ -1029,7 +1034,7 @@ function saveToast(msg='Changes saved!') { showToast('✓ ' + msg); }
   // Logout
   window.doLogout = async function() {
     await signOut(auth);
-    window.location.href = 'index.html';
+    window.location.href = 'logout.html';
   };
 </script>
 </body>
