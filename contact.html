@@ -542,4 +542,16 @@ footer { background: var(--charcoal); padding: 40px 80px; }
       btn.disabled = true;
     } else {
       btn.innerHTML = btn.dataset.original || 'Send Message →';
-      btn.disabled = f
+      btn.disabled = false;
+    }
+  }
+
+  function showToast(msg) {
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.classList.add('show');
+    setTimeout(() => t.classList.remove('show'), 3500);
+  }
+</script>
+</body>
+</html>
