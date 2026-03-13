@@ -548,7 +548,7 @@ footer { background: var(--charcoal); padding: 40px 80px; }
         </select>
       </div>
       <div class="form-group"><label class="form-label">Password</label><input type="password" class="form-input" id="sv-password" placeholder="Create a password (min 6 chars)"></div>
-      <div class="check-row" style="margin:16px 0 8px"><input type="checkbox" id="sv-terms" checked><label for="sv-terms">I agree to the <a href="#" style="color:var(--forest)">Terms of Service</a> and <a href="#" style="color:var(--forest)">Privacy Policy</a></label></div>
+      <div class="check-row" style="margin:16px 0 8px"><input type="checkbox" id="sv-terms" checked><label for="sv-terms">I agree to the <a href="terms-of-service.html" style="color:var(--forest)">Terms of Service</a> and <a href="privacy-policy.html" style="color:var(--forest)">Privacy Policy</a></label></div>
       <div class="check-row"><input type="checkbox" id="sv-sms" checked><label for="sv-sms">Send me SMS reminders and session notifications</label></div>
       <button class="btn btn-solid btn-full" id="sv-btn" style="margin-top:18px" onclick="servicesSignup()">
         Create My Account & Get Started →
@@ -566,7 +566,9 @@ footer { background: var(--charcoal); padding: 40px 80px; }
       <a href="index.html">Home</a>
       <a href="services.html">Services</a>
       <a href="contact.html">Contact</a>
-      <a href="#signup">Sign Up</a>
+      <a href="index.html#signup">Sign Up</a>
+      <a href="privacy-policy.html">Privacy Policy</a>
+      <a href="terms-of-service.html">Terms of Service</a>
     </div>
   </div>
 </footer>
@@ -584,7 +586,7 @@ footer { background: var(--charcoal); padding: 40px 80px; }
 <!-- FIREBASE AUTH -->
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-  import { getAuth, createUserWithEmailAndPassword, updateProfile }
+  import { getAuth, createUserWithEmailAndPassword, updateProfile, sendEmailVerification }
     from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
 
   const firebaseConfig = {
@@ -617,8 +619,9 @@ footer { background: var(--charcoal); padding: 40px 80px; }
     try {
       const result = await createUserWithEmailAndPassword(auth, email, password);
       await updateProfile(result.user, { displayName: `${first} ${last}` });
-      showToast('🌿 Welcome! Redirecting to your portal…');
-      setTimeout(() => { window.location.href = 'client-portal.html'; }, 1000);
+      await sendEmailVerification(result.user);
+      showToast('🌿 Welcome! Check your email to verify your account.');
+      setTimeout(() => { window.location.href = 'verify-email.html'; }, 1000);
     } catch (err) {
       setLoading(btn, false);
       showError(errorEl, friendlyError(err.code));
