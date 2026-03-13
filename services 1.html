@@ -1,0 +1,659 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Our Services — Active Aging Partners</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Jost:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --forest: #2d4a32;
+  --sage: #7a9e7e;
+  --sage-light: #b8d4bb;
+  --cream: #f8f4ed;
+  --warm: #fdf9f3;
+  --sand: #e8dfc8;
+  --clay: #c4845a;
+  --clay-light: #e8b494;
+  --charcoal: #1e2820;
+  --mid: #607060;
+  --gold: #c9a84c;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body { font-family: 'Jost', sans-serif; background: var(--warm); color: var(--charcoal); overflow-x: hidden; }
+
+/* ===== NAV ===== */
+nav { position: fixed; top: 0; left: 0; right: 0; z-index: 100; padding: 20px 60px; display: flex; align-items: center; justify-content: space-between; background: rgba(248,244,237,0.95); backdrop-filter: blur(12px); box-shadow: 0 2px 20px rgba(0,0,0,0.07); }
+.nav-logo { font-family: 'Cormorant Garamond', serif; font-size: 22px; font-weight: 600; color: var(--forest); display: flex; align-items: center; gap: 10px; text-decoration: none; }
+.nav-logo-leaf { width: 32px; height: 32px; background: linear-gradient(135deg, var(--sage), var(--forest)); border-radius: 50% 50% 50% 10%; transform: rotate(-30deg); display: flex; align-items: center; justify-content: center; font-size: 14px; flex-shrink: 0; }
+.nav-links { display: flex; align-items: center; gap: 36px; list-style: none; }
+.nav-links a { text-decoration: none; color: var(--forest); font-size: 14px; font-weight: 500; letter-spacing: 0.04em; opacity: 0.75; transition: opacity 0.2s; }
+.nav-links a:hover, .nav-links a.active { opacity: 1; }
+.nav-actions { display: flex; gap: 12px; align-items: center; }
+.btn { font-family: 'Jost', sans-serif; font-size: 13px; font-weight: 600; padding: 10px 22px; border-radius: 50px; border: none; cursor: pointer; letter-spacing: 0.04em; text-decoration: none; display: inline-flex; align-items: center; gap: 8px; transition: all 0.25s; }
+.btn-outline { background: transparent; border: 1.5px solid var(--forest); color: var(--forest); }
+.btn-outline:hover { background: var(--forest); color: #fff; }
+.btn-solid { background: var(--forest); color: #fff; box-shadow: 0 4px 14px rgba(45,74,50,0.3); }
+.btn-solid:hover { background: var(--sage); transform: translateY(-1px); }
+.btn-clay { background: var(--clay); color: #fff; box-shadow: 0 4px 14px rgba(196,132,90,0.35); }
+.btn-clay:hover { transform: translateY(-1px); box-shadow: 0 6px 18px rgba(196,132,90,0.45); }
+.btn-lg { padding: 15px 36px; font-size: 15px; }
+
+/* ===== PAGE HERO ===== */
+.page-hero {
+  padding: 140px 80px 90px;
+  background: var(--forest);
+  position: relative;
+  overflow: hidden;
+}
+.page-hero::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse at 80% 30%, rgba(122,158,126,0.2) 0%, transparent 55%),
+    radial-gradient(ellipse at 15% 90%, rgba(201,168,76,0.08) 0%, transparent 50%);
+}
+.page-hero::after {
+  content: '';
+  position: absolute;
+  bottom: -1px; left: 0; right: 0;
+  height: 60px;
+  background: var(--warm);
+  clip-path: ellipse(55% 100% at 50% 100%);
+}
+.page-hero-inner {
+  position: relative;
+  max-width: 780px;
+  opacity: 0;
+  animation: fadeUp 0.8s 0.2s forwards;
+  text-align: center;
+  margin: 0 auto;
+}
+.page-eyebrow { font-size: 11px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--sage-light); margin-bottom: 16px; }
+.page-title { font-family: 'Cormorant Garamond', serif; font-size: clamp(44px, 5vw, 68px); font-weight: 600; color: #fff; line-height: 1.1; margin-bottom: 22px; }
+.page-title em { font-style: italic; color: var(--sage-light); }
+.page-desc { font-size: 17px; line-height: 1.75; color: rgba(255,255,255,0.6); max-width: 580px; margin-bottom: 36px; }
+.hero-price-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  background: rgba(255,255,255,0.1);
+  border: 1px solid rgba(255,255,255,0.18);
+  border-radius: 50px;
+  padding: 10px 20px;
+  font-size: 14px;
+  color: rgba(255,255,255,0.85);
+}
+.hero-price-pill strong { color: #fff; }
+
+/* ===== SERVICE SECTIONS ===== */
+.services-wrap { padding: 80px 80px 20px; max-width: 1300px; margin: 0 auto; }
+
+.service-section {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 70px;
+  align-items: center;
+  padding: 60px 0;
+  border-bottom: 1px solid rgba(0,0,0,0.07);
+  opacity: 0;
+  transform: translateY(24px);
+  transition: opacity 0.7s ease, transform 0.7s ease;
+}
+.service-section.visible { opacity: 1; transform: translateY(0); }
+.service-section:last-child { border-bottom: none; }
+.service-section.reverse { direction: rtl; }
+.service-section.reverse > * { direction: ltr; }
+
+/* Visual panel */
+.service-visual {
+  border-radius: 24px;
+  overflow: hidden;
+  position: relative;
+  aspect-ratio: 4/3;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.sv-green { background: linear-gradient(135deg, #1e3822 0%, #2d4a32 40%, #4a7a50 100%); }
+.sv-clay  { background: linear-gradient(135deg, #7a3a1e 0%, #c4845a 50%, #e8b494 100%); }
+.sv-gold  { background: linear-gradient(135deg, #5a4010 0%, #c9a84c 50%, #e8d080 100%); }
+
+.sv-pattern {
+  position: absolute;
+  inset: 0;
+  opacity: 0.08;
+  background-image: radial-gradient(circle, #fff 1px, transparent 1px);
+  background-size: 28px 28px;
+}
+.sv-icon-wrap {
+  position: relative;
+  z-index: 2;
+  text-align: center;
+}
+.sv-icon { font-size: 80px; display: block; margin-bottom: 16px; filter: drop-shadow(0 8px 24px rgba(0,0,0,0.3)); }
+.sv-label {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 28px;
+  font-weight: 600;
+  color: rgba(255,255,255,0.9);
+  letter-spacing: 0.02em;
+}
+
+/* Price badge */
+.sv-price-badge {
+  position: absolute;
+  bottom: 20px;
+  right: 20px;
+  background: rgba(255,255,255,0.15);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255,255,255,0.25);
+  border-radius: 14px;
+  padding: 10px 16px;
+  text-align: center;
+  color: #fff;
+}
+.sv-price-badge .amount { font-family: 'Cormorant Garamond', serif; font-size: 28px; font-weight: 700; display: block; line-height: 1; }
+.sv-price-badge .unit { font-size: 11px; opacity: 0.7; letter-spacing: 0.06em; }
+
+/* Text panel */
+.service-text {}
+.service-number {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 72px;
+  font-weight: 700;
+  line-height: 1;
+  color: rgba(0,0,0,0.05);
+  margin-bottom: -20px;
+  display: block;
+}
+.service-eyebrow { font-size: 11px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--clay); margin-bottom: 10px; }
+.service-title { font-family: 'Cormorant Garamond', serif; font-size: clamp(32px, 3vw, 44px); font-weight: 600; line-height: 1.15; margin-bottom: 18px; }
+.service-title em { font-style: italic; color: var(--sage); }
+.service-desc { font-size: 15px; line-height: 1.8; color: var(--mid); margin-bottom: 28px; }
+
+.includes-list { list-style: none; margin-bottom: 28px; display: flex; flex-direction: column; gap: 10px; }
+.includes-list li {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  font-size: 14px;
+  color: var(--charcoal);
+  line-height: 1.5;
+}
+.includes-list li::before {
+  content: '✓';
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: rgba(45,74,50,0.1);
+  color: var(--forest);
+  font-size: 11px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+
+.mileage-note {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  background: rgba(201,168,76,0.08);
+  border-left: 3px solid var(--gold);
+  border-radius: 0 10px 10px 0;
+  padding: 12px 14px;
+  font-size: 13px;
+  color: var(--mid);
+  line-height: 1.6;
+  margin-bottom: 28px;
+}
+.mileage-note strong { color: var(--charcoal); }
+
+/* ===== PRICING BANNER ===== */
+.pricing-banner {
+  background: var(--sand);
+  padding: 60px 80px;
+  text-align: center;
+  margin: 40px 0 0;
+}
+.pb-eyebrow { font-size: 11px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--clay); margin-bottom: 14px; }
+.pb-title { font-family: 'Cormorant Garamond', serif; font-size: 42px; font-weight: 600; margin-bottom: 10px; }
+.pb-title em { font-style: italic; color: var(--sage); }
+.pb-sub { font-size: 15px; color: var(--mid); margin-bottom: 44px; }
+.pricing-cards { display: flex; justify-content: center; gap: 20px; flex-wrap: wrap; }
+.pricing-card {
+  background: #fff;
+  border-radius: 20px;
+  padding: 30px 28px;
+  min-width: 220px;
+  border: 1.5px solid rgba(0,0,0,0.07);
+  box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+  text-align: left;
+}
+.pc-icon { font-size: 28px; margin-bottom: 14px; display: block; }
+.pc-service { font-size: 12px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--mid); margin-bottom: 6px; }
+.pc-rate { font-family: 'Cormorant Garamond', serif; font-size: 38px; font-weight: 700; color: var(--forest); line-height: 1; margin-bottom: 2px; }
+.pc-unit { font-size: 13px; color: var(--mid); margin-bottom: 12px; }
+.pc-note { font-size: 12px; color: var(--mid); line-height: 1.5; padding-top: 12px; border-top: 1px solid rgba(0,0,0,0.07); }
+
+/* ===== FAQ ===== */
+.faq-section {
+  background: var(--forest);
+  padding: 80px 80px;
+}
+.faq-inner { max-width: 1120px; margin: 0 auto; }
+.faq-header { text-align: center; margin-bottom: 50px; }
+.faq-eyebrow { font-size: 11px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--sage-light); margin-bottom: 12px; }
+.faq-title { font-family: 'Cormorant Garamond', serif; font-size: 40px; font-weight: 600; color: #fff; }
+.faq-title em { font-style: italic; color: var(--sage-light); }
+.faq-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+.faq-item { background: rgba(255,255,255,0.06); border-radius: 16px; padding: 24px; border: 1px solid rgba(255,255,255,0.08); }
+.faq-q { font-size: 15px; font-weight: 600; color: #fff; margin-bottom: 10px; line-height: 1.4; }
+.faq-a { font-size: 13px; line-height: 1.75; color: rgba(255,255,255,0.55); }
+
+/* ===== SIGNUP CTA ===== */
+.signup-cta {
+  padding: 100px 80px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 80px;
+  align-items: center;
+  max-width: 1300px;
+  margin: 0 auto;
+}
+.cta-text {}
+.cta-eyebrow { font-size: 11px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--clay); margin-bottom: 14px; }
+.cta-title { font-family: 'Cormorant Garamond', serif; font-size: clamp(36px, 4vw, 50px); font-weight: 600; line-height: 1.15; margin-bottom: 20px; }
+.cta-title em { font-style: italic; color: var(--sage); }
+.cta-body { font-size: 15px; line-height: 1.8; color: var(--mid); margin-bottom: 32px; }
+.cta-checks { display: flex; flex-direction: column; gap: 12px; }
+.cta-check { display: flex; align-items: center; gap: 12px; font-size: 14px; color: var(--mid); }
+.cta-check-dot { width: 28px; height: 28px; border-radius: 50%; background: rgba(45,74,50,0.1); display: flex; align-items: center; justify-content: center; flex-shrink: 0; font-size: 13px; }
+
+.signup-form-card {
+  background: #fff;
+  border-radius: 24px;
+  padding: 44px;
+  box-shadow: 0 8px 40px rgba(0,0,0,0.08);
+  border: 1px solid rgba(0,0,0,0.05);
+}
+.sfc-title { font-family: 'Cormorant Garamond', serif; font-size: 28px; font-weight: 600; margin-bottom: 6px; }
+.sfc-sub { font-size: 13px; color: var(--mid); margin-bottom: 26px; }
+.form-group { margin-bottom: 14px; }
+.form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 14px; }
+.form-label { font-size: 11px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--mid); display: block; margin-bottom: 6px; }
+.form-input { width: 100%; padding: 11px 14px; border-radius: 10px; border: 1.5px solid rgba(0,0,0,0.1); font-family: 'Jost', sans-serif; font-size: 14px; background: var(--warm); outline: none; transition: border-color 0.2s, box-shadow 0.2s; }
+.form-input:focus { border-color: var(--sage); box-shadow: 0 0 0 3px rgba(122,158,126,0.15); background: #fff; }
+.form-select { width: 100%; padding: 11px 14px; border-radius: 10px; border: 1.5px solid rgba(0,0,0,0.1); font-family: 'Jost', sans-serif; font-size: 14px; background: var(--warm); outline: none; appearance: none; }
+.form-select:focus { border-color: var(--sage); }
+.check-row { display: flex; align-items: flex-start; gap: 10px; margin-bottom: 10px; font-size: 13px; color: var(--mid); }
+.check-row input[type=checkbox] { margin-top: 2px; accent-color: var(--sage); }
+.btn-full { width: 100%; justify-content: center; border-radius: 12px; padding: 14px; font-size: 15px; }
+
+/* ===== FOOTER ===== */
+footer { background: var(--charcoal); padding: 40px 80px; }
+.footer-bottom { display: flex; justify-content: space-between; align-items: center; }
+.footer-bottom p { font-size: 12px; color: rgba(255,255,255,0.3); }
+.footer-links-row { display: flex; gap: 24px; }
+.footer-links-row a { font-size: 12px; color: rgba(255,255,255,0.35); text-decoration: none; transition: color 0.2s; }
+.footer-links-row a:hover { color: var(--sage-light); }
+
+@keyframes fadeUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+
+.toast { position: fixed; bottom: 30px; right: 30px; background: var(--forest); color: #fff; padding: 14px 22px; border-radius: 14px; font-size: 14px; font-weight: 500; box-shadow: 0 8px 30px rgba(0,0,0,0.2); z-index: 1000; transform: translateY(80px); opacity: 0; transition: all 0.4s; }
+.toast.show { transform: translateY(0); opacity: 1; }
+
+/* Auth error */
+.auth-error { background: rgba(200,60,60,0.08); border: 1px solid rgba(200,60,60,0.2); color: #b03030; border-radius: 8px; padding: 10px 12px; font-size: 13px; margin-bottom: 14px; display: none; }
+.spinner { display: inline-block; width: 14px; height: 14px; border: 2px solid rgba(255,255,255,0.4); border-top-color: #fff; border-radius: 50%; animation: spin 0.7s linear infinite; }
+@keyframes spin { to { transform: rotate(360deg); } }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a href="index.html" class="nav-logo">
+    <div class="nav-logo-leaf">🌿</div>
+    Active Aging Partners
+  </a>
+  <ul class="nav-links">
+    <li><a href="services.html" class="active">Services</a></li>
+    <li><a href="index.html#how">How It Works</a></li>
+    <li><a href="index.html#testimonials">Stories</a></li>
+    <li><a href="contact.html">Contact</a></li>
+  </ul>
+  <div class="nav-actions">
+    <a href="index.html" class="btn btn-outline">Log In</a>
+    <a href="#signup" class="btn btn-clay">Sign Up Free</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="page-hero">
+  <div class="page-hero-inner">
+    <div class="page-eyebrow">What We Offer</div>
+    <h1 class="page-title">Services built around<br><em>living fully</em></h1>
+    <p class="page-desc" style="margin-left:auto;margin-right:auto;">Every service we offer is designed with one goal in mind — keeping the seniors we serve active, independent, and genuinely cared for. No contracts, no commitments, just thoughtful, reliable companionship.</p>
+    <div style="display:flex;justify-content:center;">
+    <div class="hero-price-pill">
+      <span>💚</span>
+      <span><strong>$50 / hour</strong> · All services · Gas surcharge applies for transport</span>
+    </div>
+    </div>
+  </div>
+</section>
+
+<!-- SERVICES -->
+<div class="services-wrap">
+
+  <!-- SERVICE 1: WALKING -->
+  <div class="service-section" id="walking">
+    <div class="service-visual sv-green">
+      <div class="sv-pattern"></div>
+      <div class="sv-icon-wrap">
+        <span class="sv-icon">🚶</span>
+        <div class="sv-label">Walking & Wellness</div>
+      </div>
+      <div class="sv-price-badge">
+        <span class="amount">$50</span>
+        <span class="unit">PER HOUR</span>
+      </div>
+    </div>
+    <div class="service-text">
+      <span class="service-number">01</span>
+      <div class="service-eyebrow">Movement & Connection</div>
+      <h2 class="service-title">Walking &<br><em>Wellness Sessions</em></h2>
+      <p class="service-desc">Regular movement is one of the most powerful things a senior can do for their physical and mental health. Our walking sessions pair your loved one with a caring companion for a structured, enjoyable outing — at whatever pace feels right.</p>
+      <ul class="includes-list">
+        <li>Neighborhood walks, local parks, and nature trails across our service area</li>
+        <li>Companionship, conversation, and gentle encouragement throughout</li>
+        <li>Pace and duration tailored to your loved one's comfort and ability</li>
+        <li>Detailed session report sent after every visit — mood, distance, highlights</li>
+        <li>SMS and email reminders for both client and family contact</li>
+      </ul>
+      <a href="#signup" class="btn btn-solid btn-lg">Get Started Free →</a>
+    </div>
+  </div>
+
+  <!-- SERVICE 2: MEDICAL APPOINTMENTS -->
+  <div class="service-section reverse" id="medical">
+    <div class="service-visual sv-clay">
+      <div class="sv-pattern"></div>
+      <div class="sv-icon-wrap">
+        <span class="sv-icon">🏥</span>
+        <div class="sv-label">Medical Appointments</div>
+      </div>
+      <div class="sv-price-badge">
+        <span class="amount">$50</span>
+        <span class="unit">PER HOUR + MILEAGE</span>
+      </div>
+    </div>
+    <div class="service-text">
+      <span class="service-number">02</span>
+      <div class="service-eyebrow">Safe, Reliable Transport</div>
+      <h2 class="service-title">Medical<br><em>Appointment Support</em></h2>
+      <p class="service-desc">Getting to a doctor's appointment shouldn't be stressful. We provide safe, reliable transport and attentive companionship for medical visits — so your loved one arrives calm, on time, and with someone by their side.</p>
+      <ul class="includes-list">
+        <li>Safe door-to-door transport to doctor, specialist, and therapy appointments</li>
+        <li>Companion stays throughout the visit — takes notes, asks questions if needed</li>
+        <li>Post-appointment summary included in session report to family</li>
+        <li>Prescription and pharmacy pickup can be added to any appointment trip</li>
+        <li>Gentle, patient approach for seniors who find appointments stressful</li>
+      </ul>
+      <div class="mileage-note">
+        <span style="font-size:18px;flex-shrink:0">⛽</span>
+        <div><strong>Gas surcharge:</strong> A mileage fee of $0.67/mile (current IRS rate) is added for miles driven on your behalf, calculated from your loved one's home and back. Always itemized clearly on your invoice.</div>
+      </div>
+      <a href="#signup" class="btn btn-solid btn-lg">Get Started Free →</a>
+    </div>
+  </div>
+
+  <!-- SERVICE 3: ERRANDS -->
+  <div class="service-section" id="errands">
+    <div class="service-visual sv-gold">
+      <div class="sv-pattern"></div>
+      <div class="sv-icon-wrap">
+        <span class="sv-icon">🛒</span>
+        <div class="sv-label">Errands & Outings</div>
+      </div>
+      <div class="sv-price-badge">
+        <span class="amount">$50</span>
+        <span class="unit">PER HOUR + MILEAGE</span>
+      </div>
+    </div>
+    <div class="service-text">
+      <span class="service-number">03</span>
+      <div class="service-eyebrow">Independence, Maintained</div>
+      <h2 class="service-title">Errands &<br><em>Community Outings</em></h2>
+      <p class="service-desc">The small things add up. Groceries, prescriptions, hair appointments, the dry cleaner — we handle the errands that keep life running, so your loved one stays independent and you stay worry-free.</p>
+      <ul class="includes-list">
+        <li>Grocery shopping at your loved one's preferred store</li>
+        <li>Pharmacy runs and prescription pickups</li>
+        <li>Personal care appointments — hair, nails, and more</li>
+        <li>Any other errands or outings that support daily independence</li>
+        <li>Session report after every trip with full details for the family</li>
+      </ul>
+      <div class="mileage-note">
+        <span style="font-size:18px;flex-shrink:0">⛽</span>
+        <div><strong>Gas surcharge:</strong> A mileage fee of $0.67/mile (current IRS rate) is added for miles driven on your behalf, calculated from your loved one's home and back. Always itemized clearly on your invoice.</div>
+      </div>
+      <a href="#signup" class="btn btn-solid btn-lg">Get Started Free →</a>
+    </div>
+  </div>
+
+</div>
+
+<!-- PRICING BANNER -->
+<section class="pricing-banner">
+  <div class="pb-eyebrow">Simple, Transparent Pricing</div>
+  <h2 class="pb-title">One rate. <em>No surprises.</em></h2>
+  <p class="pb-sub">Every service is billed at the same hourly rate. Transport services include a clearly itemized mileage surcharge.</p>
+  <div class="pricing-cards">
+    <div class="pricing-card">
+      <span class="pc-icon">🚶</span>
+      <div class="pc-service">Walking & Wellness</div>
+      <div class="pc-rate">$50</div>
+      <div class="pc-unit">per hour</div>
+      <div class="pc-note">No mileage surcharge. Billed in full-hour increments.</div>
+    </div>
+    <div class="pricing-card">
+      <span class="pc-icon">🏥</span>
+      <div class="pc-service">Medical Appointments</div>
+      <div class="pc-rate">$50</div>
+      <div class="pc-unit">per hour + $0.67/mile</div>
+      <div class="pc-note">Mileage calculated from client's home to destination and back.</div>
+    </div>
+    <div class="pricing-card">
+      <span class="pc-icon">🛒</span>
+      <div class="pc-service">Errands & Outings</div>
+      <div class="pc-rate">$50</div>
+      <div class="pc-unit">per hour + $0.67/mile</div>
+      <div class="pc-note">Mileage calculated from client's home to destination and back.</div>
+    </div>
+  </div>
+</section>
+
+<!-- FAQ -->
+<section class="faq-section">
+  <div class="faq-inner">
+    <div class="faq-header">
+      <div class="faq-eyebrow">Common Questions</div>
+      <h2 class="faq-title">Good questions <em>deserve good answers</em></h2>
+    </div>
+    <div class="faq-grid">
+      <div class="faq-item">
+        <div class="faq-q">How much does a session cost?</div>
+        <div class="faq-a">All services are $50/hour. Transport and errand sessions include a $0.67/mile gas surcharge for miles driven on your behalf, itemized on every invoice.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q">How do I book a session?</div>
+        <div class="faq-a">Once you create a free account, you can book directly from your client portal. Pick your service, choose a date and time, and you're all set.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q">What happens after each visit?</div>
+        <div class="faq-a">You'll receive a detailed session report by email — including mood, activities, miles walked, and any notes. Family members can also access reports in the portal anytime.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q">Do I need to commit to a schedule?</div>
+        <div class="faq-a">Not at all. You can book one session at a time, or set up a recurring schedule — whatever works best for your family.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q">How do payments work?</div>
+        <div class="faq-a">Invoices are sent automatically after each session via Stripe. You can pay securely by card directly from your email or client portal.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q">Are you background checked?</div>
+        <div class="faq-a">Yes. All Active Aging Partners staff are fully background checked. Your loved one's safety and your peace of mind are our first priority.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SIGNUP CTA -->
+<section id="signup">
+  <div class="signup-cta">
+    <div class="cta-text">
+      <div class="cta-eyebrow">Ready to Begin?</div>
+      <h2 class="cta-title">Give your loved one the gift of <em>movement</em></h2>
+      <p class="cta-body">Join families across Atlanta who trust Active Aging Partners to keep their loved ones active, independent, and genuinely cared for — one session at a time.</p>
+      <div class="cta-checks">
+        <div class="cta-check"><div class="cta-check-dot">✓</div> No commitment — book one session at a time</div>
+        <div class="cta-check"><div class="cta-check-dot">✓</div> Detailed session reports after every visit</div>
+        <div class="cta-check"><div class="cta-check-dot">✓</div> Secure Stripe invoicing — no surprise charges</div>
+        <div class="cta-check"><div class="cta-check-dot">✓</div> SMS & email reminders for every session</div>
+      </div>
+    </div>
+
+    <div class="signup-form-card">
+      <div class="sfc-title">Create Your Account</div>
+      <div class="sfc-sub">Free to join. Pay only when you book.</div>
+      <div id="signup-error" class="auth-error"></div>
+      <div class="form-row">
+        <div><label class="form-label">First Name</label><input type="text" class="form-input" id="sv-first" placeholder="First"></div>
+        <div><label class="form-label">Last Name</label><input type="text" class="form-input" id="sv-last" placeholder="Last"></div>
+      </div>
+      <div class="form-group"><label class="form-label">Email Address</label><input type="email" class="form-input" id="sv-email" placeholder="you@example.com"></div>
+      <div class="form-group">
+        <label class="form-label">I am signing up as…</label>
+        <select class="form-select" id="sv-role">
+          <option>Family member / Adult child</option>
+          <option>Senior client (for myself)</option>
+        </select>
+      </div>
+      <div class="form-group"><label class="form-label">Password</label><input type="password" class="form-input" id="sv-password" placeholder="Create a password (min 6 chars)"></div>
+      <div class="check-row" style="margin:16px 0 8px"><input type="checkbox" id="sv-terms" checked><label for="sv-terms">I agree to the <a href="#" style="color:var(--forest)">Terms of Service</a> and <a href="#" style="color:var(--forest)">Privacy Policy</a></label></div>
+      <div class="check-row"><input type="checkbox" id="sv-sms" checked><label for="sv-sms">Send me SMS reminders and session notifications</label></div>
+      <button class="btn btn-solid btn-full" id="sv-btn" style="margin-top:18px" onclick="servicesSignup()">
+        Create My Account & Get Started →
+      </button>
+      <div style="text-align:center;margin-top:14px;font-size:13px;color:var(--mid)">Already have an account? <a href="index.html" style="color:var(--forest);font-weight:600">Log in here</a></div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-bottom">
+    <p>© 2026 Active Aging Partners · Atlanta, Georgia</p>
+    <div class="footer-links-row">
+      <a href="index.html">Home</a>
+      <a href="services.html">Services</a>
+      <a href="contact.html">Contact</a>
+      <a href="#signup">Sign Up</a>
+    </div>
+  </div>
+</footer>
+
+<div class="toast" id="toast"></div>
+
+<!-- SCROLL ANIMATIONS -->
+<script>
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+  }, { threshold: 0.15 });
+  document.querySelectorAll('.service-section').forEach(el => observer.observe(el));
+</script>
+
+<!-- FIREBASE AUTH -->
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+  import { getAuth, createUserWithEmailAndPassword, updateProfile }
+    from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyAuXMMnVjij0x1X5sQ5Jm1NuJUvquwDb0k",
+    authDomain: "active-aging-partners.firebaseapp.com",
+    projectId: "active-aging-partners",
+    storageBucket: "active-aging-partners.firebasestorage.app",
+    messagingSenderId: "239822066888",
+    appId: "1:239822066888:web:8599d14fce0388d510c1fd"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+
+  window.servicesSignup = async function() {
+    const first    = document.getElementById('sv-first').value.trim();
+    const last     = document.getElementById('sv-last').value.trim();
+    const email    = document.getElementById('sv-email').value.trim();
+    const password = document.getElementById('sv-password').value;
+    const terms    = document.getElementById('sv-terms').checked;
+    const errorEl  = document.getElementById('signup-error');
+    const btn      = document.getElementById('sv-btn');
+
+    hideError(errorEl);
+    if (!first || !last || !email || !password) { showError(errorEl, 'Please fill in all fields.'); return; }
+    if (!terms) { showError(errorEl, 'Please agree to the Terms of Service to continue.'); return; }
+    if (password.length < 6) { showError(errorEl, 'Password must be at least 6 characters.'); return; }
+
+    setLoading(btn, true);
+    try {
+      const result = await createUserWithEmailAndPassword(auth, email, password);
+      await updateProfile(result.user, { displayName: `${first} ${last}` });
+      showToast('🌿 Welcome! Redirecting to your portal…');
+      setTimeout(() => { window.location.href = 'client-portal.html'; }, 1000);
+    } catch (err) {
+      setLoading(btn, false);
+      showError(errorEl, friendlyError(err.code));
+    }
+  };
+
+  function friendlyError(code) {
+    const map = {
+      'auth/email-already-in-use': 'An account with this email already exists. Try logging in.',
+      'auth/invalid-email': 'Please enter a valid email address.',
+      'auth/weak-password': 'Password must be at least 6 characters.',
+      'auth/network-request-failed': 'Network error. Please check your connection.',
+    };
+    return map[code] || 'Something went wrong. Please try again.';
+  }
+
+  function showError(el, msg) { el.textContent = msg; el.style.display = 'block'; }
+  function hideError(el) { el.style.display = 'none'; }
+
+  function setLoading(btn, loading) {
+    if (loading) {
+      btn.dataset.original = btn.innerHTML;
+      btn.innerHTML = '<span class="spinner"></span> Creating account…';
+      btn.disabled = true;
+    } else {
+      btn.innerHTML = btn.dataset.original;
+      btn.disabled = false;
+    }
+  }
+
+  function showToast(msg) {
+    const t = document.getElementById('toast');
+    t.textContent = msg; t.classList.add('show');
+    setTimeout(() => t.classList.remove('show'), 3500);
+  }
+</script>
+</body>
+</html>
