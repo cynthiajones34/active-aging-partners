@@ -245,7 +245,7 @@ footer { background: var(--charcoal); padding: 40px 80px; }
     Active Aging Partners
   </a>
   <ul class="nav-links">
-    <li><a href="index.html#services">Services</a></li>
+    <li><a href="services.html">Services</a></li>
     <li><a href="index.html#how">How It Works</a></li>
     <li><a href="index.html#testimonials">Stories</a></li>
     <li><a href="contact.html" class="active">Contact</a></li>
@@ -352,22 +352,22 @@ footer { background: var(--charcoal); padding: 40px 80px; }
       <div class="service-area-title">
         <span>🗺️</span> Our Service Area
       </div>
+
       <div class="area-chips">
-        <div class="chip">Brookhaven</div>
-        <div class="chip">Chamblee</div>
-        <div class="chip">Doraville</div>
+        <div class="chip">Tucker</div>
         <div class="chip">North Decatur</div>
         <div class="chip">North Druid Hills</div>
-         <div class="chip">Tucker</div>
+        <div class="chip">Chamblee</div>
+        <div class="chip">Brookhaven</div>
+        <div class="chip">Doraville</div>
       </div>
 
       <div class="map-frame">
         <iframe
           title="Active Aging Partners Service Area"
-          src="https://www.google.com/maps/embed/v1/search?key=AIzaSyAuXMMnVjij0x1X5sQ5Jm1NuJUvquwDb0k&q=Tucker+OR+Chamblee+OR+Brookhaven+OR+Doraville+OR+North+Decatur+OR+North+Druid+Hills,+GA&zoom=11"
+          src="https://www.openstreetmap.org/export/embed.html?bbox=-84.3900%2C33.8200%2C-84.2000%2C33.9300&layer=mapnik&marker=33.8700%2C-84.2900"
           allowfullscreen
-          loading="lazy"
-          referrerpolicy="no-referrer-when-downgrade">
+          loading="lazy">
         </iframe>
       </div>
 
@@ -380,7 +380,7 @@ footer { background: var(--charcoal); padding: 40px 80px; }
     <div style="display:flex;flex-direction:column;gap:14px">
       <div style="display:flex;align-items:flex-start;gap:14px;padding:16px;background:#fff;border-radius:14px;border:1px solid rgba(0,0,0,0.06)">
         <div style="width:38px;height:38px;border-radius:10px;background:rgba(122,158,126,0.12);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:18px">📧</div>
-        <div><div style="font-size:12px;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;color:var(--mid);margin-bottom:3px">Email</div><div style="font-size:14px;color:var(--charcoal)">cynthia@breakingin.org</div></div>
+        <div><div style="font-size:12px;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;color:var(--mid);margin-bottom:3px">Email</div><div style="font-size:14px;color:var(--charcoal)"><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="77140e19031f1e1637150512161c1e19101e1959180510">[email&#160;protected]</a></div></div>
       </div>
       <div style="display:flex;align-items:flex-start;gap:14px;padding:16px;background:#fff;border-radius:14px;border:1px solid rgba(0,0,0,0.06)">
         <div style="width:38px;height:38px;border-radius:10px;background:rgba(196,132,90,0.1);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:18px">🕐</div>
@@ -437,9 +437,10 @@ footer { background: var(--charcoal); padding: 40px 80px; }
     <p>© 2026 Active Aging Partners · Atlanta, Georgia</p>
     <div class="footer-links-row">
       <a href="index.html">Home</a>
-      <a href="index.html#services">Services</a>
+      <a href="services.html">Services</a>
       <a href="contact.html">Contact</a>
-      <a href="index.html#signup">Sign Up</a>
+      <a href="privacy-policy.html">Privacy Policy</a>
+      <a href="terms-of-service.html">Terms of Service</a>
     </div>
   </div>
 </footer>
@@ -447,7 +448,7 @@ footer { background: var(--charcoal); padding: 40px 80px; }
 <div class="toast" id="toast"></div>
 
 <!-- EMAILJS -->
-<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
 <script>
   // ============================================================
   // EMAILJS SETUP
@@ -541,16 +542,4 @@ footer { background: var(--charcoal); padding: 40px 80px; }
       btn.disabled = true;
     } else {
       btn.innerHTML = btn.dataset.original || 'Send Message →';
-      btn.disabled = false;
-    }
-  }
-
-  function showToast(msg) {
-    const t = document.getElementById('toast');
-    t.textContent = msg;
-    t.classList.add('show');
-    setTimeout(() => t.classList.remove('show'), 3500);
-  }
-</script>
-</body>
-</html>
+      btn.disabled = f
