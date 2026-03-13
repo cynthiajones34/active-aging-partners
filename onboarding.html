@@ -280,7 +280,9 @@ textarea.form-input { resize: vertical; min-height: 90px; line-height: 1.6; }
   const auth = getAuth(app);
 
   onAuthStateChanged(auth, (user) => {
-    if (!user) { window.location.href = 'index.html'; }
+    if (!user) { window.location.href = 'index.html'; return; }
+    // Guard: must have verified email to reach onboarding
+    if (!user.emailVerified) { window.location.href = 'verify-email.html'; }
   });
 </script>
 
