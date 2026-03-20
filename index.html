@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%232d4a32'/><text y='.9em' font-size='75' x='50%' text-anchor='middle' dominant-baseline='auto'>🌿</text></svg>">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Active Aging Partners — Live Fully. Move Freely.</title>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Jost:wght@300;400;500;600&display=swap" rel="stylesheet">
@@ -90,12 +91,6 @@ nav.scrolled { background: rgba(248,244,237,0.95); backdrop-filter: blur(12px); 
 .signup-link a { color: var(--forest); font-weight: 600; text-decoration: none; }
 
 /* ===== STATS BAR ===== */
-.stats-bar { background: var(--sand); padding: 32px 80px; display: grid; grid-template-columns: repeat(4, 1fr); }
-.stat-item { text-align: center; padding: 0 20px; border-right: 1px solid rgba(0,0,0,0.1); }
-.stat-item:last-child { border-right: none; }
-.stat-num { font-family: 'Cormorant Garamond', serif; font-size: 42px; font-weight: 700; color: var(--forest); line-height: 1; }
-.stat-label { font-size: 13px; color: var(--mid); margin-top: 4px; font-weight: 500; }
-
 /* ===== SERVICES ===== */
 .section { padding: 100px 80px; }
 .section-eyebrow { font-size: 11px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--clay); margin-bottom: 14px; }
@@ -125,18 +120,6 @@ nav.scrolled { background: rgba(248,244,237,0.95); backdrop-filter: blur(12px); 
 .how-num { width: 52px; height: 52px; background: rgba(255,255,255,0.1); border: 1.5px solid rgba(255,255,255,0.2); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px; font-family: 'Cormorant Garamond', serif; font-size: 22px; font-weight: 700; color: var(--sage-light); }
 .how-title { font-size: 16px; font-weight: 600; color: #fff; margin-bottom: 10px; }
 .how-desc { font-size: 13px; line-height: 1.6; color: rgba(255,255,255,0.55); }
-
-/* ===== TESTIMONIALS ===== 
-.testimonials-section { padding: 100px 80px; background: var(--cream); }
-.testimonials-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; margin-top: 60px; }
-.testimonial-card { background: #fff; border-radius: 20px; padding: 32px; border: 1px solid rgba(0,0,0,0.05); box-shadow: 0 4px 16px rgba(0,0,0,0.04); }
-.testimonial-stars { color: var(--gold); font-size: 14px; margin-bottom: 16px; letter-spacing: 2px; }
-.testimonial-text { font-family: 'Cormorant Garamond', serif; font-size: 18px; line-height: 1.6; font-style: italic; color: var(--charcoal); margin-bottom: 20px; }
-.testimonial-author { display: flex; align-items: center; gap: 12px; }
-.author-avatar { width: 42px; height: 42px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 14px; color: #fff; }
-.author-name { font-size: 14px; font-weight: 600; }
-.author-role { font-size: 12px; color: var(--mid); } 
-  */
 
 /* ===== SIGNUP SECTION ===== */
 .signup-section { padding: 100px 80px; display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: center; }
@@ -185,8 +168,8 @@ footer { background: var(--charcoal); padding: 60px 80px 30px; }
   </div>
   <ul class="nav-links">
     <li><a href="services.html">Services</a></li>
+    <li><a href="about.html">About</a></li>
     <li><a href="#how">How It Works</a></li>
-    <li><a href="#testimonials">Stories</a></li>
     <li><a href="contact.html">Contact</a></li>
     <li><a href="#signup">Get Started</a></li>
   </ul>
@@ -276,14 +259,6 @@ footer { background: var(--charcoal); padding: 60px 80px 30px; }
   </div>
 </section>
 
-<!-- STATS -->
-<div class="stats-bar">
-  <div class="stat-item"><div class="stat-num">50<span style="font-size:28px">+</span></div><div class="stat-label">Seniors Served</div></div>
-  <div class="stat-item"><div class="stat-num">$50</div><div class="stat-label">Per Hour, All Services</div></div>
-  <div class="stat-item"><div class="stat-num">4.9★</div><div class="stat-label">Average Family Rating</div></div>
-  <div class="stat-item"><div class="stat-num">100<span style="font-size:28px">%</span></div><div class="stat-label">Background Checked Staff</div></div>
-</div>
-
 <!-- SERVICES -->
 <section class="section" id="services">
   <div class="section-eyebrow">What We Offer</div>
@@ -324,29 +299,6 @@ footer { background: var(--charcoal); padding: 60px 80px 30px; }
       <div class="how-step"><div class="how-num">2</div><div class="how-title">Book a Session</div><div class="how-desc">Browse available times and book the service you need directly from your client portal.</div></div>
       <div class="how-step"><div class="how-num">3</div><div class="how-title">We Show Up</div><div class="how-desc">Your companion arrives on time. You'll get SMS and email reminders before every session.</div></div>
       <div class="how-step"><div class="how-num">4</div><div class="how-title">Receive a Report</div><div class="how-desc">After every session, a detailed report is sent to your inbox and saved in your portal.</div></div>
-    </div>
-  </div>
-</section>
-
-<!-- TESTIMONIALS -->
-<section class="testimonials-section" id="testimonials">
-  <div class="section-eyebrow">Family Stories</div>
-  <h2 class="section-title">What families <em>say about us</em></h2>
-  <div class="testimonials-grid">
-    <div class="testimonial-card">
-      <div class="testimonial-stars">★★★★★</div>
-      <p class="testimonial-text">"Mom has been so much more energetic since starting her walks. The session reports give us such peace of mind — we always know exactly how she's doing."</p>
-      <div class="testimonial-author"><div class="author-avatar" style="background:linear-gradient(135deg,#7a9e7e,#4d7352)">SR</div><div><div class="author-name">Sarah Reynolds</div><div class="author-role">Daughter of Margaret, 78</div></div></div>
-    </div>
-    <div class="testimonial-card">
-      <div class="testimonial-stars">★★★★★</div>
-      <p class="testimonial-text">"Dad used to dread his doctor appointments. Now he actually looks forward to them. Having a familiar, caring companion makes all the difference."</p>
-      <div class="testimonial-author"><div class="author-avatar" style="background:linear-gradient(135deg,#c4845a,#9a5530)">JB</div><div><div class="author-name">James Baker</div><div class="author-role">Son of Harold, 83</div></div></div>
-    </div>
-    <div class="testimonial-card">
-      <div class="testimonial-stars">★★★★★</div>
-      <p class="testimonial-text">"The app makes everything so easy to manage. I can book sessions, read reports, and pay invoices all in one place. Couldn't recommend this more highly."</p>
-      <div class="testimonial-author"><div class="author-avatar" style="background:linear-gradient(135deg,#c9a84c,#8a6a10)">TW</div><div><div class="author-name">Tom Wilson</div><div class="author-role">Son of Eleanor, 75</div></div></div>
     </div>
   </div>
 </section>
