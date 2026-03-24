@@ -465,11 +465,11 @@ footer { background: var(--charcoal); padding: 40px 80px; }
   // 5. Replace the three placeholder values below
   // ============================================================
 
-  const EMAILJS_PUBLIC_KEY  = 'YOUR_PUBLIC_KEY';   // from EmailJS Account > API Keys
-  const EMAILJS_SERVICE_ID  = 'YOUR_SERVICE_ID';   // from EmailJS Email Services
-  const EMAILJS_TEMPLATE_ID = 'YOUR_TEMPLATE_ID';  // from EmailJS Email Templates
+  const EMAILJS_PUBLIC_KEY  = 'G5tZIh84-dZdWQ2NS';   // from EmailJS Account > API Keys
+  const EMAILJS_SERVICE_ID  = 'service_rfmj4tk';   // from EmailJS Email Services
+  const EMAILJS_TEMPLATE_ID = 'template_hxmvjue';  // from EmailJS Email Templates
 
-  emailjs.init({ publicKey: EMAILJS_PUBLIC_KEY });
+  emailjs.init({ publicKey: G5tZIh84-dZdWQ2NS });
 
   async function submitForm() {
     const first    = document.getElementById('cf-first').value.trim();
@@ -488,7 +488,7 @@ footer { background: var(--charcoal); padding: 40px 80px; }
     if (!message) { showError('Please enter a message before submitting.'); return; }
 
     // Check EmailJS is configured
-    if (EMAILJS_PUBLIC_KEY === 'YOUR_PUBLIC_KEY') {
+    if (EMAILJS_PUBLIC_KEY === 'G5tZIh84-dZdWQ2NS') {
       // Dev mode — simulate success so you can see the UI flow
       simulateSuccess(email);
       return;
@@ -497,7 +497,7 @@ footer { background: var(--charcoal); padding: 40px 80px; }
     setLoading(btn, true);
 
     try {
-      await emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, {
+      await emailjs.send(service_rfmj4tk, template_hxmvjue, {
         from_name:  `${first} ${last}`,
         from_email: email,
         role:       role,
