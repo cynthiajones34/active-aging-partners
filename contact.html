@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%232d4a32'/><text y='.9em' font-size='75' x='50%' text-anchor='middle' dominant-baseline='auto'>🌿</text></svg>">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Contact Us — Active Aging Partners</title>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Jost:wght@300;400;500;600&display=swap" rel="stylesheet">
@@ -246,8 +247,9 @@ footer { background: var(--charcoal); padding: 40px 80px; }
   </a>
   <ul class="nav-links">
     <li><a href="services.html">Services</a></li>
+    <li><a href="about.html">About</a></li>
     <li><a href="index.html#how">How It Works</a></li>
-    <li><a href="index.html#testimonials">Stories</a></li>
+    <li><a href="about.html">Stories</a></li>
     <li><a href="contact.html" class="active">Contact</a></li>
   </ul>
   <div class="nav-actions">
@@ -330,15 +332,6 @@ footer { background: var(--charcoal); padding: 40px 80px; }
           <label class="form-label">Your Message *</label>
           <textarea class="form-input" id="cf-message" placeholder="Tell us a little about what you're looking for, any questions you have, or how we can help…" required></textarea>
         </div>
-  <!-- Honeypot spam protection -->
-  <input type="text" id="company" style="display:none">
-
-  <div id="form-error" class="form-error"></div>
-
-  <div id="form-success" class="form-success">
-    <strong>Message sent successfully!</strong><br>
-    We'll respond within 24 business hours.
-  </div>
 
         <button class="btn btn-solid submit-btn" id="submit-btn" onclick="submitForm()">
           Send Message →
@@ -389,7 +382,7 @@ footer { background: var(--charcoal); padding: 40px 80px; }
     <div style="display:flex;flex-direction:column;gap:14px">
       <div style="display:flex;align-items:flex-start;gap:14px;padding:16px;background:#fff;border-radius:14px;border:1px solid rgba(0,0,0,0.06)">
         <div style="width:38px;height:38px;border-radius:10px;background:rgba(122,158,126,0.12);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:18px">📧</div>
-        <div><div style="font-size:12px;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;color:var(--mid);margin-bottom:3px">Email</div><div style="font-size:14px;color:var(--charcoal)"><a href="mailto:cynthia@activeagingpartners.com" style="color:var(--charcoal);text-decoration:none">cynthia@activeagingpartner.com</a></div></div>
+        <div><div style="font-size:12px;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;color:var(--mid);margin-bottom:3px">Email</div><div style="font-size:14px;color:var(--charcoal)"><a href="/cdn-cgi/l/email-protection#b2d1cbdcc6dadbd3f2d0c0d7d3d9dbdcd5dbdc9cddc0d5"><span class="__cf_email__" data-cfemail="a9cad0c7ddc1c0c8e9cbdbccc8c2c0c7cec0c787c6dbce">[email&#160;protected]</span></a></div></div>
       </div>
       <div style="display:flex;align-items:flex-start;gap:14px;padding:16px;background:#fff;border-radius:14px;border:1px solid rgba(0,0,0,0.06)">
         <div style="width:38px;height:38px;border-radius:10px;background:rgba(196,132,90,0.1);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:18px">🕐</div>
@@ -447,6 +440,7 @@ footer { background: var(--charcoal); padding: 40px 80px; }
     <div class="footer-links-row">
       <a href="index.html">Home</a>
       <a href="services.html">Services</a>
+      <a href="about.html">About</a>
       <a href="contact.html">Contact</a>
       <a href="privacy-policy.html">Privacy Policy</a>
       <a href="terms-of-service.html">Terms of Service</a>
@@ -457,79 +451,97 @@ footer { background: var(--charcoal); padding: 40px 80px; }
 <div class="toast" id="toast"></div>
 
 <!-- EMAILJS -->
-<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
-
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
 <script>
-const EMAILJS_PUBLIC_KEY  = 'YOUR_PUBLIC_KEY';
-const EMAILJS_SERVICE_ID  = 'YOUR_SERVICE_ID';
-const EMAILJS_TEMPLATE_ID = 'YOUR_TEMPLATE_ID';
+  // ============================================================
+  // EMAILJS SETUP
+  // To activate email sending:
+  // 1. Go to https://www.emailjs.com and create a free account
+  // 2. Add an Email Service (Gmail works great) — copy the Service ID
+  // 3. Create an Email Template with these variables:
+  //      {{from_name}}, {{from_email}}, {{role}}, {{interest}}, {{message}}, {{to_email}}
+  //    Set the "To Email" field in the template to: cynthia@activeagingpartners.com
+  // 4. Copy your Public Key from Account > API Keys
+  // 5. Replace the three placeholder values below
+  // ============================================================
 
-emailjs.init({ publicKey: EMAILJS_PUBLIC_KEY });
+  const EMAILJS_PUBLIC_KEY  = 'YOUR_PUBLIC_KEY';   // from EmailJS Account > API Keys
+  const EMAILJS_SERVICE_ID  = 'YOUR_SERVICE_ID';   // from EmailJS Email Services
+  const EMAILJS_TEMPLATE_ID = 'YOUR_TEMPLATE_ID';  // from EmailJS Email Templates
 
-document.getElementById('contact-form').addEventListener('submit', async function(e) {
-  e.preventDefault();
+  emailjs.init({ publicKey: EMAILJS_PUBLIC_KEY });
 
-  const first    = document.getElementById('cf-first').value.trim();
-  const last     = document.getElementById('cf-last').value.trim();
-  const email    = document.getElementById('cf-email').value.trim();
-  const role     = document.getElementById('cf-role').value;
-  const interest = document.getElementById('cf-interest').value;
-  const message  = document.getElementById('cf-message').value.trim();
-  const company  = document.getElementById('company').value;
+  async function submitForm() {
+    const first    = document.getElementById('cf-first').value.trim();
+    const last     = document.getElementById('cf-last').value.trim();
+    const email    = document.getElementById('cf-email').value.trim();
+    const role     = document.getElementById('cf-role').value;
+    const interest = document.getElementById('cf-interest').value;
+    const message  = document.getElementById('cf-message').value.trim();
+    const errorEl  = document.getElementById('form-error');
+    const btn      = document.getElementById('submit-btn');
 
-  const errorEl  = document.getElementById('form-error');
-  const successEl= document.getElementById('form-success');
-  const btn      = document.getElementById('submit-btn');
+    // Validate
+    hideError();
+    if (!first || !last) { showError('Please enter your first and last name.'); return; }
+    if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { showError('Please enter a valid email address.'); return; }
+    if (!message) { showError('Please enter a message before submitting.'); return; }
 
-  errorEl.style.display = 'none';
-  successEl.style.display = 'none';
+    // Check EmailJS is configured
+    if (EMAILJS_PUBLIC_KEY === 'YOUR_PUBLIC_KEY') {
+      // Dev mode — simulate success so you can see the UI flow
+      simulateSuccess(email);
+      return;
+    }
 
-  // Spam protection
-  if (company) return;
+    setLoading(btn, true);
 
-  // Validation
-  if (!first || !last) return showError('Please enter your name.');
-  if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return showError('Enter a valid email.');
-  if (!message) return showError('Please enter a message.');
-
-  setLoading(true);
-
-  try {
-    await emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, {
-      from_name: `${first} ${last}`,
-      from_email: email,
-      role,
-      interest,
-      message,
-      reply_to: email,
-      to_email: 'cynthia@activeagingpartners.com'
-    });
-
-    successEl.style.display = 'block';
-    document.getElementById('contact-form').reset();
-
-  } catch (err) {
-    console.error(err);
-    showError('Failed to send message. Please try again.');
-  }
-
-  setLoading(false);
-
-  function showError(msg) {
-    errorEl.textContent = msg;
-    errorEl.style.display = 'block';
-  }
-
-  function setLoading(loading) {
-    if (loading) {
-      btn.disabled = true;
-      btn.innerHTML = 'Sending...';
-    } else {
-      btn.disabled = false;
-      btn.innerHTML = 'Send Message →';
+    try {
+      await emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, {
+        from_name:  `${first} ${last}`,
+        from_email: email,
+        role:       role,
+        interest:   interest,
+        message:    message,
+        to_email:   'cynthia@activeagingpartners.com',
+        reply_to:   email,
+      });
+      showSuccess(email);
+    } catch (err) {
+      setLoading(btn, false);
+      showError('Something went wrong sending your message. Please try emailing cynthia@activeagingpartners.com directly.');
+      console.error('EmailJS error:', err);
     }
   }
-});
-</script>
-</body>
-</html>
+
+  function simulateSuccess(email) {
+    // Only used in dev mode before EmailJS is configured
+    showSuccess(email);
+  }
+
+  function showSuccess(email) {
+    document.getElementById('contact-form').style.display = 'none';
+    document.getElementById('success-email').textContent = email;
+    const s = document.getElementById('form-success');
+    s.style.display = 'block';
+    s.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  }
+
+  function showError(msg) {
+    const e = document.getElementById('form-error');
+    e.textContent = msg;
+    e.style.display = 'block';
+    e.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  }
+
+  function hideError() {
+    document.getElementById('form-error').style.display = 'none';
+  }
+
+  function setLoading(btn, loading) {
+    if (loading) {
+      btn.dataset.original = btn.innerHTML;
+      btn.innerHTML = '<span class="spinner"></span> Sending…';
+      btn.disabled = true;
+    } else {
+      btn.innerHTML = btn.dataset.original || 'Send Message →';
