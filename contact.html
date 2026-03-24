@@ -330,6 +330,15 @@ footer { background: var(--charcoal); padding: 40px 80px; }
           <label class="form-label">Your Message *</label>
           <textarea class="form-input" id="cf-message" placeholder="Tell us a little about what you're looking for, any questions you have, or how we can help…" required></textarea>
         </div>
+  <!-- Honeypot spam protection -->
+  <input type="text" id="company" style="display:none">
+
+  <div id="form-error" class="form-error"></div>
+
+  <div id="form-success" class="form-success">
+    <strong>Message sent successfully!</strong><br>
+    We'll respond within 24 business hours.
+  </div>
 
         <button class="btn btn-solid submit-btn" id="submit-btn" onclick="submitForm()">
           Send Message →
@@ -449,109 +458,78 @@ footer { background: var(--charcoal); padding: 40px 80px; }
 
 <!-- EMAILJS -->
 <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+
 <script>
-  // ============================================================
-  // EMAILJS SETUP
-  // To activate email sending:
-  // 1. Go to https://www.emailjs.com and create a free account
-  // 2. Add an Email Service (Gmail works great) — copy the Service ID
-  // 3. Create an Email Template with these variables:
-  //      {{from_name}}, {{from_email}}, {{role}}, {{interest}}, {{message}}, {{to_email}}
-  //    Set the "To Email" field in the template to: partners@gmail.com
-  // 4. Copy your Public Key from Account > API Keys
-  // 5. Replace the three placeholder values below
-  // ============================================================
+const EMAILJS_PUBLIC_KEY  = 'YOUR_PUBLIC_KEY';
+const EMAILJS_SERVICE_ID  = 'YOUR_SERVICE_ID';
+const EMAILJS_TEMPLATE_ID = 'YOUR_TEMPLATE_ID';
 
-  const EMAILJS_PUBLIC_KEY  = 'YOUR_PUBLIC_KEY';   // from EmailJS Account > API Keys
-  const EMAILJS_SERVICE_ID  = 'YOUR_SERVICE_ID';   // from EmailJS Email Services
-  const EMAILJS_TEMPLATE_ID = 'YOUR_TEMPLATE_ID';  // from EmailJS Email Templates
+emailjs.init({ publicKey: EMAILJS_PUBLIC_KEY });
 
-  emailjs.init({ publicKey: EMAILJS_PUBLIC_KEY });
+document.getElementById('contact-form').addEventListener('submit', async function(e) {
+  e.preventDefault();
 
-  async function submitForm() {
-    const first    = document.getElementById('cf-first').value.trim();
-    const last     = document.getElementById('cf-last').value.trim();
-    const email    = document.getElementById('cf-email').value.trim();
-    const role     = document.getElementById('cf-role').value;
-    const interest = document.getElementById('cf-interest').value;
-    const message  = document.getElementById('cf-message').value.trim();
-    const errorEl  = document.getElementById('form-error');
-    const btn      = document.getElementById('submit-btn');
+  const first    = document.getElementById('cf-first').value.trim();
+  const last     = document.getElementById('cf-last').value.trim();
+  const email    = document.getElementById('cf-email').value.trim();
+  const role     = document.getElementById('cf-role').value;
+  const interest = document.getElementById('cf-interest').value;
+  const message  = document.getElementById('cf-message').value.trim();
+  const company  = document.getElementById('company').value;
 
-    // Validate
-    hideError();
-    if (!first || !last) { showError('Please enter your first and last name.'); return; }
-    if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { showError('Please enter a valid email address.'); return; }
-    if (!message) { showError('Please enter a message before submitting.'); return; }
+  const errorEl  = document.getElementById('form-error');
+  const successEl= document.getElementById('form-success');
+  const btn      = document.getElementById('submit-btn');
 
-    // Check EmailJS is configured
-    if (EMAILJS_PUBLIC_KEY === 'YOUR_PUBLIC_KEY') {
-      // Dev mode — simulate success so you can see the UI flow
-      simulateSuccess(email);
-      return;
-    }
+  errorEl.style.display = 'none';
+  successEl.style.display = 'none';
 
-    setLoading(btn, true);
+  // Spam protection
+  if (company) return;
 
-    try {
-      await emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, {
-        from_name:  `${first} ${last}`,
-        from_email: email,
-        role:       role,
-        interest:   interest,
-        message:    message,
-        to_email:   'cynthia@activeagingpartners.com',
-        reply_to:   email,
-      });
-      showSuccess(email);
-    } catch (err) {
-      setLoading(btn, false);
-      showError('Something went wrong sending your message. Please try emailing cynthia@activeagingpartners.com directly.');
-      console.error('EmailJS error:', err);
-    }
+  // Validation
+  if (!first || !last) return showError('Please enter your name.');
+  if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return showError('Enter a valid email.');
+  if (!message) return showError('Please enter a message.');
+
+  setLoading(true);
+
+  try {
+    await emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, {
+      from_name: `${first} ${last}`,
+      from_email: email,
+      role,
+      interest,
+      message,
+      reply_to: email,
+      to_email: 'cynthia@activeagingpartners.com'
+    });
+
+    successEl.style.display = 'block';
+    document.getElementById('contact-form').reset();
+
+  } catch (err) {
+    console.error(err);
+    showError('Failed to send message. Please try again.');
   }
 
-  function simulateSuccess(email) {
-    // Only used in dev mode before EmailJS is configured
-    showSuccess(email);
-  }
-
-  function showSuccess(email) {
-    document.getElementById('contact-form').style.display = 'none';
-    document.getElementById('success-email').textContent = email;
-    const s = document.getElementById('form-success');
-    s.style.display = 'block';
-    s.scrollIntoView({ behavior: 'smooth', block: 'center' });
-  }
+  setLoading(false);
 
   function showError(msg) {
-    const e = document.getElementById('form-error');
-    e.textContent = msg;
-    e.style.display = 'block';
-    e.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    errorEl.textContent = msg;
+    errorEl.style.display = 'block';
   }
 
-  function hideError() {
-    document.getElementById('form-error').style.display = 'none';
-  }
-
-  function setLoading(btn, loading) {
+  function setLoading(loading) {
     if (loading) {
-      btn.dataset.original = btn.innerHTML;
-      btn.innerHTML = '<span class="spinner"></span> Sending…';
       btn.disabled = true;
+      btn.innerHTML = 'Sending...';
     } else {
-      btn.innerHTML = btn.dataset.original || 'Send Message →';
       btn.disabled = false;
+      btn.innerHTML = 'Send Message →';
     }
   }
-
-  function showToast(msg) {
-    const t = document.getElementById('toast');
-    t.textContent = msg;
-    t.classList.add('show');
-    setTimeout(() => t.classList.remove('show'), 3500);
-  }
+});
 </script>
 </body>
 </html>
