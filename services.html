@@ -584,6 +584,8 @@ footer { background: var(--charcoal); padding: 40px 80px; }
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
   import { getAuth, createUserWithEmailAndPassword, updateProfile, sendEmailVerification }
     from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+  import { getFirestore, doc, setDoc, serverTimestamp }
+    from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
   const firebaseConfig = {
     apiKey: "AIzaSyAuXMMnVjij0x1X5sQ5Jm1NuJUvquwDb0k",
@@ -594,14 +596,17 @@ footer { background: var(--charcoal); padding: 40px 80px; }
     appId: "1:239822066888:web:8599d14fce0388d510c1fd"
   };
 
-  const app = initializeApp(firebaseConfig);
+  const app  = initializeApp(firebaseConfig);
   const auth = getAuth(app);
+  const db   = getFirestore(app);
 
   window.servicesSignup = async function() {
     const first    = document.getElementById('sv-first').value.trim();
     const last     = document.getElementById('sv-last').value.trim();
     const email    = document.getElementById('sv-email').value.trim();
     const password = document.getElementById('sv-password').value;
+    const role     = document.getElementById('sv-role').value;
+    const smsOptIn = document.getElementById('sv-sms').checked;
     const terms    = document.getElementById('sv-terms').checked;
     const errorEl  = document.getElementById('signup-error');
     const btn      = document.getElementById('sv-btn');
@@ -614,8 +619,22 @@ footer { background: var(--charcoal); padding: 40px 80px; }
     setLoading(btn, true);
     try {
       const result = await createUserWithEmailAndPassword(auth, email, password);
-      await updateProfile(result.user, { displayName: `${first} ${last}` });
-      await sendEmailVerification(result.user);
+      const user   = result.user;
+      await updateProfile(user, { displayName: `${first} ${last}` });
+      await sendEmailVerification(user);
+      // Save profile to Firestore
+      await setDoc(doc(db, 'clients', user.uid), {
+        uid:         user.uid,
+        displayName: `${first} ${last}`,
+        email,
+        role:        role || 'client',
+        phone:       '',
+        seniorName:  '',
+        smsOptIn,
+        emailOptIn:  true,
+        status:      'active',
+        createdAt:   serverTimestamp(),
+      });
       showToast('🌿 Welcome! Check your email to verify your account.');
       setTimeout(() => { window.location.href = 'verify-email.html'; }, 1000);
     } catch (err) {
