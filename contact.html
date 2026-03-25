@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%232d4a32'/><text y='.9em' font-size='75' x='50%' text-anchor='middle' dominant-baseline='auto'>🌿</text></svg>">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Contact Us — Active Aging Partners</title>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Jost:wght@300;400;500;600&display=swap" rel="stylesheet">
@@ -246,8 +247,8 @@ footer { background: var(--charcoal); padding: 40px 80px; }
   </a>
   <ul class="nav-links">
     <li><a href="services.html">Services</a></li>
+    <li><a href="about.html">About</a></li>
     <li><a href="index.html#how">How It Works</a></li>
-    <li><a href="index.html#testimonials">Stories</a></li>
     <li><a href="contact.html" class="active">Contact</a></li>
   </ul>
   <div class="nav-actions">
@@ -438,6 +439,7 @@ footer { background: var(--charcoal); padding: 40px 80px; }
     <div class="footer-links-row">
       <a href="index.html">Home</a>
       <a href="services.html">Services</a>
+      <a href="about.html">About</a>
       <a href="contact.html">Contact</a>
       <a href="privacy-policy.html">Privacy Policy</a>
       <a href="terms-of-service.html">Terms of Service</a>
@@ -450,21 +452,9 @@ footer { background: var(--charcoal); padding: 40px 80px; }
 <!-- EMAILJS -->
 <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
 <script>
-  // ============================================================
-  // EMAILJS SETUP
-  // To activate email sending:
-  // 1. Go to https://www.emailjs.com and create a free account
-  // 2. Add an Email Service (Gmail works great) — copy the Service ID
-  // 3. Create an Email Template with these variables:
-  //      {{from_name}}, {{from_email}}, {{role}}, {{interest}}, {{message}}, {{to_email}}
-  //    Set the "To Email" field in the template to: cynthia@breakingin.org
-  // 4. Copy your Public Key from Account > API Keys
-  // 5. Replace the three placeholder values below
-  // ============================================================
-
-  const EMAILJS_PUBLIC_KEY  = 'G5tZIh84-dZdWQ2NS';   // from EmailJS Account > API Keys
-  const EMAILJS_SERVICE_ID  = 'service_rfmj4tk';   // from EmailJS Email Services
-  const EMAILJS_TEMPLATE_ID = 'template_hxmvjue';  // from EmailJS Email Templates
+  const EMAILJS_PUBLIC_KEY  = 'G5tZIh84-dZdWQ2NS';
+  const EMAILJS_SERVICE_ID  = 'service_rfmj4tk';
+  const EMAILJS_TEMPLATE_ID = 'template_hxmvjue';
 
   emailjs.init({ publicKey: EMAILJS_PUBLIC_KEY });
 
@@ -475,21 +465,12 @@ footer { background: var(--charcoal); padding: 40px 80px; }
     const role     = document.getElementById('cf-role').value;
     const interest = document.getElementById('cf-interest').value;
     const message  = document.getElementById('cf-message').value.trim();
-    const errorEl  = document.getElementById('form-error');
     const btn      = document.getElementById('submit-btn');
 
-    // Validate
     hideError();
     if (!first || !last) { showError('Please enter your first and last name.'); return; }
     if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { showError('Please enter a valid email address.'); return; }
     if (!message) { showError('Please enter a message before submitting.'); return; }
-
-    // Check EmailJS is configured
-    if (EMAILJS_PUBLIC_KEY === 'G5tZIh84-dZdWQ2NS') {
-      // Dev mode — simulate success so you can see the UI flow
-      simulateSuccess(email);
-      return;
-    }
 
     setLoading(btn, true);
 
@@ -509,11 +490,6 @@ footer { background: var(--charcoal); padding: 40px 80px; }
       showError('Something went wrong sending your message. Please try emailing cynthia@activeagingpartners.com directly.');
       console.error('EmailJS error:', err);
     }
-  }
-
-  function simulateSuccess(email) {
-    // Only used in dev mode before EmailJS is configured
-    showSuccess(email);
   }
 
   function showSuccess(email) {
@@ -542,4 +518,16 @@ footer { background: var(--charcoal); padding: 40px 80px; }
       btn.disabled = true;
     } else {
       btn.innerHTML = btn.dataset.original || 'Send Message →';
-      btn.disabled = f
+      btn.disabled = false;
+    }
+  }
+
+  function showToast(msg) {
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.classList.add('show');
+    setTimeout(() => t.classList.remove('show'), 3500);
+  }
+</script>
+</body>
+</html>
