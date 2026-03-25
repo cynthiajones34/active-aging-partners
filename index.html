@@ -421,6 +421,12 @@ footer { background: var(--charcoal); padding: 60px 80px 30px; }
     onAuthStateChanged,
     updateProfile
   } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+  import {
+    getFirestore,
+    doc,
+    setDoc,
+    serverTimestamp
+  } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
   // ---- YOUR FIREBASE CONFIG ----
   const firebaseConfig = {
@@ -432,8 +438,9 @@ footer { background: var(--charcoal); padding: 60px 80px 30px; }
     appId: "1:239822066888:web:8599d14fce0388d510c1fd"
   };
 
-  const app = initializeApp(firebaseConfig);
+  const app  = initializeApp(firebaseConfig);
   const auth = getAuth(app);
+  const db   = getFirestore(app);
 
   // Staff email addresses — add yours here
   // Anyone NOT in this list is treated as a client
@@ -508,11 +515,25 @@ footer { background: var(--charcoal); padding: 60px 80px 30px; }
   };
 
   // ---- SHARED SIGNUP HELPER ----
-  async function doSignup(displayName, email, password) {
+  async function doSignup(displayName, email, password, profileData = {}) {
     const result = await createUserWithEmailAndPassword(auth, email, password);
-    await updateProfile(result.user, { displayName });
-    await sendEmailVerification(result.user);
-    return result.user;
+    const user   = result.user;
+    await updateProfile(user, { displayName });
+    await sendEmailVerification(user);
+    // Save full profile to Firestore clients collection
+    await setDoc(doc(db, 'clients', user.uid), {
+      uid:         user.uid,
+      displayName,
+      email,
+      role:        profileData.role        || 'client',
+      phone:       profileData.phone       || '',
+      seniorName:  profileData.seniorName  || '',
+      smsOptIn:    profileData.smsOptIn    ?? true,
+      emailOptIn:  profileData.emailOptIn  ?? true,
+      status:      'active',
+      createdAt:   serverTimestamp(),
+    });
+    return user;
   }
 
   // ---- HERO QUICK SIGNUP ----
@@ -540,13 +561,18 @@ footer { background: var(--charcoal); padding: 60px 80px 30px; }
 
   // ---- FULL SIGNUP FORM ----
   window.fullSignup = async function() {
-    const first    = document.getElementById('fs-first').value.trim();
-    const last     = document.getElementById('fs-last').value.trim();
-    const email    = document.getElementById('fs-email').value.trim();
-    const password = document.getElementById('fs-password').value;
-    const errorEl  = document.getElementById('full-signup-error');
-    const btn      = document.getElementById('full-signup-btn');
-    const terms    = document.getElementById('terms').checked;
+    const first      = document.getElementById('fs-first').value.trim();
+    const last       = document.getElementById('fs-last').value.trim();
+    const email      = document.getElementById('fs-email').value.trim();
+    const password   = document.getElementById('fs-password').value;
+    const phone      = document.getElementById('fs-phone').value.trim();
+    const role       = document.getElementById('fs-role').value;
+    const seniorName = document.getElementById('fs-senior').value.trim();
+    const smsOptIn   = document.getElementById('sms-opt').checked;
+    const emailOptIn = document.getElementById('email-opt').checked;
+    const errorEl    = document.getElementById('full-signup-error');
+    const btn        = document.getElementById('full-signup-btn');
+    const terms      = document.getElementById('terms').checked;
 
     if (!first || !last || !email || !password) { showError(errorEl, 'Please fill in all required fields.'); return; }
     if (!terms) { showError(errorEl, 'Please agree to the Terms of Service to continue.'); return; }
@@ -555,7 +581,9 @@ footer { background: var(--charcoal); padding: 60px 80px 30px; }
     setLoading(btn, true);
     hideError(errorEl);
     try {
-      await doSignup(`${first} ${last}`, email, password);
+      await doSignup(`${first} ${last}`, email, password, {
+        role, phone, seniorName, smsOptIn, emailOptIn
+      });
       showToast('🌿 Welcome! Check your email to verify your account.');
       setTimeout(() => { window.location.href = 'verify-email.html'; }, 1000);
     } catch (err) {
