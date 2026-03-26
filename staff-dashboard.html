@@ -799,8 +799,8 @@ function downloadCSV(type){
       await loadSchedule();
 
     }catch(err){
-      console.error('confirmBooking error:',err);
-      errEl.textContent='Booking failed. Please try again.';
+      console.error('confirmBooking error — code:', err.code, '| message:', err.message, '| full:', err);
+      errEl.textContent=`Booking failed: ${err.message||err.code||'Unknown error'} — check browser console for details.`;
       errEl.style.display='block';
     }finally{
       btn.textContent='Confirm Booking';
