@@ -743,23 +743,35 @@ function downloadCSV(type){
       });
 
       // 2️⃣ Fire Zapier webhook → Google Calendar event created automatically
+      // Format datetimes with Eastern timezone offset for Google Calendar
+      // Uses America/New_York — EDT is -04:00, EST is -05:00
+      const tzOffset = (() => {
+        const jan = new Date(new Date().getFullYear(), 0, 1);
+        const jul = new Date(new Date().getFullYear(), 6, 1);
+        const stdOffset = Math.max(jan.getTimezoneOffset(), jul.getTimezoneOffset());
+        const isDST = new Date().getTimezoneOffset() < stdOffset;
+        return isDST ? '-04:00' : '-05:00';
+      })();
+      const startISO = `${date}T${time}:00${tzOffset}`;
+      const endISO   = `${date}T${endTime}:00${tzOffset}`;
+
       fetch('https://hooks.zapier.com/hooks/catch/26972834/un3sk3c/', {
         method: 'POST',
         body: JSON.stringify({
-          title:       `AAP: ${service} — ${clientName}`,
-          start:       `${date}T${time}:00`,
-          end:         `${date}T${endTime}:00`,
-          date:        readableDate,
-          time_start:  readableTime,
-          time_end:    readableEnd,
+          title:        `AAP: ${service} — ${clientName}`,
+          start:        startISO,
+          end:          endISO,
+          date:         readableDate,
+          time_start:   readableTime,
+          time_end:     readableEnd,
           service,
-          client_name: clientName,
-          client_email:clientEmail,
-          duration:    `${durationMins} minutes`,
-          cost:        `$${cost}`,
-          notes:       notes||'None',
-          description: `Client: ${clientName}\nService: ${service}\nDate: ${readableDate}\nTime: ${readableTime} – ${readableEnd}\nDuration: ${durationMins} min\nCost: $${cost}${notes?'\n\nNotes: '+notes:''}`,
-          booked_by:   currentUser?.displayName||'Staff',
+          client_name:  clientName,
+          client_email: clientEmail,
+          duration:     `${durationMins} minutes`,
+          cost:         `$${cost}`,
+          notes:        notes||'None',
+          description:  `Client: ${clientName}\nService: ${service}\nDate: ${readableDate}\nTime: ${readableTime} – ${readableEnd}\nDuration: ${durationMins} min\nCost: $${cost}${notes?'\n\nNotes: '+notes:''}`,
+          booked_by:    currentUser?.displayName||'Staff',
         }),
       }).catch(err => console.warn('Zapier webhook error:', err));
 
