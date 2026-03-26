@@ -572,14 +572,24 @@ function downloadCSV(type){
       showToast('⏳ Creating invoice…');
       const result = await _createStripeInvoice(data);
       const d = result.data;
-      if(d.success && !d.sendError) {
-        showToast(`✓ Invoice of $${d.amount} sent to client!`);
-      } else if(d.success && d.sendError) {
-        // Invoice created and saved but email delivery failed
-        // Show the hosted URL so staff can share it manually
-        showToast(`✓ Invoice created ($${d.amount}) — email delivery failed, share link manually.`);
-        console.warn('Invoice send error:', d.sendError);
-        console.log('Invoice URL:', d.invoiceUrl);
+      if(d.success) {
+        showToast(`✓ Invoice of $${d.amount} created!`);
+
+        // Deliver invoice link to client message thread
+        if(d.invoiceUrl && typeof window.sendInvoiceToThread === 'function') {
+          const invoiceMsg =
+            `INVOICE — $${d.amount} due\n\n` +
+            `Service: ${data.service}\n` +
+            `Date: ${data.date}\n` +
+            `Duration: ${data.durationMinutes} minutes\n\n` +
+            `Pay securely here:\n${d.invoiceUrl}\n\n` +
+            `Questions? Reply to this message or email cynthia@activeagingpartners.com`;
+          await window.sendInvoiceToThread(data.clientUid, invoiceMsg);
+        }
+
+        if(d.sendError) {
+          console.warn('Stripe email delivery skipped (test mode):', d.sendError);
+        }
       }
     } catch(err) {
       console.error('Invoice error:', err);
@@ -889,6 +899,7 @@ function downloadCSV(type){
         const time=m.createdAt?.toDate?m.createdAt.toDate().toLocaleString('en-US',{month:'short',day:'numeric',hour:'numeric',minute:'2-digit'}):'Sending…';
         if(m.type==='report')return `<div style="background:rgba(45,74,50,0.06);border-left:3px solid var(--sage);border-radius:0 10px 10px 0;padding:12px 14px;margin:4px 0"><div style="font-size:11px;font-weight:600;color:var(--forest);text-transform:uppercase;margin-bottom:6px">📋 Session Report · ${time}</div><div style="font-size:13px;color:var(--mid);white-space:pre-line">${m.text}</div></div>`;
         if(m.type==='booking')return `<div style="background:rgba(201,168,76,0.08);border-left:3px solid var(--gold);border-radius:0 10px 10px 0;padding:12px 14px;margin:4px 0"><div style="font-size:11px;font-weight:600;text-transform:uppercase;margin-bottom:6px">📅 Booking Confirmation · ${time}</div><div style="font-size:13px;color:var(--mid);white-space:pre-line">${m.text}</div></div>`;
+        if(m.type==='invoice')return `<div style="background:rgba(99,91,255,0.06);border-left:3px solid #635BFF;border-radius:0 10px 10px 0;padding:12px 14px;margin:4px 0"><div style="font-size:11px;font-weight:600;color:#635BFF;text-transform:uppercase;margin-bottom:6px">💳 Invoice · ${time}</div><div style="font-size:13px;color:var(--mid);white-space:pre-line">${m.text}</div></div>`;
         if(m.type==='reminder')return `<div style="background:rgba(196,132,90,0.07);border-left:3px solid var(--clay);border-radius:0 10px 10px 0;padding:12px 14px;margin:4px 0"><div style="font-size:11px;font-weight:600;color:var(--clay);text-transform:uppercase;margin-bottom:6px">🔔 Reminder · ${time}</div><div style="font-size:13px;color:var(--mid);white-space:pre-line">${m.text}</div></div>`;
         return `<div style="display:flex;flex-direction:${isMe?'row-reverse':'row'};gap:8px;margin-bottom:4px"><div><div style="font-size:10px;color:var(--mid);margin-bottom:3px;${isMe?'text-align:right':''}">${time}</div><div style="background:${isMe?'var(--forest)':'#fff'};color:${isMe?'#fff':'var(--charcoal)'};padding:9px 13px;border-radius:${isMe?'14px 14px 4px 14px':'14px 14px 14px 4px'};font-size:13px;max-width:300px;line-height:1.5;border:${isMe?'none':'1px solid rgba(0,0,0,0.07)'};white-space:pre-line">${m.text}</div></div></div>`;
       }).join('');
@@ -933,6 +944,11 @@ function downloadCSV(type){
   window.sendBookingConfirmation=async function(uid,text){
     if(!uid||!text)return;
     try{await addDoc(collection(db,'clients',uid,'messages'),{text,senderUid:currentUser?.uid||'staff',senderName:currentUser?.displayName||'Staff',senderRole:'staff',type:'booking',createdAt:serverTimestamp()});}
+    catch(e){console.error(e);}
+  };
+  window.sendInvoiceToThread=async function(uid,text){
+    if(!uid||!text)return;
+    try{await addDoc(collection(db,'clients',uid,'messages'),{text,senderUid:currentUser?.uid||'staff',senderName:currentUser?.displayName||'Staff',senderRole:'staff',type:'invoice',createdAt:serverTimestamp()});}
     catch(e){console.error(e);}
   };
   window.sendReminder=async function(uid,text){
