@@ -482,7 +482,7 @@ function previewStaffPhoto(input){
   };
   reader.readAsDataURL(file);
 }
-function submitReport(){
+async function submitReport(){
   const notes  = document.getElementById('rm-notes').value.trim();
   const uid    = document.getElementById('rm-client').value;
   if(!notes){ showToast('Please write session notes.'); return; }
@@ -495,24 +495,36 @@ function submitReport(){
   const text     = `SESSION REPORT — ${date}\n\nService: ${type}\nDuration: ${dur} minutes\nMood: ${mood}\n\n${notes}`;
   const client   = window._clientMap?.[uid]||{};
 
-  // Send report to message thread
-  if(typeof window.sendReportToThread==='function') window.sendReportToThread(uid, text);
+  try {
+    // 1. Send report to message thread and await it
+    if(typeof window.sendReportToThread==='function'){
+      await window.sendReportToThread(uid, text);
+    }
 
-  // Create Stripe invoice via Cloud Function
-  if(typeof window.createInvoice==='function'){
-    window.createInvoice({
-      clientUid:       uid,
-      clientName:      client.name  || 'Client',
-      clientEmail:     client.email || '',
-      service:         type,
-      date,
-      durationMinutes: dur,
-      notes,
-    });
+    closeModal('report-modal');
+    showToast('✓ Report sent to client!');
+
+    // Reset form fields
+    document.getElementById('rm-notes').value='';
+    document.getElementById('rm-duration').value='';
+    document.getElementById('rm-date').value='';
+
+    // 2. Create Stripe invoice (runs after modal closes, non-blocking)
+    if(typeof window.createInvoice==='function'){
+      window.createInvoice({
+        clientUid:       uid,
+        clientName:      client.name  || 'Client',
+        clientEmail:     client.email || '',
+        service:         type,
+        date,
+        durationMinutes: dur,
+        notes,
+      });
+    }
+  } catch(err) {
+    console.error('submitReport error:', err);
+    showToast('⚠️ Something went wrong — check browser console.');
   }
-
-  closeModal('report-modal');
-  showToast('✓ Report sent and invoice created!');
 }
 function downloadCSV(type){
   const h={clients:'Name,Email,Phone,Senior Name,Status\n',schedule:'Client,Service,Date,Time,Duration,Status\n',payments:'Client,Service,Amount,Date,Status\n',reports:'Client,Date,Service,Duration,Mood,Notes\n',contacts:'Client,Family Contact,Phone,Email\n',all:'Active Aging Partners — Full Data Export\n\n'};
@@ -559,8 +571,15 @@ function downloadCSV(type){
     try {
       showToast('⏳ Creating invoice…');
       const result = await _createStripeInvoice(data);
-      if(result.data.success) {
-        showToast(`✓ Invoice of $${result.data.amount} sent to client!`);
+      const d = result.data;
+      if(d.success && !d.sendError) {
+        showToast(`✓ Invoice of $${d.amount} sent to client!`);
+      } else if(d.success && d.sendError) {
+        // Invoice created and saved but email delivery failed
+        // Show the hosted URL so staff can share it manually
+        showToast(`✓ Invoice created ($${d.amount}) — email delivery failed, share link manually.`);
+        console.warn('Invoice send error:', d.sendError);
+        console.log('Invoice URL:', d.invoiceUrl);
       }
     } catch(err) {
       console.error('Invoice error:', err);
