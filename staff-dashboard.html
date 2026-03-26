@@ -483,18 +483,36 @@ function previewStaffPhoto(input){
   reader.readAsDataURL(file);
 }
 function submitReport(){
-  const notes=document.getElementById('rm-notes').value.trim();
-  const uid=document.getElementById('rm-client').value;
-  if(!notes){showToast('Please write session notes.');return;}
-  if(!uid){showToast('Please select a client.');return;}
-  const mood=document.getElementById('rm-mood').value;
-  const dur=document.getElementById('rm-duration').value||'60';
-  const type=document.getElementById('rm-type').value;
-  const date=document.getElementById('rm-date').value||new Date().toLocaleDateString();
-  const text=`SESSION REPORT — ${date}\n\nService: ${type}\nDuration: ${dur} minutes\nMood: ${mood}\n\n${notes}`;
-  if(typeof window.sendReportToThread==='function')window.sendReportToThread(uid,text);
+  const notes  = document.getElementById('rm-notes').value.trim();
+  const uid    = document.getElementById('rm-client').value;
+  if(!notes){ showToast('Please write session notes.'); return; }
+  if(!uid)  { showToast('Please select a client.');     return; }
+
+  const mood     = document.getElementById('rm-mood').value;
+  const dur      = parseInt(document.getElementById('rm-duration').value)||60;
+  const type     = document.getElementById('rm-type').value;
+  const date     = document.getElementById('rm-date').value||new Date().toISOString().split('T')[0];
+  const text     = `SESSION REPORT — ${date}\n\nService: ${type}\nDuration: ${dur} minutes\nMood: ${mood}\n\n${notes}`;
+  const client   = window._clientMap?.[uid]||{};
+
+  // Send report to message thread
+  if(typeof window.sendReportToThread==='function') window.sendReportToThread(uid, text);
+
+  // Create Stripe invoice via Cloud Function
+  if(typeof window.createInvoice==='function'){
+    window.createInvoice({
+      clientUid:       uid,
+      clientName:      client.name  || 'Client',
+      clientEmail:     client.email || '',
+      service:         type,
+      date,
+      durationMinutes: dur,
+      notes,
+    });
+  }
+
   closeModal('report-modal');
-  showToast('✓ Report sent to family!');
+  showToast('✓ Report sent and invoice created!');
 }
 function downloadCSV(type){
   const h={clients:'Name,Email,Phone,Senior Name,Status\n',schedule:'Client,Service,Date,Time,Duration,Status\n',payments:'Client,Service,Amount,Date,Status\n',reports:'Client,Date,Service,Duration,Mood,Notes\n',contacts:'Client,Family Contact,Phone,Email\n',all:'Active Aging Partners — Full Data Export\n\n'};
@@ -518,6 +536,8 @@ function downloadCSV(type){
     getFirestore, collection, addDoc, query,
     orderBy, getDocs, serverTimestamp, doc, getDoc, where
   }                           from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+  import { getFunctions, httpsCallable }
+                              from "https://www.gstatic.com/firebasejs/10.12.0/firebase-functions.js";
 
   const firebaseConfig = {
     apiKey:"AIzaSyAuXMMnVjij0x1X5sQ5Jm1NuJUvquwDb0k",
@@ -528,9 +548,25 @@ function downloadCSV(type){
     appId:"1:239822066888:web:8599d14fce0388d510c1fd"
   };
 
-  const app=initializeApp(firebaseConfig);
-  const auth=getAuth(app);
-  const db=getFirestore(app);
+  const app       = initializeApp(firebaseConfig);
+  const auth      = getAuth(app);
+  const db        = getFirestore(app);
+  const functions = getFunctions(app);
+
+  // Expose Stripe invoice function globally so submitReport() can call it
+  const _createStripeInvoice = httpsCallable(functions, 'createStripeInvoice');
+  window.createInvoice = async function(data) {
+    try {
+      showToast('⏳ Creating invoice…');
+      const result = await _createStripeInvoice(data);
+      if(result.data.success) {
+        showToast(`✓ Invoice of $${result.data.amount} sent to client!`);
+      }
+    } catch(err) {
+      console.error('Invoice error:', err);
+      showToast('⚠️ Report sent but invoice failed — check Stripe dashboard.');
+    }
+  };
 
   const STAFF_EMAILS=[
     "cynthia@activeagingpartners.com",
@@ -583,6 +619,8 @@ function downloadCSV(type){
         const c=d.data();
         clientMap[d.id]={name:c.displayName||c.email||'Client',email:c.email||'',phone:c.phone||''};
       });
+      // Expose globally so submitReport() can access client details
+      window._clientMap = clientMap;
 
       threadList.innerHTML=snap.docs.map(d=>{
         const c=d.data();
