@@ -2,22 +2,15 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%232d4a32'/><text y='.9em' font-size='75' x='50%' text-anchor='middle' dominant-baseline='auto'>🌿</text></svg>">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Active Aging Partners — Staff Dashboard</title>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=Jost:wght@300;400;500;600&display=swap" rel="stylesheet">
 <style>
-:root {
-  --forest:#2d4a32;--sage:#7a9e7e;--sage-light:#b8d4bb;
-  --cream:#f8f4ed;--warm:#fdf9f3;--sand:#e8dfc8;
-  --clay:#c4845a;--clay-light:#e8b494;
-  --charcoal:#1e2820;--mid:#607060;--gold:#c9a84c;
-  --shadow:rgba(30,40,32,0.1);
-}
+:root{--forest:#2d4a32;--sage:#7a9e7e;--sage-light:#b8d4bb;--cream:#f8f4ed;--warm:#fdf9f3;--sand:#e8dfc8;--clay:#c4845a;--clay-light:#e8b494;--charcoal:#1e2820;--mid:#607060;--gold:#c9a84c;--shadow:rgba(30,40,32,0.1);}
 *{margin:0;padding:0;box-sizing:border-box;}
 body{font-family:'Jost',sans-serif;background:var(--cream);color:var(--charcoal);min-height:100vh;}
 .app{display:flex;min-height:100vh;}
-
-/* SIDEBAR */
 .sidebar{width:250px;background:var(--charcoal);display:flex;flex-direction:column;position:fixed;top:0;left:0;bottom:0;z-index:100;}
 .logo-area{padding:28px 20px 20px;border-bottom:1px solid rgba(255,255,255,0.07);}
 .logo-mark{width:40px;height:40px;background:linear-gradient(135deg,var(--sage),var(--forest));border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:18px;margin-bottom:10px;}
@@ -28,172 +21,82 @@ body{font-family:'Jost',sans-serif;background:var(--cream);color:var(--charcoal)
 .ni{display:flex;align-items:center;gap:10px;padding:9px 10px;border-radius:10px;cursor:pointer;color:rgba(255,255,255,0.5);font-size:13px;font-weight:500;transition:all 0.2s;margin-bottom:2px;}
 .ni:hover{background:rgba(255,255,255,0.06);color:rgba(255,255,255,0.9);}
 .ni.active{background:linear-gradient(135deg,rgba(45,74,50,0.8),rgba(122,158,126,0.4));color:#fff;}
-.ni-icon{font-size:15px;width:20px;text-align:center;}
-.ni-badge{margin-left:auto;background:var(--clay);color:#fff;font-size:10px;font-weight:700;padding:2px 7px;border-radius:20px;}
-.sb-footer{padding:14px 10px;border-top:1px solid rgba(255,255,255,0.07);}
-.user-pill{display:flex;align-items:center;gap:10px;padding:10px;border-radius:10px;cursor:pointer;background:rgba(255,255,255,0.05);transition:background 0.2s;}
-.user-pill:hover{background:rgba(255,255,255,0.09);}
-.uav{width:38px;height:38px;border-radius:50%;background:linear-gradient(135deg,var(--clay-light),var(--clay));display:flex;align-items:center;justify-content:center;font-weight:700;font-size:13px;color:#fff;flex-shrink:0;overflow:hidden;position:relative;}
-.uav img{width:100%;height:100%;object-fit:cover;border-radius:50%;}
-.uname{color:#fff;font-size:13px;font-weight:500;}
-.urole{color:rgba(255,255,255,0.35);font-size:11px;}
-
-/* MAIN */
+.ni-icon{font-size:16px;width:20px;text-align:center;}
+.sb-footer{padding:12px 10px;border-top:1px solid rgba(255,255,255,0.07);}
+.user-pill{display:flex;align-items:center;gap:10px;padding:9px 10px;border-radius:10px;cursor:pointer;transition:background 0.2s;}
+.user-pill:hover{background:rgba(255,255,255,0.06);}
+.uav{width:34px;height:34px;border-radius:50%;background:linear-gradient(135deg,var(--sage),var(--forest));display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:#fff;flex-shrink:0;overflow:hidden;}
+.uav img{width:100%;height:100%;object-fit:cover;}
+.uname{font-size:13px;font-weight:600;color:#fff;}
+.urole{font-size:10px;color:rgba(255,255,255,0.4);}
 .main{margin-left:250px;flex:1;display:flex;flex-direction:column;}
-.topbar{background:var(--warm);border-bottom:1px solid rgba(0,0,0,0.06);padding:14px 28px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:50;}
+.topbar{padding:18px 28px;background:#fff;border-bottom:1px solid rgba(0,0,0,0.06);display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:50;box-shadow:0 2px 8px rgba(0,0,0,0.04);}
 .pt{font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:600;}
-.ps{font-size:12px;color:var(--mid);margin-top:1px;}
-.tr{display:flex;gap:10px;align-items:center;}
-
-.btn{font-family:'Jost',sans-serif;font-size:13px;font-weight:600;padding:9px 18px;border-radius:50px;border:none;cursor:pointer;transition:all 0.2s;display:inline-flex;align-items:center;gap:6px;}
-.btn-p{background:var(--forest);color:#fff;box-shadow:0 3px 10px rgba(45,74,50,0.25);}
-.btn-p:hover{background:var(--sage);transform:translateY(-1px);}
-.btn-g{background:rgba(0,0,0,0.05);color:var(--charcoal);}
-.btn-g:hover{background:rgba(0,0,0,0.09);}
-.btn-c{background:var(--clay);color:#fff;}
-.btn-c:hover{filter:brightness(1.08);transform:translateY(-1px);}
-.btn-gold{background:var(--gold);color:#fff;}
-.btn-gold:hover{filter:brightness(1.08);}
-.btn-sm{padding:6px 14px;font-size:12px;border-radius:30px;}
-.btn-danger{background:rgba(200,60,60,0.1);color:#c03c3c;}
-.btn-danger:hover{background:rgba(200,60,60,0.18);}
-
+.ps{font-size:12px;color:var(--mid);margin-top:2px;}
+.tr{display:flex;gap:10px;}
 .content{padding:24px 28px;flex:1;}
-.view{display:none;animation:fadeIn 0.3s ease;}
+.view{display:none;}
 .view.active{display:block;}
-@keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
-
-/* DASHBOARD */
-.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:22px;}
-.stat{background:var(--warm);border-radius:14px;padding:18px;border:1px solid rgba(0,0,0,0.05);box-shadow:0 2px 8px var(--shadow);position:relative;overflow:hidden;}
-.stat::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;}
-.s-green::before{background:linear-gradient(90deg,var(--forest),var(--sage-light));}
-.s-clay::before{background:linear-gradient(90deg,var(--clay),var(--clay-light));}
-.s-gold::before{background:linear-gradient(90deg,var(--gold),#e8d080);}
-.s-sky::before{background:linear-gradient(90deg,#5b9dab,#8dc8d4);}
-.stat-lbl{color:var(--mid);font-size:11px;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;}
-.stat-val{font-family:'Cormorant Garamond',serif;font-size:36px;font-weight:700;margin:4px 0 2px;}
-.stat-chg{font-size:12px;color:var(--forest);}
-
-.dash-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px;}
-.card{background:var(--warm);border-radius:14px;border:1px solid rgba(0,0,0,0.05);box-shadow:0 2px 8px var(--shadow);overflow:hidden;}
-.card-hdr{padding:16px 18px 12px;border-bottom:1px solid rgba(0,0,0,0.05);display:flex;align-items:center;justify-content:space-between;}
-.card-title{font-family:'Cormorant Garamond',serif;font-size:17px;font-weight:600;}
-.card-body{padding:14px 18px;}
-
-.si{display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid rgba(0,0,0,0.04);}
-.si:last-child{border-bottom:none;}
-.si-time{font-size:11px;font-weight:700;color:var(--forest);width:50px;flex-shrink:0;}
-.sav{width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:12px;color:#fff;flex-shrink:0;overflow:hidden;}
-.sav img{width:100%;height:100%;object-fit:cover;border-radius:50%;}
-.si-info{flex:1;}
-.si-name{font-size:13px;font-weight:600;}
-.si-type{font-size:11px;color:var(--mid);}
-
-.tag{padding:4px 10px;border-radius:20px;font-size:10px;font-weight:700;}
-.tag-walk{background:rgba(45,74,50,0.1);color:var(--forest);}
-.tag-appt{background:rgba(196,132,90,0.15);color:#904820;}
-.tag-errand{background:rgba(201,168,76,0.15);color:#7a5800;}
-
-.bar-row{display:flex;align-items:center;gap:10px;margin-bottom:10px;}
-.bar-label{font-size:12px;width:90px;flex-shrink:0;}
-.bar-track{flex:1;height:8px;background:rgba(0,0,0,0.06);border-radius:4px;overflow:hidden;}
-.bar-fill{height:100%;border-radius:4px;background:linear-gradient(90deg,var(--forest),var(--sage));}
-.bar-val{font-size:12px;font-weight:600;width:40px;text-align:right;}
-
-/* CLIENTS */
-.client-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;}
-.cc{background:var(--warm);border-radius:14px;border:1px solid rgba(0,0,0,0.05);box-shadow:0 2px 8px var(--shadow);padding:18px;cursor:pointer;transition:all 0.2s;}
-.cc:hover{transform:translateY(-2px);box-shadow:0 6px 18px var(--shadow);}
-.cc-hdr{display:flex;align-items:center;gap:10px;margin-bottom:12px;}
-.cav{width:46px;height:46px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:15px;color:#fff;flex-shrink:0;overflow:hidden;}
-.cav img{width:100%;height:100%;object-fit:cover;border-radius:50%;}
-.cc-name{font-family:'Cormorant Garamond',serif;font-size:16px;font-weight:600;}
+.btn{font-family:'Jost',sans-serif;font-size:13px;font-weight:600;padding:9px 18px;border-radius:8px;border:none;cursor:pointer;transition:all 0.2s;display:inline-flex;align-items:center;gap:6px;}
+.btn-g{background:rgba(45,74,50,0.08);color:var(--forest);}
+.btn-g:hover{background:rgba(45,74,50,0.15);}
+.btn-p{background:var(--forest);color:#fff;}
+.btn-p:hover{background:var(--sage);}
+.btn-ghost{background:transparent;color:var(--mid);border:1px solid rgba(0,0,0,0.12);}
+.btn-sm{padding:6px 12px;font-size:12px;}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:20px;}
+.stat{background:#fff;border-radius:14px;padding:18px;border:1px solid rgba(0,0,0,0.05);box-shadow:0 2px 8px var(--shadow);}
+.stat-lbl{font-size:11px;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;color:var(--mid);margin-bottom:8px;}
+.stat-val{font-family:'Cormorant Garamond',serif;font-size:32px;font-weight:700;line-height:1;}
+.stat-chg{font-size:11px;color:var(--mid);margin-top:4px;}
+.s-green .stat-val{color:var(--forest);}
+.s-clay .stat-val{color:var(--clay);}
+.s-gold .stat-val{color:var(--gold);}
+.s-sky .stat-val{color:#2d7a8a;}
+.dash-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
+.card{background:#fff;border-radius:14px;border:1px solid rgba(0,0,0,0.05);box-shadow:0 2px 8px var(--shadow);overflow:hidden;}
+.card-hdr{padding:14px 16px;border-bottom:1px solid rgba(0,0,0,0.05);display:flex;align-items:center;justify-content:space-between;}
+.card-title{font-size:14px;font-weight:600;}
+.card-body{padding:14px 16px;}
+.es{text-align:center;padding:36px 20px;}
+.es-icon{font-size:36px;margin-bottom:12px;}
+.es-title{font-family:'Cormorant Garamond',serif;font-size:20px;font-weight:600;margin-bottom:6px;}
+.es-body{font-size:13px;color:var(--mid);line-height:1.6;}
+.client-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;}
+.cc{background:#fff;border-radius:14px;padding:18px;border:1px solid rgba(0,0,0,0.05);box-shadow:0 2px 8px var(--shadow);}
+.cc-hdr{display:flex;align-items:center;gap:12px;margin-bottom:14px;}
+.cav{width:42px;height:42px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700;color:#fff;flex-shrink:0;}
+.cc-name{font-size:15px;font-weight:600;}
 .cc-age{font-size:11px;color:var(--mid);}
-.cc-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-bottom:12px;}
-.cs{background:rgba(0,0,0,0.03);border-radius:7px;padding:7px;text-align:center;}
-.cs-val{font-size:15px;font-weight:700;}
-.cs-lbl{font-size:9px;color:var(--mid);}
-.cc-foot{font-size:11px;color:var(--mid);padding-top:10px;border-top:1px solid rgba(0,0,0,0.05);}
-
-/* SCHEDULE */
-.wk-grid{display:grid;grid-template-columns:65px repeat(7,1fr);gap:1px;background:rgba(0,0,0,0.07);border-radius:12px;overflow:hidden;}
-.wk-hdr{background:var(--charcoal);color:rgba(255,255,255,0.6);font-size:10px;font-weight:600;text-align:center;padding:10px 4px;letter-spacing:0.06em;text-transform:uppercase;}
-.wk-hdr.today{color:var(--sage-light);}
-.tslot{background:var(--warm);min-height:52px;position:relative;}
-.tlbl{background:var(--warm);font-size:10px;color:var(--mid);padding:14px 6px 0;text-align:right;}
-.ce{position:absolute;top:3px;left:2px;right:2px;border-radius:6px;padding:4px 6px;font-size:10px;font-weight:600;cursor:pointer;line-height:1.3;transition:transform 0.15s;}
-.ce:hover{transform:scale(1.02);z-index:10;}
-.ce.walk{background:rgba(45,74,50,0.15);color:var(--forest);border-left:3px solid var(--forest);}
-.ce.appt{background:rgba(196,132,90,0.15);color:#904820;border-left:3px solid var(--clay);}
-.ce.errand{background:rgba(201,168,76,0.15);color:#7a5800;border-left:3px solid var(--gold);}
-
-/* MESSAGES */
-.msg-layout{display:grid;grid-template-columns:260px 1fr;background:var(--warm);border-radius:14px;border:1px solid rgba(0,0,0,0.05);height:520px;overflow:hidden;box-shadow:0 2px 10px var(--shadow);}
+.cc-foot{font-size:12px;color:var(--mid);padding-top:12px;border-top:1px solid rgba(0,0,0,0.05);}
+.msg-layout{display:grid;grid-template-columns:260px 1fr;background:#fff;border-radius:14px;border:1px solid rgba(0,0,0,0.06);height:520px;overflow:hidden;box-shadow:0 2px 8px var(--shadow);}
 .ml{border-right:1px solid rgba(0,0,0,0.06);display:flex;flex-direction:column;}
 .ms-input{width:100%;padding:8px 12px;border-radius:8px;border:1px solid rgba(0,0,0,0.1);font-family:'Jost',sans-serif;font-size:12px;outline:none;background:var(--cream);}
-.thr{display:flex;gap:8px;padding:11px 12px;cursor:pointer;border-bottom:1px solid rgba(0,0,0,0.04);transition:background 0.15s;align-items:flex-start;}
-.thr:hover{background:rgba(0,0,0,0.025);}
-.thr.active{background:rgba(45,74,50,0.07);}
-.thr-av{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:12px;color:#fff;flex-shrink:0;overflow:hidden;}
-.thr-av img{width:100%;height:100%;object-fit:cover;border-radius:50%;}
-.thr-name{font-size:12px;font-weight:600;}
-.thr-prev{font-size:11px;color:var(--mid);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:150px;}
-.udot{width:7px;height:7px;border-radius:50%;background:var(--clay);margin-top:4px;flex-shrink:0;}
+.thr{display:flex;align-items:center;gap:10px;padding:12px;cursor:pointer;border-bottom:1px solid rgba(0,0,0,0.04);transition:background 0.15s;}
+.thr:hover{background:rgba(0,0,0,0.02);}
+.thr.active{background:rgba(45,74,50,0.06);}
+.thr-av{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:#fff;flex-shrink:0;}
+.thr-name{font-size:13px;font-weight:600;}
+.thr-prev{font-size:11px;color:var(--mid);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
 .chat-area{display:flex;flex-direction:column;}
-.chat-hdr{padding:12px 16px;border-bottom:1px solid rgba(0,0,0,0.05);display:flex;align-items:center;gap:10px;}
-.chat-body{flex:1;overflow-y:auto;padding:14px;display:flex;flex-direction:column;gap:10px;}
-.bw{display:flex;gap:8px;align-items:flex-end;}
-.bw.me{flex-direction:row-reverse;}
-.bub{max-width:70%;padding:9px 13px;border-radius:12px;font-size:13px;line-height:1.5;}
-.bw.them .bub{background:rgba(0,0,0,0.05);border-bottom-left-radius:3px;}
-.bw.me .bub{background:var(--forest);color:#fff;border-bottom-right-radius:3px;}
-.btime{font-size:10px;color:var(--mid);margin-bottom:2px;}
-.chat-foot{padding:10px 12px;border-top:1px solid rgba(0,0,0,0.05);display:flex;gap:8px;}
+.chat-hdr{padding:12px 16px;border-bottom:1px solid rgba(0,0,0,0.06);display:flex;align-items:center;gap:10px;}
+.chat-body{flex:1;overflow-y:auto;padding:14px;display:flex;flex-direction:column;gap:8px;}
+.chat-foot{padding:10px 12px;border-top:1px solid rgba(0,0,0,0.06);display:flex;gap:8px;}
 .chat-inp{flex:1;padding:9px 12px;border-radius:10px;border:1px solid rgba(0,0,0,0.1);font-family:'Jost',sans-serif;font-size:13px;outline:none;}
 .chat-inp:focus{border-color:var(--sage);}
-
-/* REPORTS */
-.rc{background:var(--warm);border-radius:14px;border:1px solid rgba(0,0,0,0.05);box-shadow:0 2px 8px var(--shadow);padding:18px 20px;margin-bottom:12px;}
-.rc-hdr{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:10px;}
-.rc-title{font-size:14px;font-weight:600;}
-.rc-date{font-size:11px;color:var(--mid);}
-.rc-body{font-size:13px;line-height:1.7;color:var(--mid);margin-bottom:12px;}
-.rc-stats{display:flex;gap:12px;}
-.rcs{background:rgba(0,0,0,0.03);border-radius:7px;padding:7px 12px;text-align:center;}
-.rcsv{font-size:15px;font-weight:700;}
-.rcsl{font-size:9px;color:var(--mid);}
-
-/* PAYMENTS */
-.inv-table{background:var(--warm);border-radius:14px;border:1px solid rgba(0,0,0,0.05);box-shadow:0 2px 8px var(--shadow);overflow:hidden;}
-.tbl-hdr{display:grid;grid-template-columns:2fr 1.5fr 1fr 1fr 100px;padding:12px 18px;background:rgba(0,0,0,0.03);border-bottom:1px solid rgba(0,0,0,0.06);font-size:10px;font-weight:600;color:var(--mid);text-transform:uppercase;letter-spacing:0.06em;}
-.tbl-row{display:grid;grid-template-columns:2fr 1.5fr 1fr 1fr 100px;padding:13px 18px;border-bottom:1px solid rgba(0,0,0,0.04);align-items:center;font-size:13px;transition:background 0.15s;}
-.tbl-row:last-child{border-bottom:none;}
-.tbl-row:hover{background:rgba(0,0,0,0.02);}
-.inv-status{padding:4px 10px;border-radius:20px;font-size:11px;font-weight:700;display:inline-block;}
-.st-paid{background:rgba(45,74,50,0.1);color:var(--forest);}
-.st-pend{background:rgba(201,168,76,0.15);color:#7a5800;}
-.st-over{background:rgba(196,132,90,0.15);color:#904820;}
-
-/* SETTINGS */
-.settings-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px;}
-.sc{background:var(--warm);border-radius:14px;border:1px solid rgba(0,0,0,0.05);box-shadow:0 2px 8px var(--shadow);padding:22px;}
-.sc-title{font-family:'Cormorant Garamond',serif;font-size:19px;font-weight:600;margin-bottom:16px;padding-bottom:12px;border-bottom:1px solid rgba(0,0,0,0.06);}
-.fg{margin-bottom:13px;}
-.fl{font-size:11px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:var(--mid);display:block;margin-bottom:5px;}
-.fi,.fs{width:100%;padding:10px 12px;border-radius:10px;border:1.5px solid rgba(0,0,0,0.1);font-family:'Jost',sans-serif;font-size:13px;background:var(--cream);outline:none;transition:border-color 0.2s;}
-.fi:focus,.fs:focus{border-color:var(--sage);box-shadow:0 0 0 3px rgba(122,158,126,0.15);}
-.fr{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
-
-/* Photo upload */
-.pua{display:flex;align-items:center;gap:18px;margin-bottom:18px;}
-.pc{width:74px;height:74px;border-radius:50%;background:linear-gradient(135deg,var(--clay-light),var(--clay));display:flex;align-items:center;justify-content:center;font-size:26px;color:#fff;cursor:pointer;transition:filter 0.2s;flex-shrink:0;position:relative;overflow:hidden;}
-.pc:hover{filter:brightness(0.88);}
-.pc img{width:100%;height:100%;object-fit:cover;border-radius:50%;}
-.po{position:absolute;inset:0;background:rgba(0,0,0,0.3);display:flex;align-items:center;justify-content:center;opacity:0;transition:opacity 0.2s;border-radius:50%;font-size:18px;}
+.settings-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
+.sc{background:#fff;border-radius:14px;padding:20px;border:1px solid rgba(0,0,0,0.05);box-shadow:0 2px 8px var(--shadow);}
+.sc-title{font-size:14px;font-weight:600;margin-bottom:14px;padding-bottom:10px;border-bottom:1px solid rgba(0,0,0,0.06);}
+.fg{margin-bottom:12px;}
+.fl{font-size:11px;font-weight:600;letter-spacing:0.07em;text-transform:uppercase;color:var(--mid);display:block;margin-bottom:5px;}
+.fi{width:100%;padding:9px 12px;border-radius:9px;border:1.5px solid rgba(0,0,0,0.1);font-family:'Jost',sans-serif;font-size:13px;background:var(--warm);outline:none;transition:border-color 0.2s;}
+.fi:focus{border-color:var(--sage);}
+textarea.fi{resize:vertical;min-height:80px;line-height:1.5;}
+.pua{display:flex;align-items:center;gap:16px;margin-bottom:12px;}
+.pc{width:72px;height:72px;border-radius:50%;background:linear-gradient(135deg,var(--sage),var(--forest));display:flex;align-items:center;justify-content:center;font-size:22px;font-weight:700;color:#fff;cursor:pointer;position:relative;overflow:hidden;flex-shrink:0;}
+.pc img{width:100%;height:100%;object-fit:cover;position:absolute;inset:0;}
+.po{position:absolute;inset:0;background:rgba(0,0,0,0.5);display:flex;align-items:center;justify-content:center;opacity:0;transition:opacity 0.2s;font-size:18px;}
 .pc:hover .po{opacity:1;}
-
-/* Toggles */
 .tog-row{display:flex;align-items:center;justify-content:space-between;padding:11px 0;border-bottom:1px solid rgba(0,0,0,0.05);}
 .tog-row:last-child{border-bottom:none;}
 .tog-lbl{font-size:13px;font-weight:500;}
@@ -202,19 +105,13 @@ body{font-family:'Jost',sans-serif;background:var(--cream);color:var(--charcoal)
 .tog.on{background:var(--forest);}
 .tok{position:absolute;top:3px;left:3px;width:18px;height:18px;border-radius:50%;background:#fff;transition:left 0.25s;box-shadow:0 1px 4px rgba(0,0,0,0.2);}
 .tog.on .tok{left:21px;}
-
-/* CSV Export */
-.export-section{background:var(--warm);border-radius:14px;border:1px solid rgba(0,0,0,0.05);box-shadow:0 2px 8px var(--shadow);padding:24px;margin-bottom:16px;}
-.export-title{font-family:'Cormorant Garamond',serif;font-size:19px;font-weight:600;margin-bottom:6px;}
-.export-desc{font-size:13px;color:var(--mid);margin-bottom:20px;line-height:1.6;}
+.export-section{background:var(--warm);border-radius:14px;border:1px solid rgba(0,0,0,0.05);padding:24px;margin-bottom:16px;}
 .export-options{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;}
 .eo{background:#fff;border:1.5px solid rgba(0,0,0,0.08);border-radius:12px;padding:18px;text-align:center;cursor:pointer;transition:all 0.2s;}
-.eo:hover{border-color:var(--sage);background:rgba(45,74,50,0.03);}
+.eo:hover{border-color:var(--sage);}
 .eo .icon{font-size:28px;margin-bottom:8px;}
 .eo .name{font-size:13px;font-weight:600;margin-bottom:3px;}
 .eo .desc{font-size:11px;color:var(--mid);}
-
-/* Modal */
 .modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.4);backdrop-filter:blur(4px);z-index:200;display:none;align-items:center;justify-content:center;}
 .modal-overlay.open{display:flex;}
 .modal{background:#fff;border-radius:20px;width:500px;max-height:88vh;overflow-y:auto;box-shadow:0 20px 60px rgba(0,0,0,0.2);animation:mi 0.25s ease;}
@@ -224,16 +121,18 @@ body{font-family:'Jost',sans-serif;background:var(--cream);color:var(--charcoal)
 .mclose{width:30px;height:30px;border-radius:50%;background:rgba(0,0,0,0.06);border:none;cursor:pointer;font-size:14px;display:flex;align-items:center;justify-content:center;}
 .mbody{padding:18px 24px;}
 .mfoot{padding:14px 24px 20px;border-top:1px solid rgba(0,0,0,0.06);display:flex;gap:8px;justify-content:flex-end;}
-
+.bar-row{display:flex;align-items:center;gap:10px;margin-bottom:10px;}
+.bar-label{font-size:11px;color:var(--mid);width:80px;flex-shrink:0;}
+.bar-track{flex:1;height:8px;background:rgba(0,0,0,0.07);border-radius:4px;overflow:hidden;}
+.bar-fill{height:100%;background:linear-gradient(90deg,var(--forest),var(--sage));border-radius:4px;}
+.bar-val{font-size:12px;font-weight:600;color:var(--mid);width:36px;text-align:right;}
 .toast{position:fixed;bottom:24px;right:24px;background:var(--forest);color:#fff;padding:12px 20px;border-radius:12px;font-size:13px;font-weight:500;box-shadow:0 8px 24px rgba(0,0,0,0.2);z-index:1000;transform:translateY(60px);opacity:0;transition:all 0.3s;}
 .toast.show{transform:translateY(0);opacity:1;}
 </style>
 </head>
 <body>
-
 <div class="app">
 
-<!-- SIDEBAR -->
 <nav class="sidebar">
   <div class="logo-area">
     <div class="logo-mark">🌿</div>
@@ -244,9 +143,8 @@ body{font-family:'Jost',sans-serif;background:var(--cream);color:var(--charcoal)
     <div class="nl">Overview</div>
     <div class="ni active" onclick="nav('dashboard',this)"><span class="ni-icon">📊</span> Dashboard</div>
     <div class="ni" onclick="nav('schedule',this)"><span class="ni-icon">📅</span> Schedule</div>
-    <div class="nl">People</div>
-    <div class="ni" onclick="nav('clients',this)"><span class="ni-icon">👥</span> Clients <span class="ni-badge">8</span></div>
-    <div class="ni" onclick="nav('messages',this)"><span class="ni-icon">💬</span> Messages <span class="ni-badge">3</span></div>
+    <div class="ni" onclick="nav('clients',this)"><span class="ni-icon">👥</span> Clients</div>
+    <div class="ni" onclick="nav('messages',this)"><span class="ni-icon">💬</span> Messages</div>
     <div class="nl">Business</div>
     <div class="ni" onclick="nav('reports',this)"><span class="ni-icon">📋</span> Session Reports</div>
     <div class="ni" onclick="nav('payments',this)"><span class="ni-icon">💳</span> Payments</div>
@@ -266,13 +164,9 @@ body{font-family:'Jost',sans-serif;background:var(--cream);color:var(--charcoal)
   </div>
 </nav>
 
-<!-- MAIN -->
 <div class="main">
   <div class="topbar">
-    <div>
-      <div class="pt" id="ptitle">Dashboard</div>
-      <div class="ps" id="psub">Sunday, March 1, 2026</div>
-    </div>
+    <div><div class="pt" id="ptitle">Dashboard</div><div class="ps" id="psub">Welcome back</div></div>
     <div class="tr">
       <button class="btn btn-g" onclick="openModal('booking-modal')">📅 Book Session</button>
       <button class="btn btn-p" onclick="openModal('report-modal')">✏️ New Report</button>
@@ -284,53 +178,34 @@ body{font-family:'Jost',sans-serif;background:var(--cream);color:var(--charcoal)
     <!-- DASHBOARD -->
     <div class="view active" id="view-dashboard">
       <div class="stats">
-        <div class="stat s-green"><div class="stat-lbl">Active Clients</div><div class="stat-val">8</div><div class="stat-chg">↑ Goal: 15</div></div>
-        <div class="stat s-clay"><div class="stat-lbl">Sessions / Week</div><div class="stat-val">21</div><div class="stat-chg">↑ On track</div></div>
-        <div class="stat s-gold"><div class="stat-lbl">Weekly Revenue</div><div class="stat-val">$1,050</div><div class="stat-chg">Goal: $2,250</div></div>
-        <div class="stat s-sky"><div class="stat-lbl">Avg Miles / Session</div><div class="stat-val">1.8</div><div class="stat-chg">per walk</div></div>
+        <div class="stat s-green"><div class="stat-lbl">Active Clients</div><div class="stat-val" id="dash-clients">0</div><div class="stat-chg">Goal: 15</div></div>
+        <div class="stat s-clay"><div class="stat-lbl">Sessions / Week</div><div class="stat-val">0</div><div class="stat-chg">Scheduled</div></div>
+        <div class="stat s-gold"><div class="stat-lbl">Weekly Revenue</div><div class="stat-val">$0</div><div class="stat-chg">Goal: $2,250</div></div>
+        <div class="stat s-sky"><div class="stat-lbl">Hourly Rate</div><div class="stat-val">$50</div><div class="stat-chg">flat rate, all services</div></div>
       </div>
       <div class="dash-grid">
         <div class="card">
           <div class="card-hdr"><div class="card-title">Today's Sessions</div><button class="btn btn-g btn-sm" onclick="nav('schedule',document.querySelectorAll('.ni')[1])">View all</button></div>
-          <div class="card-body">
-            <div class="si"><div class="si-time">9:00 AM</div><div class="sav" style="background:linear-gradient(135deg,#7a9e7e,#4d7352)"><span>MR</span></div><div class="si-info"><div class="si-name">Margaret Reynolds</div><div class="si-type">Walk · Riverside Park</div></div><span class="tag tag-walk">Walk</span></div>
-            <div class="si"><div class="si-time">11:30 AM</div><div class="sav" style="background:linear-gradient(135deg,#c4845a,#904820)"><span>HB</span></div><div class="si-info"><div class="si-name">Harold Baker</div><div class="si-type">Dr. Chen · Cardiology</div></div><span class="tag tag-appt">Appt</span></div>
-            <div class="si"><div class="si-time">2:00 PM</div><div class="sav" style="background:linear-gradient(135deg,#c9a84c,#8a6a10)"><span>EW</span></div><div class="si-info"><div class="si-name">Eleanor Wilson</div><div class="si-type">Publix grocery run</div></div><span class="tag tag-errand">Errand</span></div>
-            <div class="si"><div class="si-time">4:00 PM</div><div class="sav" style="background:linear-gradient(135deg,#5b9dab,#2d6b78)"><span>FS</span></div><div class="si-info"><div class="si-name">Frank Simmons</div><div class="si-type">Neighborhood walk</div></div><span class="tag tag-walk">Walk</span></div>
-          </div>
+          <div class="card-body"><div class="es"><div class="es-icon">📅</div><div class="es-title">No sessions today</div><div class="es-body">Scheduled sessions will appear here.</div></div></div>
         </div>
         <div class="card">
           <div class="card-hdr"><div class="card-title">Goal Progress</div></div>
           <div class="card-body">
-            <div style="font-family:'Cormorant Garamond',serif;font-size:28px;font-weight:700;margin-bottom:16px">53% <span style="font-size:14px;font-family:'Jost',sans-serif;color:var(--mid)">to full capacity</span></div>
-            <div class="bar-row"><div class="bar-label" style="font-size:11px">Clients</div><div class="bar-track"><div class="bar-fill" style="width:53%"></div></div><div class="bar-val">8/15</div></div>
-            <div class="bar-row"><div class="bar-label" style="font-size:11px">Sessions/wk</div><div class="bar-track"><div class="bar-fill" style="width:47%"></div></div><div class="bar-val">21/45</div></div>
-            <div class="bar-row"><div class="bar-label" style="font-size:11px">Revenue/wk</div><div class="bar-track"><div class="bar-fill" style="width:43%;background:linear-gradient(90deg,var(--gold),#e8d080)"></div></div><div class="bar-val">43%</div></div>
-            <div style="margin-top:14px;font-size:12px;color:var(--mid);background:rgba(0,0,0,0.03);border-radius:8px;padding:10px 12px">Add 7 more clients to reach your $2,250/week revenue goal 🎯</div>
+            <div style="font-family:'Cormorant Garamond',serif;font-size:28px;font-weight:700;margin-bottom:16px">0% <span style="font-size:14px;font-family:'Jost',sans-serif;color:var(--mid)">to full capacity</span></div>
+            <div class="bar-row"><div class="bar-label" style="font-size:11px">Clients</div><div class="bar-track"><div class="bar-fill" style="width:0%"></div></div><div class="bar-val">0/15</div></div>
+            <div class="bar-row"><div class="bar-label" style="font-size:11px">Sessions/wk</div><div class="bar-track"><div class="bar-fill" style="width:0%"></div></div><div class="bar-val">0/45</div></div>
+            <div style="margin-top:14px;font-size:12px;color:var(--mid);background:rgba(0,0,0,0.03);border-radius:8px;padding:10px 12px">Add clients to build toward your $2,250/week revenue goal 🎯</div>
           </div>
         </div>
         <div class="card">
           <div class="card-hdr"><div class="card-title">Recent Activity</div></div>
-          <div class="card-body">
-            <div style="display:flex;flex-direction:column;gap:12px">
-              <div style="display:flex;gap:10px;align-items:flex-start"><div style="width:8px;height:8px;border-radius:50%;background:var(--forest);margin-top:5px;flex-shrink:0"></div><div><div style="font-size:13px">Sarah Reynolds booked a walk for <strong>Tue Mar 3, 10am</strong></div><div style="font-size:11px;color:var(--mid)">2 hours ago</div></div></div>
-              <div style="display:flex;gap:10px;align-items:flex-start"><div style="width:8px;height:8px;border-radius:50%;background:var(--clay);margin-top:5px;flex-shrink:0"></div><div><div style="font-size:13px">Payment of <strong>$150</strong> received from Baker family</div><div style="font-size:11px;color:var(--mid)">Yesterday</div></div></div>
-              <div style="display:flex;gap:10px;align-items:flex-start"><div style="width:8px;height:8px;border-radius:50%;background:var(--gold);margin-top:5px;flex-shrink:0"></div><div><div style="font-size:13px">Session report sent to Eleanor Wilson's family</div><div style="font-size:11px;color:var(--mid)">Yesterday</div></div></div>
-              <div style="display:flex;gap:10px;align-items:flex-start"><div style="width:8px;height:8px;border-radius:50%;background:#5b9dab;margin-top:5px;flex-shrink:0"></div><div><div style="font-size:13px">New message from <strong>Tom Wilson</strong> re: Eleanor's schedule</div><div style="font-size:11px;color:var(--mid)">Feb 28</div></div></div>
-            </div>
-          </div>
+          <div class="card-body"><div class="es"><div class="es-icon">🌿</div><div class="es-title">No activity yet</div><div class="es-body">New bookings, messages, and payments will appear here.</div></div></div>
         </div>
         <div class="card">
           <div class="card-hdr"><div class="card-title">Monthly Revenue</div><span style="background:#635BFF;color:#fff;padding:3px 9px;border-radius:6px;font-size:11px;font-weight:700">⚡ Stripe</span></div>
           <div class="card-body">
-            <div style="font-family:'Cormorant Garamond',serif;font-size:30px;font-weight:700">$3,850 <span style="font-size:13px;font-family:'Jost',sans-serif;color:var(--mid);font-weight:400">Feb 2026</span></div>
-            <div style="font-size:12px;color:var(--forest);margin:4px 0 16px">↑ 14% vs January</div>
-            <div style="display:flex;gap:16px">
-              <div><div style="font-size:11px;color:var(--mid)">Sessions</div><div style="font-weight:700">77</div></div>
-              <div><div style="font-size:11px;color:var(--mid)">Avg</div><div style="font-weight:700">$50</div></div>
-              <div><div style="font-size:11px;color:var(--mid)">Gas fees</div><div style="font-weight:700">$265</div></div>
-              <div><div style="font-size:11px;color:var(--mid)">Pending</div><div style="font-weight:700;color:#7a5800">$200</div></div>
-            </div>
+            <div style="font-family:'Cormorant Garamond',serif;font-size:30px;font-weight:700">$0 <span style="font-size:13px;font-family:'Jost',sans-serif;color:var(--mid);font-weight:400">This month</span></div>
+            <div style="font-size:12px;color:var(--mid);margin:8px 0">Connect Stripe to track revenue automatically.</div>
           </div>
         </div>
       </div>
@@ -339,55 +214,24 @@ body{font-family:'Jost',sans-serif;background:var(--cream);color:var(--charcoal)
     <!-- SCHEDULE -->
     <div class="view" id="view-schedule">
       <div style="display:flex;align-items:center;gap:14px;margin-bottom:18px">
-        <div style="font-family:'Cormorant Garamond',serif;font-size:20px;font-weight:600;flex:1">March 2026</div>
-        <button class="btn btn-g btn-sm">‹ Prev</button>
-        <button class="btn btn-g btn-sm">Today</button>
-        <button class="btn btn-g btn-sm">Next ›</button>
-        <button class="btn btn-p btn-sm" onclick="openModal('booking-modal')">+ Book</button>
+        <div style="font-family:'Cormorant Garamond',serif;font-size:20px;font-weight:600;flex:1">Schedule</div>
+        <button class="btn btn-p btn-sm" onclick="openModal('booking-modal')">+ Book Session</button>
       </div>
-      <div class="wk-grid">
-        <div class="wk-hdr"></div>
-        <div class="wk-hdr">Mon<br><b style="font-size:13px;color:#fff">2</b></div>
-        <div class="wk-hdr today">Tue<br><b style="font-size:13px">3</b></div>
-        <div class="wk-hdr">Wed<br><b style="font-size:13px;color:#fff">4</b></div>
-        <div class="wk-hdr">Thu<br><b style="font-size:13px;color:#fff">5</b></div>
-        <div class="wk-hdr">Fri<br><b style="font-size:13px;color:#fff">6</b></div>
-        <div class="wk-hdr">Sat<br><b style="font-size:13px;color:#fff">7</b></div>
-        <div class="wk-hdr">Sun<br><b style="font-size:13px;color:#fff">8</b></div>
-        <div class="tlbl">8 AM</div>
-        <div class="tslot"><div class="ce walk">Margaret R.<br>Walk</div></div><div class="tslot"></div><div class="tslot"><div class="ce walk">Frank S.<br>Walk</div></div><div class="tslot"></div><div class="tslot"><div class="ce walk">Margaret R.<br>Walk</div></div><div class="tslot"></div><div class="tslot"></div>
-        <div class="tlbl">9 AM</div>
-        <div class="tslot"></div><div class="tslot"><div class="ce walk">Eleanor W.<br>Walk</div></div><div class="tslot"></div><div class="tslot"><div class="ce appt">Harold B.<br>Dr. Appt</div></div><div class="tslot"></div><div class="tslot"><div class="ce walk">Ruth P.<br>Walk</div></div><div class="tslot"></div>
-        <div class="tlbl">10 AM</div>
-        <div class="tslot"><div class="ce appt">Dorothy H.<br>Hair Appt</div></div><div class="tslot"></div><div class="tslot"></div><div class="tslot"><div class="ce walk">Eleanor W.<br>Walk</div></div><div class="tslot"></div><div class="tslot"></div><div class="tslot"></div>
-        <div class="tlbl">11 AM</div>
-        <div class="tslot"></div><div class="tslot"><div class="ce errand">Harold B.<br>Pharmacy</div></div><div class="tslot"></div><div class="tslot"></div><div class="tslot"><div class="ce appt">Dorothy H.<br>Dr. Patel</div></div><div class="tslot"></div><div class="tslot"></div>
-        <div class="tlbl">2 PM</div>
-        <div class="tslot"></div><div class="tslot"></div><div class="tslot"><div class="ce errand">Eleanor W.<br>Grocery</div></div><div class="tslot"></div><div class="tslot"></div><div class="tslot"><div class="ce walk">Frank S.<br>Walk</div></div><div class="tslot"></div>
-        <div class="tlbl">4 PM</div>
-        <div class="tslot"><div class="ce walk">Frank S.<br>Walk</div></div><div class="tslot"></div><div class="tslot"></div><div class="tslot"><div class="ce walk">Ruth P.<br>Walk</div></div><div class="tslot"></div><div class="tslot"></div><div class="tslot"></div>
-      </div>
-      <div style="display:flex;gap:10px;margin-top:12px;font-size:12px;align-items:center">
-        <span style="color:var(--mid)">Legend:</span>
-        <span class="tag tag-walk">🚶 Walk</span>
-        <span class="tag tag-appt">🏥 Appointment</span>
-        <span class="tag tag-errand">🛒 Errand</span>
+      <div style="background:#fff;border-radius:14px;padding:40px;border:1px solid rgba(0,0,0,0.05);box-shadow:0 2px 8px var(--shadow)">
+        <div class="es"><div class="es-icon">📅</div><div class="es-title">No sessions scheduled</div><div class="es-body">Book a session using the button above. Sessions will appear here once scheduled.</div></div>
       </div>
     </div>
 
     <!-- CLIENTS -->
     <div class="view" id="view-clients">
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:18px">
-        <div style="font-size:13px;color:var(--mid)">8 active clients — 7 spots to reach your goal</div>
-        <button class="btn btn-p" onclick="openModal('add-client-modal')">+ Add Client</button>
+        <div style="font-size:14px;color:var(--mid)" id="client-count">No clients yet</div>
+        <button class="btn btn-p" onclick="openModal('client-modal')">+ Add Client</button>
       </div>
-      <div class="client-grid">
-        <div class="cc"><div class="cc-hdr"><div class="cav" style="background:linear-gradient(135deg,#7a9e7e,#4d7352)">MR</div><div><div class="cc-name">Margaret Reynolds</div><div class="cc-age">Age 78 · Active</div></div></div><div class="cc-stats"><div class="cs"><div class="cs-val">3x</div><div class="cs-lbl">per week</div></div><div class="cs"><div class="cs-val">Walk</div><div class="cs-lbl">primary</div></div><div class="cs"><div class="cs-val">$600</div><div class="cs-lbl">monthly</div></div></div><div class="cc-foot">👩 Sarah Reynolds (daughter) · (404) 555-0182</div></div>
-        <div class="cc"><div class="cc-hdr"><div class="cav" style="background:linear-gradient(135deg,#c4845a,#904820)">HB</div><div><div class="cc-name">Harold Baker</div><div class="cc-age">Age 83 · Active</div></div></div><div class="cc-stats"><div class="cs"><div class="cs-val">3x</div><div class="cs-lbl">per week</div></div><div class="cs"><div class="cs-val">Mixed</div><div class="cs-lbl">primary</div></div><div class="cs"><div class="cs-val">$680</div><div class="cs-lbl">monthly</div></div></div><div class="cc-foot">👨 James Baker (son) · (678) 555-0241</div></div>
-        <div class="cc"><div class="cc-hdr"><div class="cav" style="background:linear-gradient(135deg,#c9a84c,#8a6a10)">EW</div><div><div class="cc-name">Eleanor Wilson</div><div class="cc-age">Age 75 · Active</div></div></div><div class="cc-stats"><div class="cs"><div class="cs-val">3x</div><div class="cs-lbl">per week</div></div><div class="cs"><div class="cs-val">Walk</div><div class="cs-lbl">primary</div></div><div class="cs"><div class="cs-val">$600</div><div class="cs-lbl">monthly</div></div></div><div class="cc-foot">👨 Tom Wilson (son) · (770) 555-0319</div></div>
-        <div class="cc"><div class="cc-hdr"><div class="cav" style="background:linear-gradient(135deg,#5b9dab,#2d6b78)">FS</div><div><div class="cc-name">Frank Simmons</div><div class="cc-age">Age 81 · Active</div></div></div><div class="cc-stats"><div class="cs"><div class="cs-val">3x</div><div class="cs-lbl">per week</div></div><div class="cs"><div class="cs-val">Walk</div><div class="cs-lbl">primary</div></div><div class="cs"><div class="cs-val">$600</div><div class="cs-lbl">monthly</div></div></div><div class="cc-foot">👩 Linda Simmons (daughter) · (404) 555-0477</div></div>
-        <div class="cc"><div class="cc-hdr"><div class="cav" style="background:linear-gradient(135deg,#9b7ec8,#6a4a9e)">RP</div><div><div class="cc-name">Ruth Patterson</div><div class="cc-age">Age 79 · Active</div></div></div><div class="cc-stats"><div class="cs"><div class="cs-val">2x</div><div class="cs-lbl">per week</div></div><div class="cs"><div class="cs-val">Walk</div><div class="cs-lbl">primary</div></div><div class="cs"><div class="cs-val">$400</div><div class="cs-lbl">monthly</div></div></div><div class="cc-foot">👩 Carol Patterson · (678) 555-0598</div></div>
-        <div class="cc"><div class="cc-hdr"><div class="cav" style="background:linear-gradient(135deg,#c87e9b,#9e4a70)">DH</div><div><div class="cc-name">Dorothy Hayes</div><div class="cc-age">Age 86 · Active</div></div></div><div class="cc-stats"><div class="cs"><div class="cs-val">3x</div><div class="cs-lbl">per week</div></div><div class="cs"><div class="cs-val">Mixed</div><div class="cs-lbl">primary</div></div><div class="cs"><div class="cs-val">$720</div><div class="cs-lbl">monthly</div></div></div><div class="cc-foot">👨 Robert Hayes (son) · (770) 555-0634</div></div>
+      <div class="client-grid" id="client-grid">
+        <div style="grid-column:1/-1;background:#fff;border-radius:14px;padding:40px;border:1px solid rgba(0,0,0,0.05)">
+          <div class="es"><div class="es-icon">👥</div><div class="es-title">No clients yet</div><div class="es-body">Clients who sign up on the website appear here automatically. You can also add them manually.</div></div>
+        </div>
       </div>
     </div>
 
@@ -395,50 +239,23 @@ body{font-family:'Jost',sans-serif;background:var(--cream);color:var(--charcoal)
     <div class="view" id="view-messages">
       <div class="msg-layout">
         <div class="ml">
-          <div style="padding:12px;border-bottom:1px solid rgba(0,0,0,0.05)"><input class="ms-input" type="text" placeholder="🔍 Search conversations…"></div>
-          <div style="overflow-y:auto;flex:1">
-            <div class="thr active" onclick="loadThr(this,'Sarah Reynolds','#7a9e7e','SR',msg1)">
-              <div class="thr-av" style="background:#7a9e7e">SR</div>
-              <div style="flex:1;min-width:0">
-                <div style="display:flex;justify-content:space-between"><div class="thr-name">Sarah Reynolds</div><div style="font-size:10px;color:var(--mid)">9:12am</div></div>
-                <div class="thr-prev">Can we move Tuesday to 10am?</div>
-              </div>
-              <div class="udot"></div>
-            </div>
-            <div class="thr" onclick="loadThr(this,'Tom Wilson','#5b9dab','TW',msg2)">
-              <div class="thr-av" style="background:#5b9dab">TW</div>
-              <div style="flex:1;min-width:0">
-                <div style="display:flex;justify-content:space-between"><div class="thr-name">Tom Wilson</div><div style="font-size:10px;color:var(--mid)">Feb 28</div></div>
-                <div class="thr-prev">Mom loved the park walk!</div>
-              </div>
-              <div class="udot"></div>
-            </div>
-            <div class="thr" onclick="loadThr(this,'James Baker','#c4845a','JB',msg3)">
-              <div class="thr-av" style="background:#c4845a">JB</div>
-              <div style="flex:1;min-width:0">
-                <div style="display:flex;justify-content:space-between"><div class="thr-name">James Baker</div><div style="font-size:10px;color:var(--mid)">Feb 27</div></div>
-                <div class="thr-prev">Appointment at 11:30 Friday</div>
-              </div>
-              <div class="udot"></div>
-            </div>
-            <div class="thr" onclick="loadThr(this,'Linda Simmons','#9b7ec8','LS',msg4)">
-              <div class="thr-av" style="background:#9b7ec8">LS</div>
-              <div style="flex:1;min-width:0">
-                <div style="display:flex;justify-content:space-between"><div class="thr-name">Linda Simmons</div><div style="font-size:10px;color:var(--mid)">Feb 26</div></div>
-                <div class="thr-prev">Thank you for the report 🙏</div>
-              </div>
-            </div>
+          <div style="padding:12px;border-bottom:1px solid rgba(0,0,0,0.05)"><input class="ms-input" type="text" placeholder="🔍 Search…"></div>
+          <div style="overflow-y:auto;flex:1" id="staff-thread-list">
+            <div style="padding:16px;font-size:13px;color:var(--mid);text-align:center">Loading clients…</div>
           </div>
         </div>
         <div class="chat-area">
-          <div class="chat-hdr" id="chat-hdr">
-            <div class="thr-av" id="chat-av" style="background:#7a9e7e;width:34px;height:34px;font-size:11px">SR</div>
-            <div><div style="font-weight:600;font-size:14px" id="chat-name">Sarah Reynolds</div><div style="font-size:11px;color:var(--mid)">Family contact · Margaret Reynolds</div></div>
+          <div class="chat-hdr">
+            <div class="thr-av" id="chat-av" style="background:var(--forest);width:34px;height:34px;font-size:11px">👥</div>
+            <div><div style="font-weight:600;font-size:14px" id="chat-name">Select a client</div><div style="font-size:11px;color:var(--mid)">Choose a conversation from the left</div></div>
           </div>
-          <div class="chat-body" id="chat-body"></div>
+          <div class="chat-body" id="chat-body">
+            <div class="es" style="margin-top:60px"><div class="es-icon">💬</div><div class="es-title">No conversation selected</div><div class="es-body">Choose a client from the list to view and send messages.</div></div>
+          </div>
           <div class="chat-foot">
-            <input class="chat-inp" id="chat-inp" placeholder="Type a message…" onkeydown="sendMsg(event)">
-            <button class="btn btn-p btn-sm" onclick="sendMsg({key:'Enter'})">Send</button>
+            <input class="chat-inp" id="chat-input" placeholder="Type a message…">
+            <button class="btn btn-p btn-sm" id="staff-send-btn">Send</button>
+            <button class="btn btn-g btn-sm" id="staff-refresh-btn" title="Refresh messages">↻</button>
           </div>
         </div>
       </div>
@@ -447,30 +264,25 @@ body{font-family:'Jost',sans-serif;background:var(--cream);color:var(--charcoal)
     <!-- REPORTS -->
     <div class="view" id="view-reports">
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:18px">
-        <p style="font-size:13px;color:var(--mid)">Reports are automatically emailed & SMS'd to family contacts</p>
+        <p style="font-size:13px;color:var(--mid)">Reports are automatically sent to family contacts after each session.</p>
         <button class="btn btn-p" onclick="openModal('report-modal')">✏️ New Report</button>
       </div>
-      <div class="rc"><div class="rc-hdr"><div><div class="rc-title">Margaret Reynolds — Morning Walk</div><div class="rc-date">March 1, 2026 · 9:00–10:00 AM · Riverside Park</div></div><span class="tag tag-walk">🚶 Walk</span></div><div class="rc-body">Excellent session. Margaret walked 1.9 miles at a steady pace. High spirits, chatted about her granddaughter's upcoming recital. No fatigue reported. Slight breeze, enjoyed the fresh air greatly.</div><div style="display:flex;justify-content:space-between;align-items:center"><div class="rc-stats"><div class="rcs"><div class="rcsv">1.9</div><div class="rcsl">Miles</div></div><div class="rcs"><div class="rcsv" style="color:var(--forest)">😊</div><div class="rcsl">Mood</div></div><div class="rcs"><div class="rcsv">60</div><div class="rcsl">Min</div></div></div><div style="display:flex;gap:8px"><span style="background:rgba(45,74,50,0.1);color:var(--forest);padding:4px 10px;border-radius:20px;font-size:11px;font-weight:700">✓ Sent</span><button class="btn btn-g btn-sm">View</button></div></div></div>
-      <div class="rc"><div class="rc-hdr"><div><div class="rc-title">Harold Baker — Cardiology Appointment</div><div class="rc-date">February 28, 2026 · 11:30 AM · Dr. Chen</div></div><span class="tag tag-appt">🏥 Appt</span></div><div class="rc-body">Accompanied Harold to his cardiology follow-up. He was calm and communicative with Dr. Chen. Appointment lasted 45 min. Picked up prescription at pharmacy on return. Home safely by 1:30 PM.</div><div style="display:flex;justify-content:space-between;align-items:center"><div class="rc-stats"><div class="rcs"><div class="rcsv">7.4</div><div class="rcsl">Miles</div></div><div class="rcs"><div class="rcsv" style="color:var(--forest)">😊</div><div class="rcsl">Mood</div></div><div class="rcs"><div class="rcsv">120</div><div class="rcsl">Min</div></div></div><div style="display:flex;gap:8px"><span style="background:rgba(45,74,50,0.1);color:var(--forest);padding:4px 10px;border-radius:20px;font-size:11px;font-weight:700">✓ Sent</span><button class="btn btn-g btn-sm">View</button></div></div></div>
-      <div class="rc"><div class="rc-hdr"><div><div class="rc-title">Eleanor Wilson — Grocery Run</div><div class="rc-date">February 27, 2026 · 2:00–3:30 PM · Publix</div></div><span class="tag tag-errand">🛒 Errand</span></div><div class="rc-body">Grocery run completed successfully. Eleanor selected all items independently — great for her confidence! Total bill: $67. She was in great spirits and we walked the store twice for extra movement.</div><div style="display:flex;justify-content:space-between;align-items:center"><div class="rc-stats"><div class="rcs"><div class="rcsv">3.2</div><div class="rcsl">Miles</div></div><div class="rcs"><div class="rcsv" style="color:var(--forest)">😊</div><div class="rcsl">Mood</div></div><div class="rcs"><div class="rcsv">90</div><div class="rcsl">Min</div></div></div><div style="display:flex;gap:8px"><span style="background:rgba(45,74,50,0.1);color:var(--forest);padding:4px 10px;border-radius:20px;font-size:11px;font-weight:700">✓ Sent</span><button class="btn btn-g btn-sm">View</button></div></div></div>
+      <div id="reports-list">
+        <div style="background:#fff;border-radius:14px;padding:40px;border:1px solid rgba(0,0,0,0.05)">
+          <div class="es"><div class="es-icon">📋</div><div class="es-title">No session reports yet</div><div class="es-body">Write a report after each session. It will be delivered to the family and stored here.</div></div>
+        </div>
+      </div>
     </div>
 
     <!-- PAYMENTS -->
     <div class="view" id="view-payments">
       <div style="display:flex;gap:14px;margin-bottom:22px">
-        <div class="stat s-green" style="flex:1"><div class="stat-lbl">March Revenue</div><div class="stat-val" style="font-size:28px">$1,050</div><div class="stat-chg">↑ 14% vs Feb</div></div>
-        <div class="stat s-gold" style="flex:1"><div class="stat-lbl">Pending</div><div class="stat-val" style="font-size:28px;color:#7a5800">$350</div><div class="stat-chg">2 invoices</div></div>
-        <div class="stat s-clay" style="flex:1"><div class="stat-lbl">Gas Surcharges</div><div class="stat-val" style="font-size:28px">$68</div><div class="stat-chg">March</div></div>
-        <div class="stat s-sky" style="flex:1"><div class="stat-lbl">Stripe</div><div class="stat-val" style="font-size:16px;margin-top:10px"><span style="background:#635BFF;color:#fff;padding:4px 10px;border-radius:6px;font-size:12px;font-weight:700">⚡ Connected</span></div><div class="stat-chg" style="margin-top:6px">Payouts 2 days</div></div>
+        <div class="stat s-green" style="flex:1"><div class="stat-lbl">This Month</div><div class="stat-val" style="font-size:28px">$0</div><div class="stat-chg">Revenue</div></div>
+        <div class="stat s-gold" style="flex:1"><div class="stat-lbl">Pending</div><div class="stat-val" style="font-size:28px;color:#7a5800">$0</div><div class="stat-chg">Awaiting payment</div></div>
+        <div class="stat s-sky" style="flex:1"><div class="stat-lbl">Stripe</div><div class="stat-val" style="font-size:16px;margin-top:10px"><span style="background:#635BFF;color:#fff;padding:4px 10px;border-radius:6px;font-size:12px;font-weight:700">⚡ Connect</span></div><div class="stat-chg" style="margin-top:6px">Not yet connected</div></div>
       </div>
-      <div class="inv-table">
-        <div class="tbl-hdr"><div>Client</div><div>Service</div><div>Amount</div><div>Date</div><div>Status</div></div>
-        <div class="tbl-row"><div><strong>Margaret Reynolds</strong><br><span style="font-size:11px;color:var(--mid)">Sarah Reynolds</span></div><div>Walk × 3</div><div style="font-weight:700">$150</div><div>Mar 1</div><div><span class="inv-status st-paid">Paid</span></div></div>
-        <div class="tbl-row"><div><strong>Harold Baker</strong><br><span style="font-size:11px;color:var(--mid)">James Baker</span></div><div>Walk + Appt + Gas</div><div style="font-weight:700">$218</div><div>Mar 1</div><div><span class="inv-status st-pend">Pending</span></div></div>
-        <div class="tbl-row"><div><strong>Eleanor Wilson</strong><br><span style="font-size:11px;color:var(--mid)">Tom Wilson</span></div><div>Walk + Grocery + Gas</div><div style="font-weight:700">$182</div><div>Feb 28</div><div><span class="inv-status st-paid">Paid</span></div></div>
-        <div class="tbl-row"><div><strong>Frank Simmons</strong><br><span style="font-size:11px;color:var(--mid)">Linda Simmons</span></div><div>Walk × 3</div><div style="font-weight:700">$150</div><div>Feb 28</div><div><span class="inv-status st-paid">Paid</span></div></div>
-        <div class="tbl-row"><div><strong>Dorothy Hayes</strong><br><span style="font-size:11px;color:var(--mid)">Robert Hayes</span></div><div>Walk + Hair + Gas</div><div style="font-weight:700">$200</div><div>Feb 27</div><div><span class="inv-status st-over">Overdue</span></div></div>
-        <div class="tbl-row"><div><strong>Ruth Patterson</strong><br><span style="font-size:11px;color:var(--mid)">Carol Patterson</span></div><div>Walk × 2</div><div style="font-weight:700">$100</div><div>Feb 27</div><div><span class="inv-status st-paid">Paid</span></div></div>
+      <div style="background:#fff;border-radius:14px;padding:40px;border:1px solid rgba(0,0,0,0.05)">
+        <div class="es"><div class="es-icon">💳</div><div class="es-title">No invoices yet</div><div class="es-body">Invoices will appear here once sessions are completed and billed through Stripe.</div></div>
       </div>
     </div>
 
@@ -481,35 +293,32 @@ body{font-family:'Jost',sans-serif;background:var(--cream);color:var(--charcoal)
           <div class="sc-title">Profile Photo</div>
           <div class="pua">
             <div class="pc" onclick="document.getElementById('staff-photo-input').click()">
-              <span id="staff-ph-init">YO</span>
+              <span id="staff-ph-init"></span>
               <img id="staff-ph-preview" src="" style="display:none">
               <div class="po">📷</div>
             </div>
             <input type="file" id="staff-photo-input" style="display:none" accept="image/*" onchange="previewStaffPhoto(this)">
             <div>
-              <div style="font-weight:600;font-size:15px">Your Name (Owner)</div>
+              <div style="font-weight:600;font-size:15px" id="staff-display-name">Loading…</div>
               <div style="font-size:12px;color:var(--mid);margin:4px 0 12px">Active Aging Partners · Staff</div>
               <button class="btn btn-g btn-sm" onclick="document.getElementById('staff-photo-input').click()">📷 Upload Photo</button>
             </div>
           </div>
-          <p style="font-size:12px;color:var(--mid)">Your photo appears in client portals and messages. Accepted: JPG, PNG (max 5MB)</p>
         </div>
         <div class="sc">
           <div class="sc-title">Contact Information</div>
-          <div class="fg"><label class="fl">First Name</label><input type="text" class="fi" value="Your"></div>
-          <div class="fg"><label class="fl">Last Name</label><input type="text" class="fi" value="Name"></div>
-          <div class="fg"><label class="fl">Email</label><input type="email" class="fi" value="you@activagingpartners.com"></div>
-          <div class="fg"><label class="fl">Phone</label><input type="tel" class="fi" value="(404) 555-0100"></div>
-          <div class="fg"><label class="fl">Business Address</label><input type="text" class="fi" value="Atlanta, GA 30305"></div>
+          <div class="fg"><label class="fl">First Name</label><input type="text" class="fi" placeholder="First"></div>
+          <div class="fg"><label class="fl">Last Name</label><input type="text" class="fi" placeholder="Last"></div>
+          <div class="fg"><label class="fl">Email</label><input type="email" class="fi" id="staff-email-field" placeholder="you@activeagingpartners.com"></div>
+          <div class="fg"><label class="fl">Phone</label><input type="tel" class="fi" placeholder="(404) 555-0000"></div>
           <button class="btn btn-p btn-sm" onclick="saveToast()">Save Changes</button>
         </div>
         <div class="sc">
           <div class="sc-title">Business Information</div>
           <div class="fg"><label class="fl">Business Name</label><input type="text" class="fi" value="Active Aging Partners"></div>
-          <div class="fg"><label class="fl">Service Area</label><input type="text" class="fi" value="Atlanta Metro, GA"></div>
+          <div class="fg"><label class="fl">Service Area</label><input type="text" class="fi" value="Tucker, Chamblee, Brookhaven &amp; more"></div>
           <div class="fg"><label class="fl">Hourly Rate</label><input type="text" class="fi" value="$50.00"></div>
-          <div class="fg"><label class="fl">Mileage Rate (per mile)</label><input type="text" class="fi" value="$0.67"></div>
-          <div class="fg"><label class="fl">Stripe Account</label><input type="text" class="fi" value="acct_••••••••4242" disabled style="opacity:0.6"></div>
+          <div class="fg"><label class="fl">Stripe Account</label><input type="text" class="fi" placeholder="Not connected" disabled style="opacity:0.6"></div>
           <button class="btn btn-p btn-sm" onclick="saveToast()">Save Changes</button>
         </div>
         <div class="sc">
@@ -526,68 +335,33 @@ body{font-family:'Jost',sans-serif;background:var(--cream);color:var(--charcoal)
     <div class="view" id="view-notifications">
       <div style="max-width:660px">
         <div class="sc" style="margin-bottom:14px">
-          <div class="sc-title">Session Reminders (Staff)</div>
-          <div class="tog-row"><div><div class="tog-lbl">Email Reminder</div><div class="tog-sub">Email 2 hours before each session starts</div></div><div class="tog on" onclick="this.classList.toggle('on')"><div class="tok"></div></div></div>
-          <div class="tog-row"><div><div class="tog-lbl">SMS Reminder</div><div class="tog-sub">Text 24 hours before session</div></div><div class="tog on" onclick="this.classList.toggle('on')"><div class="tok"></div></div></div>
-          <div class="tog-row"><div><div class="tog-lbl">Day-Of SMS</div><div class="tog-sub">1-hour reminder before session</div></div><div class="tog on" onclick="this.classList.toggle('on')"><div class="tok"></div></div></div>
+          <div class="sc-title">Staff Alerts</div>
+          <div class="tog-row"><div><div class="tog-lbl">Morning briefing</div><div class="tog-sub">Daily email with today's sessions at 7am</div></div><div class="tog on" onclick="this.classList.toggle('on')"><div class="tok"></div></div></div>
+          <div class="tog-row"><div><div class="tog-lbl">Session reminder</div><div class="tog-sub">SMS 1 hour before each session starts</div></div><div class="tog on" onclick="this.classList.toggle('on')"><div class="tok"></div></div></div>
+          <div class="tog-row"><div><div class="tog-lbl">New client message</div><div class="tog-sub">Email when a client sends a message</div></div><div class="tog on" onclick="this.classList.toggle('on')"><div class="tok"></div></div></div>
         </div>
         <div class="sc" style="margin-bottom:14px">
-          <div class="sc-title">Client Notifications (Sent on Their Behalf)</div>
-          <div class="tog-row"><div><div class="tog-lbl">Client Session Reminders</div><div class="tog-sub">Auto-send 24-hr email + SMS reminders to clients</div></div><div class="tog on" onclick="this.classList.toggle('on')"><div class="tok"></div></div></div>
-          <div class="tog-row"><div><div class="tog-lbl">Session Report Email</div><div class="tog-sub">Auto-email report to family contact after each session</div></div><div class="tog on" onclick="this.classList.toggle('on')"><div class="tok"></div></div></div>
-          <div class="tog-row"><div><div class="tog-lbl">Session Report SMS</div><div class="tog-sub">Send brief report summary via SMS to family</div></div><div class="tog on" onclick="this.classList.toggle('on')"><div class="tok"></div></div></div>
-          <div class="tog-row"><div><div class="tog-lbl">New Message Alert</div><div class="tog-sub">Email + SMS alert to all users when message received</div></div><div class="tog on" onclick="this.classList.toggle('on')"><div class="tok"></div></div></div>
-        </div>
-        <div class="sc" style="margin-bottom:14px">
-          <div class="sc-title">Billing Notifications</div>
-          <div class="tog-row"><div><div class="tog-lbl">Invoice Generated</div><div class="tog-sub">Email client when new invoice is created</div></div><div class="tog on" onclick="this.classList.toggle('on')"><div class="tok"></div></div></div>
-          <div class="tog-row"><div><div class="tog-lbl">Payment Received</div><div class="tog-sub">Notify me when a Stripe payment comes in</div></div><div class="tog on" onclick="this.classList.toggle('on')"><div class="tok"></div></div></div>
-          <div class="tog-row"><div><div class="tog-lbl">Overdue Invoice Alert</div><div class="tog-sub">Alert me when an invoice is 7+ days overdue</div></div><div class="tog on" onclick="this.classList.toggle('on')"><div class="tok"></div></div></div>
+          <div class="sc-title">Client Auto-Notifications</div>
+          <div class="tog-row"><div><div class="tog-lbl">Session reports</div><div class="tog-sub">Auto-email report to family after each session</div></div><div class="tog on" onclick="this.classList.toggle('on')"><div class="tok"></div></div></div>
+          <div class="tog-row"><div><div class="tog-lbl">Invoice delivery</div><div class="tog-sub">Auto-email invoice to client after each session</div></div><div class="tog on" onclick="this.classList.toggle('on')"><div class="tok"></div></div></div>
         </div>
         <button class="btn btn-p" onclick="saveToast('Notification preferences saved!')">Save Preferences</button>
       </div>
     </div>
 
-    <!-- EXPORT DATA -->
+    <!-- EXPORT -->
     <div class="view" id="view-export">
       <div class="export-section">
-        <div class="export-title">📥 Export Data to CSV</div>
-        <div class="export-desc">Download complete records for all clients, schedules, and payment history. CSV files can be opened in Excel, Google Sheets, or any spreadsheet application. All exports include the full date range of your records.</div>
+        <div style="font-family:'Cormorant Garamond',serif;font-size:19px;font-weight:600;margin-bottom:6px">Export Your Data</div>
+        <div style="font-size:13px;color:var(--mid);margin-bottom:20px;line-height:1.6">Download your business data as CSV files.</div>
         <div class="export-options">
-          <div class="eo" onclick="downloadCSV('clients')">
-            <div class="icon">👥</div>
-            <div class="name">Client Profiles</div>
-            <div class="desc">Name, age, address, contact, health notes, sessions/week</div>
-          </div>
-          <div class="eo" onclick="downloadCSV('schedule')">
-            <div class="icon">📅</div>
-            <div class="name">Schedule & Sessions</div>
-            <div class="desc">All past and upcoming sessions, dates, types, notes</div>
-          </div>
-          <div class="eo" onclick="downloadCSV('payments')">
-            <div class="icon">💳</div>
-            <div class="name">Payment History</div>
-            <div class="desc">All invoices, amounts, gas fees, status, Stripe IDs</div>
-          </div>
-          <div class="eo" onclick="downloadCSV('reports')">
-            <div class="icon">📋</div>
-            <div class="name">Session Reports</div>
-            <div class="desc">All session notes, mood, distance, and observations</div>
-          </div>
-          <div class="eo" onclick="downloadCSV('contacts')">
-            <div class="icon">📞</div>
-            <div class="name">Family Contacts</div>
-            <div class="desc">All family contact names, phones, emails, and relationships</div>
-          </div>
-          <div class="eo" onclick="downloadCSV('all')">
-            <div class="icon">📦</div>
-            <div class="name">Full Export (All Data)</div>
-            <div class="desc">Everything combined — clients, sessions, payments, reports</div>
-          </div>
+          <div class="eo" onclick="downloadCSV('clients')"><div class="icon">👥</div><div class="name">Client Profiles</div><div class="desc">Names, contacts, health notes</div></div>
+          <div class="eo" onclick="downloadCSV('schedule')"><div class="icon">📅</div><div class="name">Schedule / Sessions</div><div class="desc">All booked and completed sessions</div></div>
+          <div class="eo" onclick="downloadCSV('payments')"><div class="icon">💳</div><div class="name">Payment History</div><div class="desc">Invoices and payment records</div></div>
+          <div class="eo" onclick="downloadCSV('reports')"><div class="icon">📋</div><div class="name">Session Reports</div><div class="desc">All written session notes</div></div>
+          <div class="eo" onclick="downloadCSV('contacts')"><div class="icon">📞</div><div class="name">Family Contacts</div><div class="desc">Emergency and billing contacts</div></div>
+          <div class="eo" onclick="downloadCSV('all')"><div class="icon">📦</div><div class="name">Full Export</div><div class="desc">All data in one file</div></div>
         </div>
-      </div>
-      <div style="background:rgba(45,74,50,0.06);border-radius:12px;padding:16px 18px;font-size:13px;color:var(--mid)">
-        🔒 All exports are for your records only. Data is never shared with third parties. Exports comply with standard data privacy best practices.
       </div>
     </div>
 
@@ -600,44 +374,69 @@ body{font-family:'Jost',sans-serif;background:var(--cream);color:var(--charcoal)
   <div class="modal">
     <div class="mhdr"><div class="mtitle">Book a Session</div><button class="mclose" onclick="closeModal('booking-modal')">✕</button></div>
     <div class="mbody">
-      <div class="fg"><label class="fl">Client</label><select class="fs"><option>Margaret Reynolds</option><option>Harold Baker</option><option>Eleanor Wilson</option><option>Frank Simmons</option><option>Ruth Patterson</option><option>Dorothy Hayes</option></select></div>
-      <div class="fg"><label class="fl">Session Type</label><select class="fs"><option>🚶 Walking Session</option><option>🏥 Doctor Appointment</option><option>💇 Hair / Nail</option><option>🛒 Grocery / Errands</option><option>💊 Pharmacy</option></select></div>
-      <div class="fr"><div class="fg"><label class="fl">Date</label><input type="date" class="fi" value="2026-03-03"></div><div class="fg"><label class="fl">Duration</label><select class="fs"><option>1 hr — $50</option><option>1.5 hrs — $75</option><option>2 hrs — $100</option></select></div></div>
-      <div class="fg"><label class="fl">Time</label><select class="fs"><option>9:00 AM</option><option>10:00 AM</option><option>11:00 AM</option><option>2:00 PM</option><option>4:00 PM</option></select></div>
-      <div class="fg"><label class="fl">Notes</label><textarea class="fi" rows="2" placeholder="Optional notes for client or family"></textarea></div>
+      <div id="bm-error" style="background:rgba(200,60,60,0.07);border:1px solid rgba(200,60,60,0.2);color:#b03030;border-radius:8px;padding:10px 12px;font-size:13px;margin-bottom:12px;display:none"></div>
+      <div class="fg"><label class="fl">Client</label><select class="fi" id="bm-client"><option value="">Select client…</option></select></div>
+      <div class="fg"><label class="fl">Service Type</label><select class="fi" id="bm-service"><option>Walking &amp; Wellness</option><option>Companionship &amp; Engagement</option><option>Errand Support</option></select></div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+        <div class="fg"><label class="fl">Date</label><input type="date" class="fi" id="bm-date"></div>
+        <div class="fg"><label class="fl">Start Time</label><input type="time" class="fi" id="bm-time"></div>
+      </div>
+      <div class="fg"><label class="fl">Duration</label>
+        <select class="fi" id="bm-duration">
+          <option value="60">1 hour — $50</option>
+          <option value="90">1.5 hours — $75</option>
+          <option value="120">2 hours — $100</option>
+          <option value="150">2.5 hours — $125</option>
+          <option value="180">3 hours — $150</option>
+        </select>
+      </div>
+      <div class="fg"><label class="fl">Notes</label><textarea class="fi" id="bm-notes" rows="3" placeholder="Any special instructions or preferences…"></textarea></div>
     </div>
-    <div class="mfoot"><button class="btn btn-g" onclick="closeModal('booking-modal')">Cancel</button><button class="btn btn-p" onclick="closeModal('booking-modal');saveToast('Session booked! Client notified.')">✓ Confirm</button></div>
+    <div class="mfoot">
+      <button class="btn btn-ghost" onclick="closeModal('booking-modal')">Cancel</button>
+      <button class="btn btn-p" id="bm-confirm-btn" onclick="confirmBooking()">Confirm Booking</button>
+    </div>
   </div>
 </div>
 
 <div class="modal-overlay" id="report-modal">
   <div class="modal">
-    <div class="mhdr"><div class="mtitle">New Session Report</div><button class="mclose" onclick="closeModal('report-modal')">✕</button></div>
+    <div class="mhdr"><div class="mtitle">Write Session Report</div><button class="mclose" onclick="closeModal('report-modal')">✕</button></div>
     <div class="mbody">
-      <div class="fr"><div class="fg"><label class="fl">Client</label><select class="fs"><option>Margaret Reynolds</option><option>Harold Baker</option><option>Eleanor Wilson</option><option>Frank Simmons</option></select></div><div class="fg"><label class="fl">Type</label><select class="fs"><option>🚶 Walk</option><option>🏥 Appointment</option><option>🛒 Errand</option></select></div></div>
-      <div class="fr"><div class="fg"><label class="fl">Date</label><input type="date" class="fi" value="2026-03-01"></div><div class="fg"><label class="fl">Distance (miles)</label><input type="text" class="fi" placeholder="e.g. 1.8"></div></div>
-      <div class="fg"><label class="fl">Mood & Energy</label><select class="fs"><option>😊 Great</option><option>🙂 Good</option><option>😐 Okay</option><option>😟 Low</option></select></div>
-      <div class="fg"><label class="fl">Session Notes</label><textarea class="fi" rows="3" placeholder="How did the session go? Highlights, observations…"></textarea></div>
-      <div class="fg"><label class="fl">Health / Safety Notes</label><textarea class="fi" rows="2" placeholder="Any concerns to flag for the family?"></textarea></div>
-      <div style="background:rgba(45,74,50,0.08);border-radius:8px;padding:10px 12px;font-size:12px;color:var(--forest)">📧 This report will be emailed AND SMS'd to the family contact on file.</div>
+      <div class="fg"><label class="fl">Client</label><select class="fi" id="rm-client"><option value="">Select client…</option></select></div>
+      <div class="fg"><label class="fl">Service Type</label><select class="fi" id="rm-type"><option>Walking &amp; Wellness</option><option>Companionship &amp; Engagement</option><option>Errand Support</option></select></div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+        <div class="fg"><label class="fl">Date</label><input type="date" class="fi" id="rm-date"></div>
+        <div class="fg"><label class="fl">Duration (min)</label><input type="number" class="fi" id="rm-duration" placeholder="60"></div>
+      </div>
+      <div class="fg"><label class="fl">Mood</label><select class="fi" id="rm-mood"><option>😊 Excellent</option><option>🙂 Good</option><option>😐 Neutral</option><option>😕 Low</option></select></div>
+      <div class="fg"><label class="fl">Session Notes</label><textarea class="fi" rows="5" id="rm-notes" placeholder="Describe what happened, any observations or concerns…"></textarea></div>
     </div>
-    <div class="mfoot"><button class="btn btn-g" onclick="closeModal('report-modal')">Cancel</button><button class="btn btn-p" onclick="closeModal('report-modal');saveToast('Report saved & sent to family via email + SMS!')">📤 Save & Send</button></div>
+    <div class="mfoot">
+      <button class="btn btn-ghost" onclick="closeModal('report-modal')">Cancel</button>
+      <button class="btn btn-p" onclick="submitReport()">Send Report to Family</button>
+    </div>
   </div>
 </div>
 
-<div class="modal-overlay" id="add-client-modal">
+<div class="modal-overlay" id="client-modal">
   <div class="modal">
-    <div class="mhdr"><div class="mtitle">Add New Client</div><button class="mclose" onclick="closeModal('add-client-modal')">✕</button></div>
+    <div class="mhdr"><div class="mtitle">Add New Client</div><button class="mclose" onclick="closeModal('client-modal')">✕</button></div>
     <div class="mbody">
-      <div class="fr"><div class="fg"><label class="fl">Client Name</label><input type="text" class="fi" placeholder="Full name"></div><div class="fg"><label class="fl">Age</label><input type="number" class="fi" placeholder="Age"></div></div>
-      <div class="fg"><label class="fl">Client Address</label><input type="text" class="fi" placeholder="Home address"></div>
-      <div class="fg"><label class="fl">Health Notes</label><textarea class="fi" rows="2" placeholder="Mobility aids, conditions, allergies…"></textarea></div>
-      <div style="font-weight:600;font-size:13px;margin:14px 0 10px;padding-top:10px;border-top:1px solid rgba(0,0,0,0.06)">Family Contact (payer)</div>
-      <div class="fr"><div class="fg"><label class="fl">Contact Name</label><input type="text" class="fi" placeholder="e.g. Sarah Reynolds"></div><div class="fg"><label class="fl">Relationship</label><select class="fs"><option>Daughter</option><option>Son</option><option>Spouse</option><option>Other</option></select></div></div>
-      <div class="fr"><div class="fg"><label class="fl">Phone</label><input type="tel" class="fi" placeholder="(404) 555-0000"></div><div class="fg"><label class="fl">Email</label><input type="email" class="fi" placeholder="email@example.com"></div></div>
-      <div class="fg"><label class="fl">Sessions per Week</label><select class="fs"><option>1x — $200/mo</option><option>2x — $400/mo</option><option>3x — $600/mo</option><option>Custom</option></select></div>
+      <div style="font-size:13px;color:var(--mid);margin-bottom:16px;line-height:1.6">Clients who sign up on the website are added automatically. Use this to add one manually.</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+        <div class="fg"><label class="fl">First Name</label><input type="text" class="fi" placeholder="First"></div>
+        <div class="fg"><label class="fl">Last Name</label><input type="text" class="fi" placeholder="Last"></div>
+      </div>
+      <div class="fg"><label class="fl">Email</label><input type="email" class="fi" placeholder="you@example.com"></div>
+      <div class="fg"><label class="fl">Phone</label><input type="tel" class="fi" placeholder="(404) 555-0000"></div>
+      <div class="fg"><label class="fl">Senior Client's Name</label><input type="text" class="fi" placeholder="e.g. Margaret Reynolds"></div>
+      <div class="fg"><label class="fl">Notes</label><textarea class="fi" rows="3" placeholder="Health notes, preferences…"></textarea></div>
     </div>
-    <div class="mfoot"><button class="btn btn-g" onclick="closeModal('add-client-modal')">Cancel</button><button class="btn btn-p" onclick="closeModal('add-client-modal');saveToast('Client added! Portal invitation sent.')">+ Add Client</button></div>
+    <div class="mfoot">
+      <button class="btn btn-ghost" onclick="closeModal('client-modal')">Cancel</button>
+      <button class="btn btn-p" onclick="closeModal('client-modal');showToast('✓ Client added!')">Add Client</button>
+    </div>
   </div>
 </div>
 
@@ -645,183 +444,433 @@ body{font-family:'Jost',sans-serif;background:var(--cream);color:var(--charcoal)
 
 <script>
 const pages = {
-  dashboard:{title:'Dashboard',sub:'Sunday, March 1, 2026'},
-  schedule:{title:'Schedule',sub:'Week of March 2–8, 2026'},
-  clients:{title:'Clients',sub:'8 active · 7 spots remaining'},
-  messages:{title:'Messages',sub:'3 unread conversations'},
-  reports:{title:'Session Reports',sub:'Auto-sent to families via email & SMS'},
-  payments:{title:'Payments',sub:'Powered by Stripe'},
-  profile:{title:'My Profile',sub:'Update your info and photo'},
-  notifications:{title:'Notification Settings',sub:'Manage reminders for you and your clients'},
-  export:{title:'Export Data',sub:'Download CSV files for all records'},
+  dashboard:{title:'Dashboard',sub:'Overview of your business'},
+  schedule:{title:'Schedule',sub:'All upcoming sessions'},
+  clients:{title:'Clients',sub:'Your active client list'},
+  messages:{title:'Messages',sub:'Communicate with clients and families'},
+  reports:{title:'Session Reports',sub:'Notes and summaries for every session'},
+  payments:{title:'Payments',sub:'Invoices and billing'},
+  profile:{title:'My Profile',sub:'Your account and business settings'},
+  notifications:{title:'Notifications',sub:'Control how you receive alerts'},
+  export:{title:'Export Data',sub:'Download your business records'},
 };
-
-function nav(view, el) {
+function nav(view,el){
   document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));
   document.getElementById('view-'+view).classList.add('active');
   document.querySelectorAll('.ni').forEach(n=>n.classList.remove('active'));
-  if (el) el.classList.add('active');
-  document.getElementById('ptitle').textContent = pages[view].title;
-  document.getElementById('psub').textContent = pages[view].sub;
+  if(el)el.classList.add('active');
+  document.getElementById('ptitle').textContent=pages[view].title;
+  document.getElementById('psub').textContent=pages[view].sub;
 }
-
-// Message threads
-const msg1 = [
-  {who:'them',text:"Hi! Can we move Tuesday's walk to 10am instead of 9am? She has a neighbor visiting.",time:'9:05am'},
-  {who:'me',text:"Of course! I'll update the schedule. 10am works perfectly. 😊",time:'9:09am'},
-  {who:'them',text:"Can we move Tuesday to 10am? Thank you so much, she really loves her walks!",time:'9:12am'},
-];
-const msg2 = [
-  {who:'them',text:"Hi! Just wanted to check in on Mom's sessions this week.",time:'Feb 28, 2pm'},
-  {who:'me',text:"Eleanor did wonderfully! She walked the full park trail. Really proud of her progress! 🌿",time:'Feb 28, 2:05pm'},
-  {who:'them',text:"Mom loved the park walk! She came home smiling. Thank you!",time:'Feb 28, 3pm'},
-];
-const msg3 = [
-  {who:'them',text:"Quick heads up — Dad's appointment is at 11:30 Friday, not 11:00.",time:'Feb 27, 9am'},
-  {who:'me',text:"Got it! Updated. I'll pick him up at 10:45 to be safe.",time:'Feb 27, 9:12am'},
-  {who:'them',text:"Appointment at 11:30 Friday — thanks for always being early!",time:'Feb 27, 9:20am'},
-];
-const msg4 = [
-  {who:'them',text:"Thank you for the wonderful report 🙏 Dad is so happy.",time:'Feb 26, 6pm'},
-  {who:'me',text:"Frank is a pleasure! His stride has really improved.",time:'Feb 26, 6:15pm'},
-];
-
-function loadThr(el, name, color, initials, msgs) {
-  document.querySelectorAll('.thr').forEach(t=>t.classList.remove('active'));
-  el.classList.add('active');
-  el.querySelector('.udot') && el.querySelector('.udot').remove();
-  document.getElementById('chat-name').textContent = name;
-  const av = document.getElementById('chat-av');
-  av.textContent = initials; av.style.background = color;
-  const body = document.getElementById('chat-body');
-  body.innerHTML = msgs.map(m=>`
-    <div class="bw ${m.who}">
-      ${m.who==='them'?`<div class="thr-av" style="background:${color};width:28px;height:28px;font-size:10px;flex-shrink:0">${initials}</div>`:''}
-      <div>
-        <div class="btime" style="${m.who==='me'?'text-align:right':''}">${m.time}</div>
-        <div class="bub">${m.text}</div>
-      </div>
-    </div>`).join('');
-  body.scrollTop = body.scrollHeight;
-}
-loadThr(document.querySelector('.thr.active'),'Sarah Reynolds','#7a9e7e','SR',msg1);
-
-function sendMsg(e) {
-  if (e.key!=='Enter') return;
-  const inp = document.getElementById('chat-inp');
-  const text = inp.value.trim(); if (!text) return;
-  const body = document.getElementById('chat-body');
-  const time = new Date().toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit'});
-  body.innerHTML += `<div class="bw me"><div><div class="btime" style="text-align:right">${time}</div><div class="bub">${text}</div></div></div>`;
-  inp.value = ''; body.scrollTop = body.scrollHeight;
-}
-
-// Photo upload staff
-function previewStaffPhoto(input) {
-  const file = input.files[0]; if (!file) return;
-  const reader = new FileReader();
-  reader.onload = function(e) {
-    const src = e.target.result;
-    const p = document.getElementById('staff-ph-preview');
-    p.src = src; p.style.display = 'block';
-    document.getElementById('staff-ph-init').style.display = 'none';
-    const sbp = document.getElementById('sb-photo');
-    sbp.src = src; sbp.style.display = 'block';
-    document.getElementById('sb-initials').style.display = 'none';
-    showToast('✓ Profile photo updated!');
+function openModal(id){document.getElementById(id).classList.add('open');}
+function closeModal(id){document.getElementById(id).classList.remove('open');}
+document.querySelectorAll('.modal-overlay').forEach(o=>{o.addEventListener('click',e=>{if(e.target===o)o.classList.remove('open');});});
+function showToast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),3000);}
+function saveToast(msg='Changes saved!'){showToast('✓ '+msg);}
+function previewStaffPhoto(input){
+  const file=input.files[0];if(!file)return;
+  const reader=new FileReader();
+  reader.onload=e=>{
+    const src=e.target.result;
+    document.getElementById('staff-ph-preview').src=src;
+    document.getElementById('staff-ph-preview').style.display='block';
+    document.getElementById('staff-ph-init').style.display='none';
+    document.getElementById('sb-photo').src=src;
+    document.getElementById('sb-photo').style.display='block';
+    document.getElementById('sb-initials').style.display='none';
+    showToast('✓ Photo updated!');
   };
   reader.readAsDataURL(file);
 }
-
-// CSV Export
-const csvData = {
-  clients: `Name,Age,Address,Sessions/Week,Monthly Revenue,Contact Name,Contact Phone,Contact Email,Health Notes\nMargaret Reynolds,78,"412 Oak Drive Atlanta GA",3,$600,Sarah Reynolds,(404) 555-0182,sarah.reynolds@gmail.com,"Mild arthritis right knee"\nHarold Baker,83,"88 Maple Lane Atlanta GA",3,$680,James Baker,(678) 555-0241,james.baker@gmail.com,"Heart condition - stable"\nEleanor Wilson,75,"210 Peach St Atlanta GA",3,$600,Tom Wilson,(770) 555-0319,tom.wilson@gmail.com,"No known conditions"\nFrank Simmons,81,"55 River Rd Atlanta GA",3,$600,Linda Simmons,(404) 555-0477,linda.simmons@gmail.com,"Knee stiffness"\nRuth Patterson,79,"790 Elm Ave Atlanta GA",2,$400,Carol Patterson,(678) 555-0598,carol.p@gmail.com,"None"\nDorothy Hayes,86,"34 Cedar Blvd Atlanta GA",3,$720,Robert Hayes,(770) 555-0634,rob.hayes@gmail.com,"Mobility walker"`,
-  schedule: `Date,Client,Session Type,Time,Duration,Notes,Status\n2026-03-01,Margaret Reynolds,Walk,9:00 AM,60 min,Riverside Park,Completed\n2026-03-01,Harold Baker,Appointment,11:30 AM,120 min,Dr. Chen Cardiology,Completed\n2026-03-01,Eleanor Wilson,Errand,2:00 PM,90 min,Publix grocery,Completed\n2026-03-01,Frank Simmons,Walk,4:00 PM,60 min,Neighborhood,Completed\n2026-03-03,Margaret Reynolds,Walk,10:00 AM,60 min,TBD,Upcoming\n2026-03-06,Margaret Reynolds,Walk,9:00 AM,60 min,TBD,Upcoming`,
-  payments: `Invoice,Client,Payer,Service,Amount,Gas Surcharge,Total,Date,Status,Stripe ID\n#1042,Margaret Reynolds,Sarah Reynolds,Walk x3,$150,$0,$150,2026-03-01,Paid,pi_xxx1042\n#1043,Harold Baker,James Baker,Walk+Appt+Gas,$200,$18,$218,2026-03-01,Pending,pi_xxx1043\n#1044,Eleanor Wilson,Tom Wilson,Walk+Grocery+Gas,$150,$32,$182,2026-02-28,Paid,pi_xxx1044\n#1045,Frank Simmons,Linda Simmons,Walk x3,$150,$0,$150,2026-02-28,Paid,pi_xxx1045\n#1046,Dorothy Hayes,Robert Hayes,Walk+Hair+Gas,$180,$20,$200,2026-02-27,Overdue,pi_xxx1046\n#1047,Ruth Patterson,Carol Patterson,Walk x2,$100,$0,$100,2026-02-27,Paid,pi_xxx1047`,
-  reports: `Date,Client,Type,Miles,Mood,Duration (min),Notes,Health Flags,Sent To\n2026-03-01,Margaret Reynolds,Walk,1.9,Great,60,"Excellent session. High spirits. Talked about granddaughter.",None,sarah.reynolds@gmail.com\n2026-02-28,Harold Baker,Appointment,7.4,Great,120,"Cardiology follow-up. Picked up prescription.",None,james.baker@gmail.com\n2026-02-27,Eleanor Wilson,Errand,3.2,Great,90,"Grocery run. Selected all items independently.",None,tom.wilson@gmail.com\n2026-02-26,Frank Simmons,Walk,1.4,Good,55,"Knee stiffness at start, eased after 10 min.","Knee - monitor",linda.simmons@gmail.com`,
-  contacts: `Family Contact,Relationship,Client,Phone,Email,Address,Notification Prefs\nSarah Reynolds,Daughter,Margaret Reynolds,(404) 555-0182,sarah.reynolds@gmail.com,"824 Peachtree Rd Atlanta GA","Email+SMS"\nJames Baker,Son,Harold Baker,(678) 555-0241,james.baker@gmail.com,"112 Oak St Atlanta GA","Email"\nTom Wilson,Son,Eleanor Wilson,(770) 555-0319,tom.wilson@gmail.com,"445 Elm Drive Atlanta GA","Email+SMS"\nLinda Simmons,Daughter,Frank Simmons,(404) 555-0477,linda.simmons@gmail.com,"88 Pine Rd Atlanta GA","Email+SMS"\nCarol Patterson,Daughter,Ruth Patterson,(678) 555-0598,carol.p@gmail.com,"222 River Rd Atlanta GA","Email"\nRobert Hayes,Son,Dorothy Hayes,(770) 555-0634,rob.hayes@gmail.com,"700 Cedar Blvd Atlanta GA","Email+SMS"`,
-  all: '',
-};
-csvData.all = [csvData.clients, csvData.schedule, csvData.payments, csvData.reports, csvData.contacts].join('\n\n--- SECTION BREAK ---\n\n');
-
-function downloadCSV(type) {
-  const names = {clients:'AAP_Client_Profiles',schedule:'AAP_Schedule_Sessions',payments:'AAP_Payment_History',reports:'AAP_Session_Reports',contacts:'AAP_Family_Contacts',all:'AAP_Full_Export'};
-  const blob = new Blob([csvData[type]], {type:'text/csv'});
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement('a');
-  a.href = url; a.download = names[type]+'_'+new Date().toISOString().split('T')[0]+'.csv';
-  document.body.appendChild(a); a.click(); document.body.removeChild(a);
+function submitReport(){
+  const notes=document.getElementById('rm-notes').value.trim();
+  const uid=document.getElementById('rm-client').value;
+  if(!notes){showToast('Please write session notes.');return;}
+  if(!uid){showToast('Please select a client.');return;}
+  const mood=document.getElementById('rm-mood').value;
+  const dur=document.getElementById('rm-duration').value||'60';
+  const type=document.getElementById('rm-type').value;
+  const date=document.getElementById('rm-date').value||new Date().toLocaleDateString();
+  const text=`SESSION REPORT — ${date}\n\nService: ${type}\nDuration: ${dur} minutes\nMood: ${mood}\n\n${notes}`;
+  if(typeof window.sendReportToThread==='function')window.sendReportToThread(uid,text);
+  closeModal('report-modal');
+  showToast('✓ Report sent to family!');
+}
+function downloadCSV(type){
+  const h={clients:'Name,Email,Phone,Senior Name,Status\n',schedule:'Client,Service,Date,Time,Duration,Status\n',payments:'Client,Service,Amount,Date,Status\n',reports:'Client,Date,Service,Duration,Mood,Notes\n',contacts:'Client,Family Contact,Phone,Email\n',all:'Active Aging Partners — Full Data Export\n\n'};
+  const csv=(h[type]||'')+'(No data yet)\n';
+  const blob=new Blob([csv],{type:'text/csv'});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement('a');
+  a.href=url;a.download=`AAP_${type}_${new Date().toISOString().split('T')[0]}.csv`;
+  document.body.appendChild(a);a.click();document.body.removeChild(a);
   URL.revokeObjectURL(url);
-  showToast('✓ ' + names[type] + '.csv downloaded!');
+  showToast('✓ Export downloaded!');
 }
-
-function openModal(id) { document.getElementById(id).classList.add('open'); }
-function closeModal(id) { document.getElementById(id).classList.remove('open'); }
-document.querySelectorAll('.modal-overlay').forEach(o=>{
-  o.addEventListener('click',e=>{ if(e.target===o) o.classList.remove('open'); });
-});
-
-function showToast(msg) {
-  const t = document.getElementById('toast');
-  t.textContent = msg; t.classList.add('show');
-  setTimeout(()=>t.classList.remove('show'), 3000);
-}
-function saveToast(msg='Changes saved!') { showToast('✓ '+msg); }
 </script>
 
-<!-- FIREBASE AUTH GUARD -->
+<!-- FIREBASE AUTH GUARD + FIRESTORE MESSAGING + BOOKING -->
 <script type="module">
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+  import { initializeApp }   from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
   import { getAuth, onAuthStateChanged, signOut }
-    from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+                              from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+  import {
+    getFirestore, collection, addDoc, query,
+    orderBy, getDocs, serverTimestamp, doc, getDoc, where
+  }                           from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
   const firebaseConfig = {
-    apiKey: "AIzaSyAuXMMnVjij0x1X5sQ5Jm1NuJUvquwDb0k",
-    authDomain: "active-aging-partners.firebaseapp.com",
-    projectId: "active-aging-partners",
-    storageBucket: "active-aging-partners.firebasestorage.app",
-    messagingSenderId: "239822066888",
-    appId: "1:239822066888:web:8599d14fce0388d510c1fd"
+    apiKey:"AIzaSyAuXMMnVjij0x1X5sQ5Jm1NuJUvquwDb0k",
+    authDomain:"active-aging-partners.firebaseapp.com",
+    projectId:"active-aging-partners",
+    storageBucket:"active-aging-partners.firebasestorage.app",
+    messagingSenderId:"239822066888",
+    appId:"1:239822066888:web:8599d14fce0388d510c1fd"
   };
 
-  const app = initializeApp(firebaseConfig);
-  const auth = getAuth(app);
+  const app=initializeApp(firebaseConfig);
+  const auth=getAuth(app);
+  const db=getFirestore(app);
 
-  // 🔒 Guard — if not logged in, send back to login page
-  // Staff emails — must match index.html STAFF_EMAILS list
-  const STAFF_EMAILS = [
-    // 👇 Add your staff email address(es) here — must match index.html
-    // "yourname@yourdomain.com",
+  const STAFF_EMAILS=[
+    // 👇 Add your email here — must match index.html
+    // "cynthia@activeagingpartners.com",
   ];
-  function isStaff(email) { return STAFF_EMAILS.includes(email.toLowerCase()); }
+  function isStaff(e){return STAFF_EMAILS.includes(e.toLowerCase());}
 
-  onAuthStateChanged(auth, (user) => {
-    if (!user) {
-      window.location.href = 'index.html';
-      return;
-    }
-    // Staff accounts added manually in Firebase don't need email verification
-    // but unverified non-staff should not reach this page
-    if (!user.emailVerified && !isStaff(user.email)) {
-      window.location.href = 'verify-email.html';
-      return;
-    }
-    // ✅ Logged in — populate name and initials in sidebar
-    const displayName = user.displayName || user.email;
-    const initials = displayName
-      .split(' ')
-      .map(w => w[0])
-      .slice(0, 2)
-      .join('')
-      .toUpperCase();
-    document.getElementById('sb-name').textContent = displayName;
-    document.getElementById('sb-initials').textContent = initials;
+  let currentUser=null;
+  let activeClientUid=null;
+  let clientMap={};  // uid → {name, email} for quick lookups
+
+  // ── AUTH GUARD ────────────────────────────────────────────
+  onAuthStateChanged(auth,async(user)=>{
+    if(!user){window.location.href='index.html';return;}
+    if(!user.emailVerified&&!isStaff(user.email)){window.location.href='verify-email.html';return;}
+    currentUser=user;
+    const dn=user.displayName||user.email;
+    const ini=dn.split(' ').map(w=>w[0]).slice(0,2).join('').toUpperCase();
+    document.getElementById('sb-name').textContent=dn;
+    document.getElementById('sb-initials').textContent=ini;
+    document.getElementById('staff-display-name').textContent=dn;
+    document.getElementById('staff-email-field').value=user.email;
+    document.getElementById('staff-ph-init').textContent=ini;
+    await loadClientList();
+    await loadSchedule();
   });
 
-  // Logout
-  window.doLogout = async function() {
-    await signOut(auth);
-    window.location.href = 'logout.html';
+  window.doLogout=async function(){await signOut(auth);window.location.href='logout.html';};
+
+  // ── LOAD CLIENT LIST ──────────────────────────────────────
+  async function loadClientList(){
+    try{
+      const snap=await getDocs(collection(db,'clients'));
+      const threadList=document.getElementById('staff-thread-list');
+      const clientGrid=document.getElementById('client-grid');
+      const clientCount=document.getElementById('client-count');
+      const bm=document.getElementById('bm-client');
+      const rm=document.getElementById('rm-client');
+
+      if(snap.empty){
+        threadList.innerHTML='<div style="padding:16px;font-size:13px;color:var(--mid);text-align:center">No clients yet</div>';
+        return;
+      }
+      const count=snap.docs.length;
+      if(clientCount)clientCount.textContent=`${count} client${count!==1?'s':''}`;
+      document.getElementById('dash-clients').textContent=count;
+      const colors=['#7a9e7e','#c4845a','#c9a84c','#5b9dab','#9b7ec8','#c87e9b'];
+
+      // Build client map for lookups
+      snap.docs.forEach(d=>{
+        const c=d.data();
+        clientMap[d.id]={name:c.displayName||c.email||'Client',email:c.email||'',phone:c.phone||''};
+      });
+
+      threadList.innerHTML=snap.docs.map(d=>{
+        const c=d.data();
+        const name=c.displayName||c.email||'Client';
+        const ini=name.split(' ').map(w=>w[0]).slice(0,2).join('').toUpperCase();
+        return `<div class="thr" data-uid="${d.id}" onclick="window._openClientThread('${d.id}','${name.replace(/'/g,"\\'")}')">
+          <div class="thr-av" style="background:var(--forest)">${ini}</div>
+          <div style="flex:1;min-width:0"><div style="display:flex;justify-content:space-between"><div class="thr-name">${name}</div></div>
+          <div class="thr-prev" id="prev-${d.id}">Click to load messages</div></div></div>`;
+      }).join('');
+
+      if(clientGrid){
+        clientGrid.innerHTML=snap.docs.map((d,i)=>{
+          const c=d.data();
+          const name=c.displayName||c.email||'Client';
+          const ini=name.split(' ').map(w=>w[0]).slice(0,2).join('').toUpperCase();
+          return `<div class="cc"><div class="cc-hdr"><div class="cav" style="background:${colors[i%colors.length]}">${ini}</div>
+            <div><div class="cc-name">${name}</div><div class="cc-age">Client · Active</div></div></div>
+            <div class="cc-foot">📧 ${c.email||'—'}${c.phone?' · '+c.phone:''}</div></div>`;
+        }).join('');
+      }
+
+      const opts=snap.docs.map(d=>`<option value="${d.id}">${clientMap[d.id].name}</option>`).join('');
+      if(bm)bm.innerHTML='<option value="">Select client…</option>'+opts;
+      if(rm)rm.innerHTML='<option value="">Select client…</option>'+opts;
+    }catch(err){console.error('loadClientList:',err);}
+  }
+
+  // ── LOAD SCHEDULE ─────────────────────────────────────────
+  async function loadSchedule(){
+    const schedView=document.getElementById('view-schedule');
+    const listEl=schedView?.querySelector('.schedule-list') ||
+                 (() => {
+                   const d=document.createElement('div');
+                   d.className='schedule-list';
+                   schedView?.querySelector('div:last-child')?.replaceWith(d);
+                   return d;
+                 })();
+
+    try{
+      const today=new Date();
+      today.setHours(0,0,0,0);
+      const snap=await getDocs(query(
+        collection(db,'sessions'),
+        orderBy('date','asc')
+      ));
+
+      if(snap.empty){
+        // Keep the existing empty state
+        return;
+      }
+
+      // Build session list
+      const sessionCards=snap.docs.map(d=>{
+        const s=d.data();
+        const clientName=clientMap[s.clientUid]?.name||s.clientName||'Client';
+        const dateStr=s.date||'';
+        const timeStr=s.time||'';
+        const dur=s.durationMinutes||60;
+        const cost=Math.round(dur/60*50);
+        const isToday=dateStr===today.toISOString().split('T')[0];
+        return `<div style="background:#fff;border-radius:14px;padding:16px 18px;margin-bottom:10px;
+                            border:1px solid rgba(0,0,0,0.05);box-shadow:0 2px 8px var(--shadow);
+                            border-left:4px solid ${isToday?'var(--sage)':'rgba(0,0,0,0.08)'};">
+          <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px">
+            <div>
+              <div style="font-size:14px;font-weight:600">${clientName}</div>
+              <div style="font-size:12px;color:var(--mid);margin-top:2px">${s.service||'Session'} · ${dateStr} at ${timeStr} · ${dur} min · $${cost}</div>
+              ${s.notes?`<div style="font-size:12px;color:var(--mid);margin-top:4px;font-style:italic">${s.notes}</div>`:''}
+            </div>
+            <span style="background:rgba(45,74,50,0.09);color:var(--forest);padding:3px 10px;border-radius:20px;font-size:11px;font-weight:700">${isToday?'📅 Today':'Upcoming'}</span>
+          </div>
+        </div>`;
+      }).join('');
+
+      // Replace empty state with session list in schedule view
+      const schedContainer=document.querySelector('#view-schedule > div:last-child');
+      if(schedContainer) schedContainer.innerHTML=sessionCards;
+
+      // Also populate today's sessions in the dashboard card
+      const todaySessions=snap.docs.filter(d=>d.data().date===today.toISOString().split('T')[0]);
+      const todayCard=document.getElementById('view-dashboard')?.querySelector('.card-body');
+      if(todayCard&&todaySessions.length>0){
+        todayCard.innerHTML=todaySessions.map(d=>{
+          const s=d.data();
+          return `<div style="display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid rgba(0,0,0,0.05)">
+            <div style="font-size:12px;color:var(--mid);width:55px;flex-shrink:0">${s.time||'—'}</div>
+            <div style="flex:1"><div style="font-size:13px;font-weight:600">${clientMap[s.clientUid]?.name||'Client'}</div>
+            <div style="font-size:11px;color:var(--mid)">${s.service||'Session'}</div></div>
+          </div>`;
+        }).join('');
+      }
+
+    }catch(err){
+      console.error('loadSchedule:',err);
+    }
+  }
+
+  // ── CONFIRM BOOKING → FIRESTORE → GOOGLE CALENDAR VIA ZAPIER ──
+  window.confirmBooking=async function(){
+    const clientUid=document.getElementById('bm-client').value;
+    const service=document.getElementById('bm-service').value;
+    const date=document.getElementById('bm-date').value;
+    const time=document.getElementById('bm-time').value;
+    const durationMins=parseInt(document.getElementById('bm-duration').value)||60;
+    const notes=document.getElementById('bm-notes').value.trim();
+    const errEl=document.getElementById('bm-error');
+    const btn=document.getElementById('bm-confirm-btn');
+
+    // Validation
+    errEl.style.display='none';
+    if(!clientUid){errEl.textContent='Please select a client.';errEl.style.display='block';return;}
+    if(!date){errEl.textContent='Please select a date.';errEl.style.display='block';return;}
+    if(!time){errEl.textContent='Please select a start time.';errEl.style.display='block';return;}
+
+    btn.textContent='Booking…';btn.disabled=true;
+
+    try{
+      const clientName=clientMap[clientUid]?.name||'Client';
+      const clientEmail=clientMap[clientUid]?.email||'';
+      const cost=Math.round(durationMins/60*50);
+
+      // Calculate end time
+      const [h,m]=time.split(':').map(Number);
+      const endMins=h*60+m+durationMins;
+      const endH=String(Math.floor(endMins/60)%24).padStart(2,'0');
+      const endM=String(endMins%60).padStart(2,'0');
+      const endTime=`${endH}:${endM}`;
+
+      // Format readable date/time for messages
+      const dateParts=date.split('-');
+      const readableDate=new Date(date+'T12:00:00').toLocaleDateString('en-US',{weekday:'long',month:'long',day:'numeric',year:'numeric'});
+      const readableTime=new Date(`2000-01-01T${time}`).toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit'});
+      const readableEnd=new Date(`2000-01-01T${endTime}`).toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit'});
+
+      // 1️⃣ Write session to Firestore sessions collection
+      //    Zapier watches this collection and creates Google Calendar event
+      const sessionRef=await addDoc(collection(db,'sessions'),{
+        clientUid,
+        clientName,
+        clientEmail,
+        service,
+        date,           // YYYY-MM-DD — Zapier reads this
+        time,           // HH:MM
+        endTime,        // HH:MM — Zapier uses for event end
+        durationMinutes:durationMins,
+        cost,
+        notes,
+        status:'confirmed',
+        bookedBy:currentUser?.displayName||'Staff',
+        createdAt:serverTimestamp(),
+        // Google Calendar friendly fields for Zapier
+        gcal_title:`AAP: ${service} — ${clientName}`,
+        gcal_description:`Client: ${clientName}\nService: ${service}\nDuration: ${durationMins} min\nCost: $${cost}${notes?'\n\nNotes: '+notes:''}`,
+        gcal_start:`${date}T${time}:00`,
+        gcal_end:`${date}T${endTime}:00`,
+      });
+
+      // 2️⃣ Fire Zapier webhook → Google Calendar event created automatically
+      fetch('https://hooks.zapier.com/hooks/catch/26972834/un3sk3c/', {
+        method: 'POST',
+        body: JSON.stringify({
+          title:       `AAP: ${service} — ${clientName}`,
+          start:       `${date}T${time}:00`,
+          end:         `${date}T${endTime}:00`,
+          date:        readableDate,
+          time_start:  readableTime,
+          time_end:    readableEnd,
+          service,
+          client_name: clientName,
+          client_email:clientEmail,
+          duration:    `${durationMins} minutes`,
+          cost:        `$${cost}`,
+          notes:       notes||'None',
+          description: `Client: ${clientName}\nService: ${service}\nDate: ${readableDate}\nTime: ${readableTime} – ${readableEnd}\nDuration: ${durationMins} min\nCost: $${cost}${notes?'\n\nNotes: '+notes:''}`,
+          booked_by:   currentUser?.displayName||'Staff',
+        }),
+      }).catch(err => console.warn('Zapier webhook error:', err));
+
+      // 3️⃣ Send booking confirmation to client message thread
+      const confirmText=`BOOKING CONFIRMED ✓\n\nService: ${service}\nDate: ${readableDate}\nTime: ${readableTime} – ${readableEnd}\nDuration: ${durationMins} minutes\nCost: $${cost}${notes?'\n\nNotes: '+notes:''}`;
+      await addDoc(collection(db,'clients',clientUid,'messages'),{
+        text:confirmText,
+        senderUid:currentUser?.uid||'staff',
+        senderName:currentUser?.displayName||'Staff',
+        senderRole:'staff',
+        type:'booking',
+        sessionId:sessionRef.id,
+        createdAt:serverTimestamp(),
+      });
+
+      closeModal('booking-modal');
+      showToast('✓ Session booked and added to Google Calendar!');
+
+      // Reset form
+      document.getElementById('bm-client').value='';
+      document.getElementById('bm-date').value='';
+      document.getElementById('bm-time').value='';
+      document.getElementById('bm-notes').value='';
+
+      // Reload schedule view
+      await loadSchedule();
+
+    }catch(err){
+      console.error('confirmBooking error:',err);
+      errEl.textContent='Booking failed. Please try again.';
+      errEl.style.display='block';
+    }finally{
+      btn.textContent='Confirm Booking';
+      btn.disabled=false;
+    }
+  };
+
+  // ── OPEN CLIENT THREAD ─────────────────────────────────────
+  window._openClientThread=async function(uid,name){
+    activeClientUid=uid;
+    document.querySelectorAll('.thr').forEach(t=>t.classList.remove('active'));
+    const el=document.querySelector(`[data-uid="${uid}"]`);
+    if(el)el.classList.add('active');
+    if(name)document.getElementById('chat-name').textContent=name;
+    await loadThreadMessages(uid);
+  };
+
+  // ── LOAD MESSAGES ──────────────────────────────────────────
+  async function loadThreadMessages(uid){
+    const body=document.getElementById('chat-body');
+    if(!body)return;
+    body.innerHTML='<div style="text-align:center;color:var(--mid);font-size:13px;padding:20px">Loading…</div>';
+    try{
+      const snap=await getDocs(query(collection(db,'clients',uid,'messages'),orderBy('createdAt','asc')));
+      if(snap.empty){body.innerHTML='<div style="text-align:center;color:var(--mid);font-size:13px;padding:40px">No messages yet. Send the first one.</div>';return;}
+      body.innerHTML=snap.docs.map(d=>{
+        const m=d.data();
+        const isMe=m.senderRole==='staff';
+        const time=m.createdAt?.toDate?m.createdAt.toDate().toLocaleString('en-US',{month:'short',day:'numeric',hour:'numeric',minute:'2-digit'}):'Sending…';
+        if(m.type==='report')return `<div style="background:rgba(45,74,50,0.06);border-left:3px solid var(--sage);border-radius:0 10px 10px 0;padding:12px 14px;margin:4px 0"><div style="font-size:11px;font-weight:600;color:var(--forest);text-transform:uppercase;margin-bottom:6px">📋 Session Report · ${time}</div><div style="font-size:13px;color:var(--mid);white-space:pre-line">${m.text}</div></div>`;
+        if(m.type==='booking')return `<div style="background:rgba(201,168,76,0.08);border-left:3px solid var(--gold);border-radius:0 10px 10px 0;padding:12px 14px;margin:4px 0"><div style="font-size:11px;font-weight:600;text-transform:uppercase;margin-bottom:6px">📅 Booking Confirmation · ${time}</div><div style="font-size:13px;color:var(--mid);white-space:pre-line">${m.text}</div></div>`;
+        if(m.type==='reminder')return `<div style="background:rgba(196,132,90,0.07);border-left:3px solid var(--clay);border-radius:0 10px 10px 0;padding:12px 14px;margin:4px 0"><div style="font-size:11px;font-weight:600;color:var(--clay);text-transform:uppercase;margin-bottom:6px">🔔 Reminder · ${time}</div><div style="font-size:13px;color:var(--mid);white-space:pre-line">${m.text}</div></div>`;
+        return `<div style="display:flex;flex-direction:${isMe?'row-reverse':'row'};gap:8px;margin-bottom:4px"><div><div style="font-size:10px;color:var(--mid);margin-bottom:3px;${isMe?'text-align:right':''}">${time}</div><div style="background:${isMe?'var(--forest)':'#fff'};color:${isMe?'#fff':'var(--charcoal)'};padding:9px 13px;border-radius:${isMe?'14px 14px 4px 14px':'14px 14px 14px 4px'};font-size:13px;max-width:300px;line-height:1.5;border:${isMe?'none':'1px solid rgba(0,0,0,0.07)'};white-space:pre-line">${m.text}</div></div></div>`;
+      }).join('');
+      body.scrollTop=body.scrollHeight;
+      const last=snap.docs[snap.docs.length-1].data();
+      const prev=document.getElementById(`prev-${uid}`);
+      if(prev)prev.textContent=last.text.substring(0,40)+(last.text.length>40?'…':'');
+    }catch(err){
+      console.error(err);
+      body.innerHTML='<div style="text-align:center;color:#b03030;font-size:13px;padding:20px">Could not load messages.</div>';
+    }
+  }
+
+  // ── STAFF SEND MESSAGE ─────────────────────────────────────
+  async function staffSend(){
+    const input=document.getElementById('chat-input');
+    if(!input)return;
+    const text=input.value.trim();
+    if(!text||!activeClientUid||!currentUser)return;
+    input.value='';input.disabled=true;
+    try{
+      await addDoc(collection(db,'clients',activeClientUid,'messages'),{
+        text,senderUid:currentUser.uid,
+        senderName:currentUser.displayName||'Staff',
+        senderRole:'staff',type:'chat',createdAt:serverTimestamp(),
+      });
+      await loadThreadMessages(activeClientUid);
+    }catch(err){console.error(err);showToast('Message failed to send.');}
+    finally{input.disabled=false;input.focus();}
+  }
+
+  document.getElementById('chat-input').addEventListener('keydown',e=>{if(e.key==='Enter')staffSend();});
+  document.getElementById('staff-send-btn').addEventListener('click',staffSend);
+  document.getElementById('staff-refresh-btn').addEventListener('click',()=>{if(activeClientUid)loadThreadMessages(activeClientUid);});
+
+  // ── REPORT / BOOKING / REMINDER HELPERS ───────────────────
+  window.sendReportToThread=async function(uid,text){
+    if(!uid||!text)return;
+    try{await addDoc(collection(db,'clients',uid,'messages'),{text,senderUid:currentUser?.uid||'staff',senderName:currentUser?.displayName||'Staff',senderRole:'staff',type:'report',createdAt:serverTimestamp()});}
+    catch(e){console.error(e);}
+  };
+  window.sendBookingConfirmation=async function(uid,text){
+    if(!uid||!text)return;
+    try{await addDoc(collection(db,'clients',uid,'messages'),{text,senderUid:currentUser?.uid||'staff',senderName:currentUser?.displayName||'Staff',senderRole:'staff',type:'booking',createdAt:serverTimestamp()});}
+    catch(e){console.error(e);}
+  };
+  window.sendReminder=async function(uid,text){
+    if(!uid||!text)return;
+    try{await addDoc(collection(db,'clients',uid,'messages'),{text,senderUid:currentUser?.uid||'staff',senderName:currentUser?.displayName||'Staff',senderRole:'staff',type:'reminder',createdAt:serverTimestamp()});}
+    catch(e){console.error(e);}
   };
 </script>
 </body>
