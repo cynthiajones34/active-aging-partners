@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%232d4a32'/><text y='.9em' font-size='75' x='50%' text-anchor='middle' dominant-baseline='auto'>🌿</text></svg>">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Active Aging Partners — Client Portal</title>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=Jost:wght@300;400;500;600&display=swap" rel="stylesheet">
@@ -372,7 +373,7 @@ body { font-family:'Jost',sans-serif; background:var(--cream); color:var(--charc
     <div class="topbar">
       <div>
         <div class="page-title" id="page-title">My Schedule</div>
-        <div class="page-sub" id="page-sub">Upcoming sessions for Margaret Reynolds</div>
+        <div class="page-sub" id="page-sub">Your upcoming sessions</div>
       </div>
       <div class="topbar-right">
         <button class="notif-btn" onclick="nav('notifications',null)">
@@ -387,46 +388,15 @@ body { font-family:'Jost',sans-serif; background:var(--cream); color:var(--charc
       <!-- SCHEDULE -->
       <div class="view active" id="view-schedule">
         <h3 style="font-family:'Cormorant Garamond',serif;font-size:18px;font-weight:600;margin-bottom:14px">Upcoming Sessions</h3>
-        <div class="upcoming-list">
-          <div class="session-card">
-            <div class="session-date-block"><div class="date-month">Mar</div><div class="date-day">3</div></div>
-            <div class="session-info">
-              <div class="session-title">Morning Walk — Riverside Park</div>
-              <div class="session-meta">Tuesday · 10:00–11:00 AM · with Your Companion</div>
-            </div>
-            <span class="session-type-badge badge-walk">🚶 Walk</span>
-            <button class="btn btn-ghost btn-sm" onclick="showCancel('Mar 3 Walk')">Cancel</button>
-          </div>
-          <div class="session-card">
-            <div class="session-date-block"><div class="date-month">Mar</div><div class="date-day">6</div></div>
-            <div class="session-info">
-              <div class="session-title">Morning Walk — Neighborhood</div>
-              <div class="session-meta">Friday · 9:00–10:00 AM · with Your Companion</div>
-            </div>
-            <span class="session-type-badge badge-walk">🚶 Walk</span>
-            <button class="btn btn-ghost btn-sm" onclick="showCancel('Mar 6 Walk')">Cancel</button>
-          </div>
-          <div class="session-card">
-            <div class="session-date-block"><div class="date-month">Mar</div><div class="date-day">10</div></div>
-            <div class="session-info">
-              <div class="session-title">Dr. Patel — Primary Care Follow-Up</div>
-              <div class="session-meta">Tuesday · 11:00 AM–12:30 PM · Transport + companion</div>
-            </div>
-            <span class="session-type-badge badge-appt">🏥 Appointment</span>
-            <button class="btn btn-ghost btn-sm" onclick="showCancel('Mar 10 Appt')">Cancel</button>
-          </div>
-          <div class="session-card">
-            <div class="session-date-block"><div class="date-month">Mar</div><div class="date-day">13</div></div>
-            <div class="session-info">
-              <div class="session-title">Publix Grocery Run</div>
-              <div class="session-meta">Friday · 2:00–3:30 PM · Transport + companion</div>
-            </div>
-            <span class="session-type-badge badge-errand">🛒 Errand</span>
-            <button class="btn btn-ghost btn-sm" onclick="showCancel('Mar 13 Errand')">Cancel</button>
+        <div id="schedule-list">
+          <div style="text-align:center;padding:48px 20px;background:#fff;border-radius:16px;border:1px solid rgba(0,0,0,0.06)">
+            <div style="font-size:40px;margin-bottom:14px">📅</div>
+            <div style="font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:600;margin-bottom:8px">No sessions booked yet</div>
+            <div style="font-size:14px;color:var(--mid);margin-bottom:20px">Use the Book a Service tab to schedule your first session.</div>
+            <button class="btn btn-primary" onclick="nav('book', document.querySelectorAll('.nav-item')[1])">Book a Session →</button>
           </div>
         </div>
-
-        <div style="margin-top:8px;background:rgba(196,132,90,0.1);border-radius:12px;padding:14px 16px;border-left:3px solid var(--clay);font-size:13px;color:#8a4a20">
+        <div style="margin-top:14px;background:rgba(45,74,50,0.06);border-radius:12px;padding:14px 16px;border-left:3px solid var(--sage);font-size:13px;color:var(--mid)">
           📲 You'll receive an SMS reminder 24 hours before each session and an email reminder 2 hours before.
         </div>
       </div>
@@ -435,38 +405,23 @@ body { font-family:'Jost',sans-serif; background:var(--cream); color:var(--charc
       <div class="view" id="view-book">
         <div style="max-width:700px">
           <h3 style="font-family:'Cormorant Garamond',serif;font-size:18px;font-weight:600;margin-bottom:6px">What type of session?</h3>
-          <p style="font-size:13px;color:var(--mid);margin-bottom:16px">All sessions are $50/hr. Transport services include a $0.67/mile gas surcharge.</p>
+          <p style="font-size:13px;color:var(--mid);margin-bottom:16px">All sessions are a flat $50/hr.</p>
 
           <div class="service-picker">
             <div class="service-option selected" onclick="selectService(this)">
               <div class="icon">🚶</div>
-              <div class="name">Walking Session</div>
+              <div class="name">Walking & Wellness</div>
               <div class="price">$50/hr</div>
             </div>
             <div class="service-option" onclick="selectService(this)">
-              <div class="icon">🏥</div>
-              <div class="name">Medical Appointment</div>
-              <div class="price">$50/hr + mileage</div>
+              <div class="icon">🤝</div>
+              <div class="name">Companionship & Engagement</div>
+              <div class="price">$50/hr</div>
             </div>
             <div class="service-option" onclick="selectService(this)">
               <div class="icon">🛒</div>
-              <div class="name">Errands / Grocery</div>
-              <div class="price">$50/hr + mileage</div>
-            </div>
-            <div class="service-option" onclick="selectService(this)">
-              <div class="icon">💇</div>
-              <div class="name">Hair / Nail Appointment</div>
-              <div class="price">$50/hr + mileage</div>
-            </div>
-            <div class="service-option" onclick="selectService(this)">
-              <div class="icon">💊</div>
-              <div class="name">Pharmacy Run</div>
-              <div class="price">$50/hr + mileage</div>
-            </div>
-            <div class="service-option" onclick="selectService(this)">
-              <div class="icon">🚗</div>
-              <div class="name">Other Transport</div>
-              <div class="price">$50/hr + mileage</div>
+              <div class="name">Errand Support</div>
+              <div class="price">$50/hr</div>
             </div>
           </div>
 
@@ -529,7 +484,7 @@ body { font-family:'Jost',sans-serif; background:var(--cream); color:var(--charc
             </div>
             <div class="form-group" style="margin-bottom:0">
               <label class="form-label">Notes for your companion (optional)</label>
-              <textarea class="form-input" rows="2" placeholder="e.g. Margaret prefers the shaded trail. She has a knee brace on her right knee."></textarea>
+              <textarea class="form-input" rows="2" placeholder="e.g. Prefers shaded routes. Has a knee brace on right knee."></textarea>
             </div>
           </div>
 
@@ -547,7 +502,7 @@ body { font-family:'Jost',sans-serif; background:var(--cream); color:var(--charc
                 <div class="thread-av" style="background:var(--forest)">YC</div>
                 <div style="flex:1;min-width:0">
                   <div style="display:flex;justify-content:space-between"><div class="thread-name">Your Companion</div><div style="font-size:10px;color:var(--mid)">9:12am</div></div>
-                  <div class="thread-prev">Margaret walked an extra half mile!</div>
+                  <div class="thread-prev" id="thread-preview">Your message thread</div>
                 </div>
                 <div class="unread-dot"></div>
               </div>
@@ -587,56 +542,17 @@ body { font-family:'Jost',sans-serif; background:var(--cream); color:var(--charc
 
       <!-- REPORTS -->
       <div class="view" id="view-reports">
-        <p style="font-size:13px;color:var(--mid);margin-bottom:18px">Session reports are automatically sent to your inbox and appear here. Tap any report to read the full details.</p>
-
-        <div class="report-card">
-          <div class="report-header">
-            <div>
-              <div class="report-title">Morning Walk — Riverside Park</div>
-              <div class="report-date">March 1, 2026 · 9:00–10:00 AM</div>
-            </div>
-            <span class="report-tag rt-walk">🚶 Walk</span>
-          </div>
-          <div class="report-body">Margaret had an excellent session today. She walked at a steady, confident pace the entire time. Her spirits were high — she talked about her granddaughter's upcoming recital. No fatigue or discomfort reported. A gentle breeze made it a lovely morning.</div>
-          <div class="report-stats">
-            <div class="r-stat"><div class="r-stat-val">1.9</div><div class="r-stat-label">Miles</div></div>
-            <div class="r-stat"><div class="r-stat-val" style="color:var(--forest)">😊</div><div class="r-stat-label">Mood: Great</div></div>
-            <div class="r-stat"><div class="r-stat-val">60</div><div class="r-stat-label">Minutes</div></div>
-          </div>
-        </div>
-
-        <div class="report-card">
-          <div class="report-header">
-            <div>
-              <div class="report-title">Morning Walk — Neighborhood</div>
-              <div class="report-date">February 27, 2026 · 9:00–10:00 AM</div>
-            </div>
-            <span class="report-tag rt-walk">🚶 Walk</span>
-          </div>
-          <div class="report-body">Good session overall. Margaret mentioned slight hip stiffness at the start which eased up after 10 minutes. She did two laps of the block and enjoyed chatting with a neighbor. I slightly shortened the route as a precaution. Recommend gentle stretching before future sessions.</div>
-          <div class="report-stats">
-            <div class="r-stat"><div class="r-stat-val">1.4</div><div class="r-stat-label">Miles</div></div>
-            <div class="r-stat"><div class="r-stat-val" style="color:#c9a84c">🙂</div><div class="r-stat-label">Mood: Good</div></div>
-            <div class="r-stat"><div class="r-stat-val">55</div><div class="r-stat-label">Minutes</div></div>
-          </div>
-        </div>
-
-        <div class="report-card">
-          <div class="report-header">
-            <div>
-              <div class="report-title">Dr. Chen — Cardiology Follow-Up</div>
-              <div class="report-date">February 24, 2026 · 11:00 AM–1:00 PM</div>
-            </div>
-            <span class="report-tag rt-appt">🏥 Appointment</span>
-          </div>
-          <div class="report-body">Accompanied Margaret to Dr. Chen's office. She was relaxed and communicative throughout. Dr. Chen reported all vitals are stable and was very pleased with her activity level. Prescription was renewed. We stopped at Walgreens for pickup on the way home. Home by 1:15 PM.</div>
-          <div class="report-stats">
-            <div class="r-stat"><div class="r-stat-val">8.2</div><div class="r-stat-label">Miles driven</div></div>
-            <div class="r-stat"><div class="r-stat-val" style="color:var(--forest)">😊</div><div class="r-stat-label">Mood: Great</div></div>
-            <div class="r-stat"><div class="r-stat-val">120</div><div class="r-stat-label">Minutes</div></div>
+        <p style="font-size:13px;color:var(--mid);margin-bottom:18px">Session reports are sent to your inbox and appear here after every visit.</p>
+        <div id="reports-list">
+          <div style="text-align:center;padding:48px 20px;background:#fff;border-radius:16px;border:1px solid rgba(0,0,0,0.06)">
+            <div style="font-size:40px;margin-bottom:14px">📋</div>
+            <div style="font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:600;margin-bottom:8px">No reports yet</div>
+            <div style="font-size:14px;color:var(--mid)">After each session, your companion will send a detailed report here and to your email.</div>
           </div>
         </div>
       </div>
+
+      <!-- PROFILE -->
 
       <!-- PROFILE -->
       <div class="view" id="view-profile">
@@ -645,14 +561,14 @@ body { font-family:'Jost',sans-serif; background:var(--cream); color:var(--charc
             <div class="settings-title">Profile Photo</div>
             <div class="photo-upload-area">
               <div class="photo-circle" onclick="document.getElementById('photo-input').click()">
-                <span id="photo-initials">SR</span>
+                <span id="photo-initials"></span>
                 <img id="photo-preview" src="" style="display:none">
                 <div class="photo-overlay">📷</div>
               </div>
               <input type="file" id="photo-input" class="photo-upload-input" accept="image/*" onchange="previewPhoto(this)">
               <div>
-                <div style="font-weight:600;font-size:15px">Sarah Reynolds</div>
-                <div style="font-size:12px;color:var(--mid);margin:4px 0 12px">Family contact for Margaret Reynolds</div>
+                <div style="font-weight:600;font-size:15px" id="profile-display-name"></div>
+                <div style="font-size:12px;color:var(--mid);margin:4px 0 12px" id="profile-role-label"></div>
                 <button class="btn btn-ghost btn-sm" onclick="document.getElementById('photo-input').click()">📷 Upload Photo</button>
               </div>
             </div>
@@ -663,23 +579,23 @@ body { font-family:'Jost',sans-serif; background:var(--cream); color:var(--charc
             <div class="settings-title">Contact Information</div>
             <div class="form-group">
               <label class="form-label">First Name</label>
-              <input type="text" class="form-input" value="Sarah">
+              <input type="text" class="form-input" value="">
             </div>
             <div class="form-group">
               <label class="form-label">Last Name</label>
-              <input type="text" class="form-input" value="Reynolds">
+              <input type="text" class="form-input" value="">
             </div>
             <div class="form-group">
               <label class="form-label">Email Address</label>
-              <input type="email" class="form-input" value="sarah.reynolds@gmail.com">
+              <input type="email" class="form-input" id="profile-email-field" value="">
             </div>
             <div class="form-group">
               <label class="form-label">Phone Number</label>
-              <input type="tel" class="form-input" value="(404) 555-0182">
+              <input type="tel" class="form-input" id="profile-phone-field" value="">
             </div>
             <div class="form-group">
               <label class="form-label">Mailing Address</label>
-              <input type="text" class="form-input" value="824 Peachtree Rd, Atlanta, GA 30305">
+              <input type="text" class="form-input" value="">
             </div>
             <button class="btn btn-primary btn-sm" onclick="saveToast()">Save Changes</button>
           </div>
@@ -688,19 +604,19 @@ body { font-family:'Jost',sans-serif; background:var(--cream); color:var(--charc
             <div class="settings-title">Senior Client Info</div>
             <div class="form-group">
               <label class="form-label">Senior's Name</label>
-              <input type="text" class="form-input" value="Margaret Reynolds">
+              <input type="text" class="form-input" value="">
             </div>
             <div class="form-group">
               <label class="form-label">Age</label>
-              <input type="number" class="form-input" value="78">
+              <input type="number" class="form-input" value="">
             </div>
             <div class="form-group">
               <label class="form-label">Home Address</label>
-              <input type="text" class="form-input" value="412 Oak Drive, Atlanta, GA 30309">
+              <input type="text" class="form-input" value="">
             </div>
             <div class="form-group">
               <label class="form-label">Health Notes</label>
-              <textarea class="form-input" rows="3">Mild arthritis in right knee. Prefers shaded walking routes. Allergic to bee stings (carries EpiPen).</textarea>
+              <textarea class="form-input" rows="3" placeholder="Any health notes, preferences, or things your companion should know…"></textarea>
             </div>
             <button class="btn btn-primary btn-sm" onclick="saveToast()">Save Changes</button>
           </div>
@@ -727,8 +643,8 @@ body { font-family:'Jost',sans-serif; background:var(--cream); color:var(--charc
             <div style="background:rgba(0,0,0,0.03);border-radius:10px;padding:14px 16px;display:flex;align-items:center;gap:12px;margin-bottom:14px">
               <span style="font-size:22px">💳</span>
               <div>
-                <div style="font-size:13px;font-weight:600">Visa ending in 4242</div>
-                <div style="font-size:11px;color:var(--mid)">Expires 08/27 · Default payment</div>
+                <div style="font-size:13px;font-weight:600">No payment method on file</div>
+                <div style="font-size:11px;color:var(--mid)">Add a card to pay invoices automatically</div>
               </div>
             </div>
             <button class="btn btn-ghost btn-sm">+ Add Payment Method</button>
@@ -817,7 +733,7 @@ body { font-family:'Jost',sans-serif; background:var(--cream); color:var(--charc
 
           <div style="display:flex;align-items:center;gap:12px;background:rgba(45,74,50,0.06);border-radius:12px;padding:14px 16px">
             <span style="font-size:20px">📱</span>
-            <div style="font-size:12px;color:var(--mid)">SMS messages sent to <strong style="color:var(--charcoal)">(404) 555-0182</strong> · <a href="#" onclick="nav('profile',null)" style="color:var(--forest)">Update number</a></div>
+            <div style="font-size:12px;color:var(--mid)">SMS messages sent to your registered phone number · <a href="#" onclick="nav('profile',null)" style="color:var(--forest)">Update number</a></div>
           </div>
 
           <button class="btn btn-primary" style="margin-top:20px" onclick="saveToast('Notification preferences saved!')">Save Preferences</button>
@@ -853,7 +769,7 @@ body { font-family:'Jost',sans-serif; background:var(--cream); color:var(--charc
 
 <script>
 const pages = {
-  schedule: {title:'My Schedule', sub:'Upcoming sessions for Margaret Reynolds'},
+  schedule: {title:'My Schedule', sub:'Your upcoming sessions'},
   book: {title:'Book a Service', sub:'Check availability and schedule a session'},
   messages: {title:'Messages', sub:'Communicate with your companion and staff'},
   reports: {title:'Session Reports', sub:'Detailed notes after every visit'},
@@ -895,22 +811,11 @@ function showCancel(name) {
   openModal('cancel-modal');
 }
 
-// Messages data
-const staffMsgs = [
-  {who:'them',text:"Good morning! Margaret had a wonderful walk today. She walked an extra half mile without even noticing! 🌿",time:"9:05am"},
-  {who:'me',text:"That's amazing news! She's been so much more upbeat lately. Thank you!",time:"9:08am"},
-  {who:'them',text:"Margaret walked an extra half mile! She's really hitting her stride. Her confidence on the path is visibly growing each week.",time:"9:12am"},
-];
+// Message data loaded from Firestore
 
-const reportThread = [
-  {who:'them',text:"📋 SESSION REPORT — March 1, 2026\n\nWalk · Riverside Park · 9:00–10:00 AM\nDistance: 1.9 miles · Mood: 😊 Excellent\n\nMargaret had a wonderful session. Steady pace, high spirits, talked about her granddaughter's recital. No fatigue. Full report in your Reports tab.",time:"10:15am"},
-  {who:'me',text:"Thank you for the detailed report! Very reassuring to hear she's doing so well.",time:"11:02am"},
-];
+// Message data loaded from Firestore
 
-const billingThread = [
-  {who:'them',text:"Invoice #1042 — $150.00 (3 walks × $50) has been charged to your Visa ending in 4242. Receipt sent to sarah.reynolds@gmail.com ✓",time:"Feb 28"},
-  {who:'me',text:"Got it, thanks!",time:"Feb 28"},
-];
+// Message data loaded from Firestore
 
 function loadThread(el, name, color, initials, msgs) {
   document.querySelectorAll('.thread').forEach(t=>t.classList.remove('active'));
@@ -935,8 +840,7 @@ function loadThread(el, name, color, initials, msgs) {
   body.scrollTop = body.scrollHeight;
 }
 
-// Init chat
-loadThread(document.querySelector('.thread.active'), 'Your Companion', 'forest', 'YC', staffMsgs);
+// Messages loaded from Firestore via Firebase module
 
 function sendMsg(e) {
   if (e.key !== 'Enter') return;
@@ -985,57 +889,246 @@ function showToast(msg) {
 function saveToast(msg='Changes saved!') { showToast('✓ ' + msg); }
 </script>
 
-<!-- FIREBASE AUTH GUARD -->
+<!-- FIREBASE AUTH GUARD + FIRESTORE MESSAGING -->
 <script type="module">
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+  import { initializeApp }   from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
   import { getAuth, onAuthStateChanged, signOut }
-    from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+                              from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+  import {
+    getFirestore, collection, addDoc, query,
+    orderBy, getDocs, serverTimestamp, doc, getDoc
+  }                           from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
   const firebaseConfig = {
-    apiKey: "AIzaSyAuXMMnVjij0x1X5sQ5Jm1NuJUvquwDb0k",
-    authDomain: "active-aging-partners.firebaseapp.com",
-    projectId: "active-aging-partners",
-    storageBucket: "active-aging-partners.firebasestorage.app",
+    apiKey:            "AIzaSyAuXMMnVjij0x1X5sQ5Jm1NuJUvquwDb0k",
+    authDomain:        "active-aging-partners.firebaseapp.com",
+    projectId:         "active-aging-partners",
+    storageBucket:     "active-aging-partners.firebasestorage.app",
     messagingSenderId: "239822066888",
-    appId: "1:239822066888:web:8599d14fce0388d510c1fd"
+    appId:             "1:239822066888:web:8599d14fce0388d510c1fd"
   };
 
-  const app = initializeApp(firebaseConfig);
+  const app  = initializeApp(firebaseConfig);
   const auth = getAuth(app);
+  const db   = getFirestore(app);
 
-  // 🔒 Guard — if not logged in, send back to login page
-  onAuthStateChanged(auth, (user) => {
-    if (!user) {
-      window.location.href = 'index.html';
-      return;
-    }
-    // Guard: must have verified email
-    if (!user.emailVerified) {
-      window.location.href = 'verify-email.html';
-      return;
-    }
-    // ✅ Logged in — show real name and initials in sidebar
+  let currentUser = null;
+
+  // ── AUTH GUARD ────────────────────────────────────────────
+  onAuthStateChanged(auth, async (user) => {
+    if (!user) { window.location.href = 'index.html'; return; }
+    if (!user.emailVerified) { window.location.href = 'verify-email.html'; return; }
+
+    currentUser = user;
+
+    // Populate sidebar name & initials
     const displayName = user.displayName || user.email;
-    const initials = displayName
-      .split(' ')
-      .map(w => w[0])
-      .slice(0, 2)
-      .join('')
-      .toUpperCase();
-    document.getElementById('sidebar-name').textContent = displayName;
+    const initials    = displayName.split(' ').map(w => w[0]).slice(0, 2).join('').toUpperCase();
+    document.getElementById('sidebar-name').textContent     = displayName;
     document.getElementById('sidebar-initials').textContent = initials;
-    // Also update the profile page name field if it exists
-    const profileName = document.getElementById('profile-display-name');
-    if (profileName) profileName.textContent = displayName;
+
+    // Populate profile fields if visible
+    const profileName  = document.getElementById('profile-display-name');
     const profileEmail = document.getElementById('profile-email-field');
-    if (profileEmail) profileEmail.value = user.email;
+    if (profileName)  profileName.textContent = displayName;
+    if (profileEmail) profileEmail.value      = user.email;
+
+    // Load client profile from Firestore
+    try {
+      const snap = await getDoc(doc(db, 'clients', user.uid));
+      if (snap.exists()) {
+        const data = snap.data();
+        const phoneField = document.getElementById('profile-phone-field');
+        if (phoneField && data.phone) phoneField.value = data.phone;
+      }
+    } catch (e) { /* profile not yet created or Firestore not enabled */ }
+
+    // Load messages on first visit to messages tab
+    setupMessaging(user.uid, displayName);
   });
 
-  // Logout
+  // ── LOGOUT ────────────────────────────────────────────────
   window.doLogout = async function() {
     await signOut(auth);
     window.location.href = 'logout.html';
   };
+
+  // ── MESSAGING ─────────────────────────────────────────────
+  function setupMessaging(uid, displayName) {
+    const msgCol = collection(db, 'clients', uid, 'messages');
+
+    // Replace the static thread sidebar with a single "Your Companion" thread
+    const threadItems = document.querySelector('.thread-items');
+    if (threadItems) {
+      threadItems.innerHTML = `
+        <div class="thread active" id="main-thread">
+          <div class="thread-av" style="background:var(--forest)">🌿</div>
+          <div style="flex:1;min-width:0">
+            <div style="display:flex;justify-content:space-between">
+              <div class="thread-name">Active Aging Partners</div>
+            </div>
+            <div class="thread-prev" id="thread-preview">Your message thread</div>
+          </div>
+        </div>`;
+    }
+
+    // Update chat header
+    const chatName = document.getElementById('chat-name');
+    const chatAv   = document.getElementById('chat-av');
+    if (chatName) chatName.textContent      = 'Active Aging Partners';
+    if (chatAv)   chatAv.textContent        = '🌿';
+
+    // Add refresh button to chat footer
+    const chatFooter = document.querySelector('.chat-footer');
+    if (chatFooter && !document.getElementById('refresh-btn')) {
+      const refreshBtn = document.createElement('button');
+      refreshBtn.id        = 'refresh-btn';
+      refreshBtn.className = 'btn btn-primary btn-sm';
+      refreshBtn.title     = 'Refresh messages';
+      refreshBtn.textContent = '↻';
+      refreshBtn.onclick   = () => loadMessages(uid, msgCol);
+      chatFooter.insertBefore(refreshBtn, chatFooter.firstChild);
+    }
+
+    // Wire up send button and enter key
+    window._sendFirestoreMsg = async function(e) {
+      if (e && e.key && e.key !== 'Enter') return;
+      const input = document.getElementById('chat-input');
+      const text  = input.value.trim();
+      if (!text || !currentUser) return;
+
+      input.value    = '';
+      input.disabled = true;
+
+      try {
+        await addDoc(msgCol, {
+          text,
+          senderUid:  currentUser.uid,
+          senderName: displayName,
+          senderRole: 'client',
+          type:       'chat',
+          createdAt:  serverTimestamp(),
+        });
+        await loadMessages(uid, msgCol);
+      } catch (err) {
+        console.error('Send failed:', err);
+        showToast('Message failed to send. Please try again.');
+      } finally {
+        input.disabled = false;
+        input.focus();
+      }
+    };
+
+    // Patch the existing sendMsg to use Firestore
+    const chatInput = document.getElementById('chat-input');
+    if (chatInput) {
+      chatInput.onkeydown = (e) => window._sendFirestoreMsg(e);
+    }
+    const sendBtn = document.querySelector('.chat-footer .btn-primary');
+    if (sendBtn) sendBtn.onclick = () => window._sendFirestoreMsg({key:'Enter'});
+
+    // Load messages immediately on setup
+    loadMessages(uid, msgCol);
+  }
+
+  async function loadMessages(uid, msgCol) {
+    const body = document.getElementById('chat-body');
+    if (!body) return;
+
+    // Show loading state
+    body.innerHTML = '<div style="text-align:center;color:var(--mid);font-size:13px;padding:20px">Loading messages…</div>';
+
+    try {
+      const q    = query(msgCol, orderBy('createdAt', 'asc'));
+      const snap = await getDocs(q);
+
+      if (snap.empty) {
+        body.innerHTML = `
+          <div style="text-align:center;padding:40px 20px">
+            <div style="font-size:32px;margin-bottom:12px">💬</div>
+            <div style="font-size:14px;color:var(--mid);line-height:1.6">
+              No messages yet.<br>Send us a message and we'll get back to you soon.
+            </div>
+          </div>`;
+        return;
+      }
+
+      body.innerHTML = snap.docs.map(d => {
+        const m    = d.data();
+        const isMe = m.senderRole === 'client';
+        const time = m.createdAt?.toDate
+          ? m.createdAt.toDate().toLocaleString('en-US', { month:'short', day:'numeric', hour:'numeric', minute:'2-digit' })
+          : 'Sending…';
+
+        // Special rendering for system messages
+        if (m.type === 'report') {
+          return `
+            <div style="background:rgba(45,74,50,0.06);border-left:3px solid var(--sage);
+                        border-radius:0 10px 10px 0;padding:12px 14px;margin:4px 0">
+              <div style="font-size:11px;font-weight:600;color:var(--forest);
+                          letter-spacing:0.06em;text-transform:uppercase;margin-bottom:6px">
+                📋 Session Report · ${time}
+              </div>
+              <div style="font-size:13px;color:var(--mid);white-space:pre-line">${m.text}</div>
+            </div>`;
+        }
+
+        if (m.type === 'booking') {
+          return `
+            <div style="background:rgba(201,168,76,0.08);border-left:3px solid var(--gold);
+                        border-radius:0 10px 10px 0;padding:12px 14px;margin:4px 0">
+              <div style="font-size:11px;font-weight:600;color:var(--charcoal);
+                          letter-spacing:0.06em;text-transform:uppercase;margin-bottom:6px">
+                📅 Booking Confirmation · ${time}
+              </div>
+              <div style="font-size:13px;color:var(--mid);white-space:pre-line">${m.text}</div>
+            </div>`;
+        }
+
+        if (m.type === 'reminder') {
+          return `
+            <div style="background:rgba(196,132,90,0.07);border-left:3px solid var(--clay);
+                        border-radius:0 10px 10px 0;padding:12px 14px;margin:4px 0">
+              <div style="font-size:11px;font-weight:600;color:var(--clay);
+                          letter-spacing:0.06em;text-transform:uppercase;margin-bottom:6px">
+                🔔 Reminder · ${time}
+              </div>
+              <div style="font-size:13px;color:var(--mid);white-space:pre-line">${m.text}</div>
+            </div>`;
+        }
+
+        // Regular chat bubble
+        return `
+          <div class="bubble-wrap ${isMe ? 'me' : 'them'}">
+            ${!isMe ? `<div class="thread-av" style="background:var(--forest);width:28px;height:28px;font-size:10px;flex-shrink:0">🌿</div>` : ''}
+            <div>
+              <div class="btime" style="${isMe ? 'text-align:right' : ''}">${time}</div>
+              <div class="bubble" style="white-space:pre-line">${m.text}</div>
+            </div>
+          </div>`;
+      }).join('');
+
+      body.scrollTop = body.scrollHeight;
+
+      // Update thread preview with latest message
+      const preview = document.getElementById('thread-preview');
+      if (preview && snap.docs.length > 0) {
+        const last = snap.docs[snap.docs.length - 1].data();
+        preview.textContent = last.text.substring(0, 40) + (last.text.length > 40 ? '…' : '');
+      }
+
+    } catch (err) {
+      console.error('Load messages error:', err);
+      body.innerHTML = `
+        <div style="text-align:center;color:#b03030;font-size:13px;padding:20px">
+          Could not load messages. 
+          <a href="#" onclick="loadMessages('${uid}', null)" style="color:var(--forest)">Try again</a>
+        </div>`;
+    }
+  }
+
+  // Expose loadMessages globally so the refresh button can call it
+  window._loadMessages = loadMessages;
 </script>
 </body>
 </html>
