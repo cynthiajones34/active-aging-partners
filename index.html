@@ -445,8 +445,7 @@ footer { background: var(--charcoal); padding: 60px 80px 30px; }
   // Staff email addresses — add yours here
   // Anyone NOT in this list is treated as a client
   const STAFF_EMAILS = [
-    // 👇 Add your staff email address(es) here
-    // "yourname@yourdomain.com",
+    "cynthia@activeagingpartners.com",
   ];
 
   function isStaff(email) {
@@ -619,21 +618,29 @@ footer { background: var(--charcoal); padding: 60px 80px 30px; }
       setLoading(btn, false);
     } catch (err) {
       setLoading(btn, false);
-      showError(errorEl, friendlyError(err.code));
+      // Show the actual Firebase error code to help diagnose
+      const msg = friendlyError(err.code) +
+        (err.code ? ` (${err.code})` : '');
+      showError(errorEl, msg);
+      console.error('Password reset error:', err.code, err.message);
     }
   };
 
   // ---- HELPERS ----
   function friendlyError(code) {
     const map = {
-      'auth/user-not-found': 'No account found with that email address.',
-      'auth/wrong-password': 'Incorrect password. Please try again.',
-      'auth/invalid-email': 'Please enter a valid email address.',
-      'auth/email-already-in-use': 'An account with this email already exists. Try logging in.',
-      'auth/weak-password': 'Password must be at least 6 characters.',
-      'auth/too-many-requests': 'Too many attempts. Please wait a moment and try again.',
-      'auth/network-request-failed': 'Network error. Please check your connection.',
-      'auth/invalid-credential': 'Incorrect email or password. Please try again.',
+      'auth/user-not-found':        'No account found with that email address.',
+      'auth/wrong-password':        'Incorrect password. Please try again.',
+      'auth/invalid-email':         'Please enter a valid email address.',
+      'auth/email-already-in-use':  'An account with this email already exists. Try logging in.',
+      'auth/weak-password':         'Password must be at least 6 characters.',
+      'auth/too-many-requests':     'Too many attempts. Please wait a moment and try again.',
+      'auth/network-request-failed':'Network error. Please check your connection.',
+      'auth/invalid-credential':    'Incorrect email or password. Please try again.',
+      'auth/missing-email':         'Please enter your email address.',
+      'auth/invalid-action-code':   'This reset link has expired. Please request a new one.',
+      'auth/expired-action-code':   'This reset link has expired. Please request a new one.',
+      'auth/operation-not-allowed': 'Email/password sign-in is not enabled. Please contact support.',
     };
     return map[code] || 'Something went wrong. Please try again.';
   }
