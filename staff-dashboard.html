@@ -545,7 +545,7 @@ function downloadCSV(type){
   import { getAuth, onAuthStateChanged, signOut }
                               from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
   import {
-    getFirestore, collection, addDoc, query,
+    getFirestore, initializeFirestore, collection, addDoc, query,
     orderBy, getDocs, serverTimestamp, doc, getDoc, where
   }                           from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
   import { getFunctions, httpsCallable }
@@ -562,8 +562,8 @@ function downloadCSV(type){
 
   const app       = initializeApp(firebaseConfig);
   const auth      = getAuth(app);
-  const db        = getFirestore(app);
-  const functions = getFunctions(app);
+  const db        = initializeFirestore(app, { experimentalAutoDetectLongPolling: true });
+  const functions = getFunctions(app, 'us-east1');
 
   // Expose Stripe invoice function globally so submitReport() can call it
   const _createStripeInvoice    = httpsCallable(functions, 'createStripeInvoice');
