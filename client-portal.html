@@ -344,7 +344,7 @@ body { font-family:'Jost',sans-serif; background:var(--cream); color:var(--charc
       <div class="nav-item" onclick="nav('book',this)"><span class="nav-icon">➕</span> Book a Service</div>
 
       <div class="nav-label">Communication</div>
-      <div class="nav-item" onclick="nav('messages',this)"><span class="nav-icon">💬</span> Messages <span class="nav-badge">2</span></div>
+      <div class="nav-item" onclick="nav('messages',this)"><span class="nav-icon">💬</span> Messages</div>
       <div class="nav-item" onclick="nav('reports',this)"><span class="nav-icon">📋</span> My Reports</div>
 
       <div class="nav-label">Account</div>
@@ -426,50 +426,20 @@ body { font-family:'Jost',sans-serif; background:var(--cream); color:var(--charc
           </div>
 
           <div style="background:#fff;border-radius:14px;border:1px solid rgba(0,0,0,0.06);padding:22px;margin-bottom:16px">
-            <div style="font-size:13px;font-weight:600;margin-bottom:10px">Pick a date — March 2026</div>
-            <div class="date-picker-grid">
-              <div class="day-cell day-header">Su</div>
-              <div class="day-cell day-header">Mo</div>
-              <div class="day-cell day-header">Tu</div>
-              <div class="day-cell day-header">We</div>
-              <div class="day-cell day-header">Th</div>
-              <div class="day-cell day-header">Fr</div>
-              <div class="day-cell day-header">Sa</div>
-              <div class="day-cell booked">1</div>
-              <div class="day-cell booked">2</div>
-              <div class="day-cell booked">3</div>
-              <div class="day-cell" onclick="selectDay(this)">4</div>
-              <div class="day-cell" onclick="selectDay(this)">5</div>
-              <div class="day-cell booked">6</div>
-              <div class="day-cell" onclick="selectDay(this)">7</div>
-              <div class="day-cell" onclick="selectDay(this)">8</div>
-              <div class="day-cell" onclick="selectDay(this)">9</div>
-              <div class="day-cell selected" onclick="selectDay(this)">10</div>
-              <div class="day-cell" onclick="selectDay(this)">11</div>
-              <div class="day-cell" onclick="selectDay(this)">12</div>
-              <div class="day-cell booked">13</div>
-              <div class="day-cell" onclick="selectDay(this)">14</div>
-              <div class="day-cell" onclick="selectDay(this)">15</div>
-              <div class="day-cell" onclick="selectDay(this)">16</div>
-              <div class="day-cell" onclick="selectDay(this)">17</div>
-              <div class="day-cell" onclick="selectDay(this)">18</div>
-              <div class="day-cell" onclick="selectDay(this)">19</div>
-              <div class="day-cell" onclick="selectDay(this)">20</div>
-              <div class="day-cell" onclick="selectDay(this)">21</div>
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
+              <div style="font-size:13px;font-weight:600" id="cal-month-label">Pick a date</div>
+              <div style="display:flex;gap:8px">
+                <button class="btn btn-ghost btn-sm" onclick="changeCalMonth(-1)">‹</button>
+                <button class="btn btn-ghost btn-sm" onclick="changeCalMonth(1)">›</button>
+              </div>
             </div>
+            <div class="date-picker-grid" id="cal-grid"></div>
           </div>
 
           <div style="background:#fff;border-radius:14px;border:1px solid rgba(0,0,0,0.06);padding:22px;margin-bottom:16px">
-            <div style="font-size:13px;font-weight:600;margin-bottom:10px">Available Times — March 10</div>
-            <div class="time-grid">
-              <div class="time-chip unavail">8:00 AM</div>
-              <div class="time-chip" onclick="selectTime(this)">9:00 AM</div>
-              <div class="time-chip selected" onclick="selectTime(this)">10:00 AM</div>
-              <div class="time-chip" onclick="selectTime(this)">11:00 AM</div>
-              <div class="time-chip" onclick="selectTime(this)">1:00 PM</div>
-              <div class="time-chip" onclick="selectTime(this)">2:00 PM</div>
-              <div class="time-chip unavail">3:00 PM</div>
-              <div class="time-chip" onclick="selectTime(this)">4:00 PM</div>
+            <div style="font-size:13px;font-weight:600;margin-bottom:10px" id="times-label">Select a date to see available times</div>
+            <div class="time-grid" id="times-grid">
+              <div style="font-size:13px;color:var(--mid)">Choose a date above first.</div>
             </div>
           </div>
 
@@ -565,11 +535,11 @@ body { font-family:'Jost',sans-serif; background:var(--cream); color:var(--charc
             <div class="settings-title">Contact Information</div>
             <div class="form-group">
               <label class="form-label">First Name</label>
-              <input type="text" class="form-input" value="">
+              <input type="text" class="form-input" id="profile-first" value="">
             </div>
             <div class="form-group">
               <label class="form-label">Last Name</label>
-              <input type="text" class="form-input" value="">
+              <input type="text" class="form-input" id="profile-last" value="">
             </div>
             <div class="form-group">
               <label class="form-label">Email Address</label>
@@ -581,7 +551,7 @@ body { font-family:'Jost',sans-serif; background:var(--cream); color:var(--charc
             </div>
             <div class="form-group">
               <label class="form-label">Mailing Address</label>
-              <input type="text" class="form-input" value="">
+              <input type="text" class="form-input" id="profile-address" value="">
             </div>
             <button class="btn btn-primary btn-sm" onclick="saveToast()">Save Changes</button>
           </div>
@@ -590,19 +560,19 @@ body { font-family:'Jost',sans-serif; background:var(--cream); color:var(--charc
             <div class="settings-title">Senior Client Info</div>
             <div class="form-group">
               <label class="form-label">Senior's Name</label>
-              <input type="text" class="form-input" value="">
+              <input type="text" class="form-input" id="profile-senior-name" value="">
             </div>
             <div class="form-group">
               <label class="form-label">Age</label>
-              <input type="number" class="form-input" value="">
+              <input type="number" class="form-input" id="profile-senior-age" value="">
             </div>
             <div class="form-group">
               <label class="form-label">Home Address</label>
-              <input type="text" class="form-input" value="">
+              <input type="text" class="form-input" id="profile-senior-address" value="">
             </div>
             <div class="form-group">
               <label class="form-label">Health Notes</label>
-              <textarea class="form-input" rows="3" placeholder="Any health notes, preferences, or things your companion should know…"></textarea>
+              <textarea class="form-input" id="profile-health-notes" rows="3" placeholder="Any health notes, preferences, or things your companion should know…"></textarea>
             </div>
             <button class="btn btn-primary btn-sm" onclick="saveToast()">Save Changes</button>
           </div>
@@ -724,6 +694,8 @@ function nav(view, el) {
   if (el) el.classList.add('active');
   document.getElementById('page-title').textContent = pages[view].title;
   document.getElementById('page-sub').textContent = pages[view].sub;
+  // Initialize calendar when book tab opens
+  if (view === 'book') { initCalendar(); }
 }
 
 function selectService(el) {
@@ -732,8 +704,21 @@ function selectService(el) {
 }
 
 function selectDay(el) {
-  document.querySelectorAll('.day-cell:not(.day-header):not(.booked)').forEach(d=>d.classList.remove('selected'));
+  document.querySelectorAll('.day-cell:not(.day-header):not(.past):not(.today-past)').forEach(d=>d.classList.remove('selected'));
   el.classList.add('selected');
+  // Update times label with selected date
+  const day   = el.textContent.trim();
+  const label = document.getElementById('times-label');
+  const grid  = document.getElementById('times-grid');
+  if(label) label.textContent = `Available Times — ${document.getElementById('cal-month-label').textContent.split(' — ')[0]} ${day}`;
+  if(grid) grid.innerHTML = `
+    <div class="time-chip" onclick="selectTime(this)">9:00 AM</div>
+    <div class="time-chip" onclick="selectTime(this)">10:00 AM</div>
+    <div class="time-chip" onclick="selectTime(this)">11:00 AM</div>
+    <div class="time-chip" onclick="selectTime(this)">1:00 PM</div>
+    <div class="time-chip" onclick="selectTime(this)">2:00 PM</div>
+    <div class="time-chip" onclick="selectTime(this)">3:00 PM</div>
+    <div class="time-chip" onclick="selectTime(this)">4:00 PM</div>`;
 }
 
 function selectTime(el) {
@@ -741,8 +726,54 @@ function selectTime(el) {
   el.classList.add('selected');
 }
 
+// Dynamic calendar
+let calYear, calMonth;
+function initCalendar() {
+  const now = new Date();
+  calYear  = now.getFullYear();
+  calMonth = now.getMonth();
+  renderCalendar();
+}
+function changeCalMonth(dir) {
+  calMonth += dir;
+  if(calMonth > 11){ calMonth = 0; calYear++; }
+  if(calMonth < 0) { calMonth = 11; calYear--; }
+  renderCalendar();
+}
+function renderCalendar() {
+  const monthNames = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+  const label = document.getElementById('cal-month-label');
+  const grid  = document.getElementById('cal-grid');
+  if(!label || !grid) return;
+  label.textContent = `${monthNames[calMonth]} ${calYear} — Pick a date`;
+  const firstDay = new Date(calYear, calMonth, 1).getDay();
+  const daysIn   = new Date(calYear, calMonth + 1, 0).getDate();
+  const today    = new Date();
+  const headers  = ['Su','Mo','Tu','We','Th','Fr','Sa'];
+  let html = headers.map(h=>`<div class="day-cell day-header">${h}</div>`).join('');
+  // Empty cells before first day
+  for(let i = 0; i < firstDay; i++) html += '<div class="day-cell"></div>';
+  for(let d = 1; d <= daysIn; d++) {
+    const date = new Date(calYear, calMonth, d);
+    const isPast = date < new Date(today.getFullYear(), today.getMonth(), today.getDate());
+    if(isPast) {
+      html += `<div class="day-cell past" style="opacity:0.3;cursor:default">${d}</div>`;
+    } else {
+      html += `<div class="day-cell" onclick="selectDay(this)">${d}</div>`;
+    }
+  }
+  grid.innerHTML = html;
+}
+// Init calendar when book tab is opened
+const _origNav = window.nav || function(){};
+
 function confirmBooking() {
-  showToast('✓ Session booked! Check your email for confirmation.');
+  const selectedDay  = document.querySelector('.day-cell.selected');
+  const selectedTime = document.querySelector('.time-chip.selected');
+  const service      = document.querySelector('.service-option.selected .name');
+  if(!selectedDay)  { showToast('Please select a date.'); return; }
+  if(!selectedTime) { showToast('Please select a time.'); return; }
+  showToast('✓ Session request sent! We\'ll confirm your booking shortly.');
   nav('schedule', document.querySelectorAll('.nav-item')[0]);
 }
 
@@ -885,19 +916,25 @@ function saveToast(msg='Changes saved!') { showToast('✓ ' + msg); }
       if (snap.exists()) {
         clientProfile = snap.data();
 
-        // Populate profile tab fields
-        const phoneField  = document.getElementById('profile-phone-field');
-        const seniorField = document.querySelector('#view-profile input[placeholder="e.g. Margaret Reynolds"]') ||
-                            document.querySelector('#view-profile .settings-card:nth-child(3) input');
+        // Split displayName into first/last
+        const nameParts = (clientProfile.displayName || displayName).split(' ');
+        const firstName = nameParts[0] || '';
+        const lastName  = nameParts.slice(1).join(' ') || '';
 
-        if (phoneField && clientProfile.phone)      phoneField.value = clientProfile.phone;
+        // Populate contact info fields
+        const f = (id, val) => { const el = document.getElementById(id); if(el && val) el.value = val; };
+        f('profile-first',        firstName);
+        f('profile-last',         lastName);
+        f('profile-email-field',  clientProfile.email || user.email);
+        f('profile-phone-field',  clientProfile.phone);
+        f('profile-senior-name',  clientProfile.seniorName);
+        f('profile-senior-age',   clientProfile.seniorAge);
 
-        // Senior name — find the input in Senior Client Info card
-        document.querySelectorAll('#view-profile input').forEach(input => {
-          if (input.placeholder && input.placeholder.includes('Margaret')) {
-            input.value = clientProfile.seniorName || '';
-          }
-        });
+        // Update sidebar and page subtitle with senior name
+        const pageSub = document.getElementById('page-sub');
+        if (pageSub && clientProfile.seniorName) {
+          pageSub.textContent = `Sessions for ${clientProfile.seniorName}`;
+        }
 
         // Set notification toggles from saved prefs
         const msgTog     = document.getElementById('tog-message-email');
@@ -906,12 +943,6 @@ function saveToast(msg='Changes saved!') { showToast('✓ ' + msg); }
         if (msgTog     && clientProfile.emailOptIn        === false) msgTog.classList.remove('on');
         if (reportTog  && clientProfile.reportEmailOptIn  === false) reportTog.classList.remove('on');
         if (invoiceTog && clientProfile.invoiceEmailOptIn === false) invoiceTog.classList.remove('on');
-
-        // Update page subtitle with senior name if available
-        const pageSub = document.getElementById('page-sub');
-        if (pageSub && clientProfile.seniorName) {
-          pageSub.textContent = `Sessions for ${clientProfile.seniorName}`;
-        }
       }
     } catch (e) {
       console.warn('Profile load error:', e.code, e.message);
