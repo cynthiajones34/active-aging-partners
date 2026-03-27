@@ -628,22 +628,18 @@ function downloadCSV(type){
   // ── LOAD CLIENT LIST ──────────────────────────────────────
   async function loadClientList(){
     try{
-      console.log('loadClientList: starting, user=', currentUser?.email);
       const snap=await getDocs(collection(db,'clients'));
-      console.log('loadClientList: snap size=', snap.size, 'empty=', snap.empty);
       const threadList=document.getElementById('staff-thread-list');
       const clientGrid=document.getElementById('client-grid');
       const clientCount=document.getElementById('client-count');
       const bm=document.getElementById('bm-client');
       const rm=document.getElementById('rm-client');
-      console.log('loadClientList: elements found — threadList=', !!threadList, 'clientGrid=', !!clientGrid, 'bm=', !!bm);
 
       if(snap.empty){
         threadList.innerHTML='<div style="padding:16px;font-size:13px;color:var(--mid);text-align:center">No clients yet</div>';
         return;
       }
       const count=snap.docs.length;
-      console.log('loadClientList: building UI for', count, 'clients');
       if(clientCount)clientCount.textContent=`${count} client${count!==1?'s':''}`;
       document.getElementById('dash-clients').textContent=count;
       const colors=['#7a9e7e','#c4845a','#c9a84c','#5b9dab','#9b7ec8','#c87e9b'];
@@ -653,10 +649,8 @@ function downloadCSV(type){
         const c=d.data();
         clientMap[d.id]={name:c.displayName||c.email||'Client',email:c.email||'',phone:c.phone||''};
       });
-      console.log('loadClientList: clientMap built', Object.keys(clientMap).length, 'entries');
       // Expose globally so submitReport() can access client details
       window._clientMap = clientMap;
-      console.log('loadClientList: about to render thread list');
 
       threadList.innerHTML=snap.docs.map(d=>{
         const c=d.data();
@@ -667,7 +661,6 @@ function downloadCSV(type){
           <div style="flex:1;min-width:0"><div style="display:flex;justify-content:space-between"><div class="thr-name">${name}</div></div>
           <div class="thr-prev" id="prev-${d.id}">Click to load messages</div></div></div>`;
       }).join('');
-      console.log('loadClientList: thread list rendered, innerHTML length=', threadList.innerHTML.length);
 
       if(clientGrid){
         clientGrid.innerHTML=snap.docs.map((d,i)=>{
