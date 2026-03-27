@@ -337,7 +337,7 @@ textarea.fi{resize:vertical;min-height:80px;line-height:1.5;}
         <div class="sc" style="margin-bottom:14px">
           <div class="sc-title">Staff Alerts</div>
           <div class="tog-row"><div><div class="tog-lbl">Morning briefing</div><div class="tog-sub">Daily email with today's sessions at 7am</div></div><div class="tog on" onclick="this.classList.toggle('on')"><div class="tok"></div></div></div>
-          <div class="tog-row"><div><div class="tog-lbl">Session reminder</div><div class="tog-sub">SMS 1 hour before each session starts</div></div><div class="tog on" onclick="this.classList.toggle('on')"><div class="tok"></div></div></div>
+          <div class="tog-row"><div><div class="tog-lbl">Session reminder</div><div class="tog-sub">Email 1 hour before each session starts</div></div><div class="tog on" onclick="this.classList.toggle('on')"><div class="tok"></div></div></div>
           <div class="tog-row"><div><div class="tog-lbl">New client message</div><div class="tog-sub">Email when a client sends a message</div></div><div class="tog on" onclick="this.classList.toggle('on')"><div class="tok"></div></div></div>
         </div>
         <div class="sc" style="margin-bottom:14px">
@@ -566,7 +566,8 @@ function downloadCSV(type){
   const functions = getFunctions(app);
 
   // Expose Stripe invoice function globally so submitReport() can call it
-  const _createStripeInvoice = httpsCallable(functions, 'createStripeInvoice');
+  const _createStripeInvoice    = httpsCallable(functions, 'createStripeInvoice');
+  const _sendEmailNotification  = httpsCallable(functions, 'sendEmailNotification');
   window.createInvoice = async function(data) {
     try {
       showToast('⏳ Creating invoice…');
@@ -927,6 +928,17 @@ function downloadCSV(type){
         senderRole:'staff',type:'chat',createdAt:serverTimestamp(),
       });
       await loadThreadMessages(activeClientUid);
+      // Email notification to client
+      const client=clientMap[activeClientUid]||{};
+      if(client.email){
+        _sendEmailNotification({
+          to:client.email, toName:client.name,
+          subject:'New message from Active Aging Partners',
+          type:'message',
+          bodyText:`You have a new message from your companion:\n\n"${text}"\n\nLog in to your portal to reply.`,
+          emailOptIn:client.emailOptIn,
+        }).catch(e=>console.warn('Client notification failed:',e));
+      }
     }catch(err){console.error(err);showToast('Message failed to send.');}
     finally{input.disabled=false;input.focus();}
   }
@@ -938,8 +950,19 @@ function downloadCSV(type){
   // ── REPORT / BOOKING / REMINDER HELPERS ───────────────────
   window.sendReportToThread=async function(uid,text){
     if(!uid||!text)return;
-    try{await addDoc(collection(db,'clients',uid,'messages'),{text,senderUid:currentUser?.uid||'staff',senderName:currentUser?.displayName||'Staff',senderRole:'staff',type:'report',createdAt:serverTimestamp()});}
-    catch(e){console.error(e);}
+    try{
+      await addDoc(collection(db,'clients',uid,'messages'),{text,senderUid:currentUser?.uid||'staff',senderName:currentUser?.displayName||'Staff',senderRole:'staff',type:'report',createdAt:serverTimestamp()});
+      // Email report to client
+      const client=clientMap[uid]||{};
+      if(client.email){
+        _sendEmailNotification({
+          to:client.email, toName:client.name,
+          subject:'Your session report is ready — Active Aging Partners',
+          type:'report', bodyText:text,
+          emailOptIn:client.reportEmailOptIn??client.emailOptIn,
+        }).catch(e=>console.warn('Report email failed:',e));
+      }
+    }catch(e){console.error(e);}
   };
   window.sendBookingConfirmation=async function(uid,text){
     if(!uid||!text)return;
