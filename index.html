@@ -526,12 +526,14 @@ footer { background: var(--charcoal); padding: 60px 80px 30px; }
 
   // ---- SHARED SIGNUP HELPER ----
   async function doSignup(displayName, email, password, profileData = {}) {
+    console.log('doSignup: starting for', email);
     const result = await createUserWithEmailAndPassword(auth, email, password);
-    const user   = result.user;
+    console.log('doSignup: account created, uid=', result.user.uid);
+    const user = result.user;
     await updateProfile(user, { displayName });
+    console.log('doSignup: profile updated');
 
     // Save full profile to Firestore using REST API directly
-    // This bypasses the WebSocket/Listen channel CORS issue on GitHub Pages
     const profileDoc = {
       uid:               user.uid,
       displayName,
@@ -546,7 +548,6 @@ footer { background: var(--charcoal); padding: 60px 80px 30px; }
       status:            'active',
     };
 
-    // Convert to Firestore REST format
     function toFirestoreValue(val) {
       if (typeof val === 'string')  return { stringValue: val };
       if (typeof val === 'boolean') return { booleanValue: val };
@@ -556,12 +557,13 @@ footer { background: var(--charcoal); padding: 60px 80px 30px; }
     }
     const fields = {};
     Object.entries(profileDoc).forEach(([k, v]) => { fields[k] = toFirestoreValue(v); });
-    // Add createdAt as timestamp
     fields.createdAt = { timestampValue: new Date().toISOString() };
 
-    const idToken = await user.getIdToken();
-    const url = `https://firestore.googleapis.com/v1/projects/active-aging-partners/databases/(default)/documents/clients/${user.uid}`;
+    console.log('doSignup: getting ID token');
+    const idToken = await user.getIdToken(true); // force refresh
+    console.log('doSignup: got token, firing REST PATCH');
 
+    const url = `https://firestore.googleapis.com/v1/projects/active-aging-partners/databases/(default)/documents/clients/${user.uid}`;
     let saved = false;
     for (let attempt = 1; attempt <= 3; attempt++) {
       try {
@@ -573,24 +575,22 @@ footer { background: var(--charcoal); padding: 60px 80px 30px; }
           },
           body: JSON.stringify({ fields }),
         });
+        const resBody = await res.json();
+        console.log(`doSignup: REST attempt ${attempt} — status ${res.status}`, JSON.stringify(resBody).substring(0, 200));
         if (res.ok) {
           saved = true;
-          console.log('Firestore profile saved via REST on attempt', attempt);
           break;
-        } else {
-          const err = await res.json();
-          console.warn(`REST attempt ${attempt} failed:`, res.status, JSON.stringify(err));
         }
       } catch (fetchErr) {
-        console.warn(`REST attempt ${attempt} network error:`, fetchErr.message);
+        console.warn(`doSignup: REST attempt ${attempt} network error:`, fetchErr.message);
       }
       if (attempt < 3) await new Promise(r => setTimeout(r, attempt * 1000));
     }
     if (!saved) {
-      console.error('Firestore profile could not be saved after 3 attempts');
+      console.error('doSignup: Firestore profile could not be saved after 3 attempts');
     }
 
-    // Verification email sent from verify-email.html on arrival
+    console.log('doSignup: complete, saved=', saved);
     return user;
   }
 
@@ -643,10 +643,11 @@ footer { background: var(--charcoal); padding: 60px 80px 30px; }
         role, phone, seniorName, smsOptIn, emailOptIn
       });
       showToast('🌿 Welcome! Check your email to verify your account.');
-      setTimeout(() => { window.location.href = 'verify-email.html'; }, 1000);
+      setTimeout(() => { window.location.href = 'verify-email.html'; }, 2000);
     } catch (err) {
       setLoading(btn, false);
-      showError(errorEl, friendlyError(err.code));
+      console.error('fullSignup error:', err.code, err.message, err);
+      showError(errorEl, friendlyError(err.code) + ' (' + (err.code || err.message) + ')');
     }
   };
 
@@ -777,5 +778,3 @@ footer { background: var(--charcoal); padding: 60px 80px 30px; }
 </script>
 </body>
 </html>
-
-
