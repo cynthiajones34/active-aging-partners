@@ -610,7 +610,7 @@ footer { background: var(--charcoal); padding: 60px 80px 30px; }
     try {
       await doSignup(name, email, password);
       showToast('🌿 Account created! Check your email to verify.');
-      setTimeout(() => { window.location.href = 'verify-email.html'; }, 1000);
+      setTimeout(() => { window.location.href = 'verify-email.html'; }, 8000);
     } catch (err) {
       setLoading(btn, false);
       showError(errorEl, friendlyError(err.code));
@@ -643,7 +643,7 @@ footer { background: var(--charcoal); padding: 60px 80px 30px; }
         role, phone, seniorName, smsOptIn, emailOptIn
       });
       showToast('🌿 Welcome! Check your email to verify your account.');
-      setTimeout(() => { window.location.href = 'verify-email.html'; }, 2000);
+      setTimeout(() => { window.location.href = 'verify-email.html'; }, 8000);
     } catch (err) {
       setLoading(btn, false);
       console.error('fullSignup error:', err.code, err.message, err);
