@@ -397,7 +397,7 @@ body { font-family:'Jost',sans-serif; background:var(--cream); color:var(--charc
           </div>
         </div>
         <div style="margin-top:14px;background:rgba(45,74,50,0.06);border-radius:12px;padding:14px 16px;border-left:3px solid var(--sage);font-size:13px;color:var(--mid)">
-          📲 You'll receive an SMS reminder 24 hours before each session and an email reminder 2 hours before.
+          📧 You'll receive an email reminder before each session.
         </div>
       </div>
 
@@ -657,59 +657,20 @@ body { font-family:'Jost',sans-serif; background:var(--cream); color:var(--charc
       <div class="view" id="view-notifications">
         <div style="max-width:660px">
           <div class="settings-card" style="margin-bottom:16px">
-            <div class="settings-title">Session Reminders</div>
-            <div class="toggle-row">
-              <div>
-                <div class="toggle-label">Email Reminders</div>
-                <div class="toggle-sub">Receive an email 2 hours before each session</div>
-              </div>
-              <div class="toggle on" onclick="this.classList.toggle('on')"><div class="toggle-knob"></div></div>
-            </div>
-            <div class="toggle-row">
-              <div>
-                <div class="toggle-label">SMS Reminders</div>
-                <div class="toggle-sub">Receive a text message 24 hours before each session</div>
-              </div>
-              <div class="toggle on" onclick="this.classList.toggle('on')"><div class="toggle-knob"></div></div>
-            </div>
-            <div class="toggle-row">
-              <div>
-                <div class="toggle-label">Day-of Reminder</div>
-                <div class="toggle-sub">Reminder text 1 hour before session starts</div>
-              </div>
-              <div class="toggle on" onclick="this.classList.toggle('on')"><div class="toggle-knob"></div></div>
-            </div>
-          </div>
-
-          <div class="settings-card" style="margin-bottom:16px">
             <div class="settings-title">Messages & Reports</div>
             <div class="toggle-row">
               <div>
                 <div class="toggle-label">New Message Email</div>
-                <div class="toggle-sub">Email notification when your companion sends a message</div>
+                <div class="toggle-sub">Email notification when your companion sends you a message</div>
               </div>
-              <div class="toggle on" onclick="this.classList.toggle('on')"><div class="toggle-knob"></div></div>
-            </div>
-            <div class="toggle-row">
-              <div>
-                <div class="toggle-label">New Message SMS</div>
-                <div class="toggle-sub">Text notification when a new message arrives</div>
-              </div>
-              <div class="toggle" onclick="this.classList.toggle('on')"><div class="toggle-knob"></div></div>
+              <div class="toggle on" id="tog-message-email" onclick="this.classList.toggle('on')"><div class="toggle-knob"></div></div>
             </div>
             <div class="toggle-row">
               <div>
                 <div class="toggle-label">Session Report Email</div>
-                <div class="toggle-sub">Receive full session report in your inbox after each visit</div>
+                <div class="toggle-sub">Receive the full session report in your inbox after each visit</div>
               </div>
-              <div class="toggle on" onclick="this.classList.toggle('on')"><div class="toggle-knob"></div></div>
-            </div>
-            <div class="toggle-row">
-              <div>
-                <div class="toggle-label">Session Report SMS</div>
-                <div class="toggle-sub">Brief report summary via text message</div>
-              </div>
-              <div class="toggle on" onclick="this.classList.toggle('on')"><div class="toggle-knob"></div></div>
+              <div class="toggle on" id="tog-report-email" onclick="this.classList.toggle('on')"><div class="toggle-knob"></div></div>
             </div>
           </div>
 
@@ -718,25 +679,18 @@ body { font-family:'Jost',sans-serif; background:var(--cream); color:var(--charc
             <div class="toggle-row">
               <div>
                 <div class="toggle-label">Invoice Email</div>
-                <div class="toggle-sub">Email when a new invoice is generated</div>
+                <div class="toggle-sub">Email when a new invoice is generated after your session</div>
               </div>
-              <div class="toggle on" onclick="this.classList.toggle('on')"><div class="toggle-knob"></div></div>
-            </div>
-            <div class="toggle-row">
-              <div>
-                <div class="toggle-label">Payment Confirmation</div>
-                <div class="toggle-sub">Confirmation when a payment is processed</div>
-              </div>
-              <div class="toggle on" onclick="this.classList.toggle('on')"><div class="toggle-knob"></div></div>
+              <div class="toggle on" id="tog-invoice-email" onclick="this.classList.toggle('on')"><div class="toggle-knob"></div></div>
             </div>
           </div>
 
-          <div style="display:flex;align-items:center;gap:12px;background:rgba(45,74,50,0.06);border-radius:12px;padding:14px 16px">
-            <span style="font-size:20px">📱</span>
-            <div style="font-size:12px;color:var(--mid)">SMS messages sent to your registered phone number · <a href="#" onclick="nav('profile',null)" style="color:var(--forest)">Update number</a></div>
+          <div style="display:flex;align-items:center;gap:12px;background:rgba(45,74,50,0.06);border-radius:12px;padding:14px 16px;margin-bottom:20px">
+            <span style="font-size:20px">📧</span>
+            <div style="font-size:12px;color:var(--mid)">Notifications sent to your registered email address · <a href="#" onclick="nav('profile',null)" style="color:var(--forest)">Update email</a></div>
           </div>
 
-          <button class="btn btn-primary" style="margin-top:20px" onclick="saveToast('Notification preferences saved!')">Save Preferences</button>
+          <button class="btn btn-primary" onclick="saveNotificationPrefs()">Save Preferences</button>
         </div>
       </div>
 
@@ -896,8 +850,10 @@ function saveToast(msg='Changes saved!') { showToast('✓ ' + msg); }
                               from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
   import {
     getFirestore, collection, addDoc, query,
-    orderBy, getDocs, serverTimestamp, doc, getDoc
+    orderBy, getDocs, serverTimestamp, doc, getDoc, updateDoc
   }                           from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+  import { getFunctions, httpsCallable }
+                              from "https://www.gstatic.com/firebasejs/10.12.0/firebase-functions.js";
 
   const firebaseConfig = {
     apiKey:            "AIzaSyAuXMMnVjij0x1X5sQ5Jm1NuJUvquwDb0k",
@@ -908,11 +864,15 @@ function saveToast(msg='Changes saved!') { showToast('✓ ' + msg); }
     appId:             "1:239822066888:web:8599d14fce0388d510c1fd"
   };
 
-  const app  = initializeApp(firebaseConfig);
-  const auth = getAuth(app);
-  const db   = getFirestore(app);
+  const app       = initializeApp(firebaseConfig);
+  const auth      = getAuth(app);
+  const db        = getFirestore(app);
+  const functions = getFunctions(app);
 
-  let currentUser = null;
+  const _sendEmailNotification = httpsCallable(functions, 'sendEmailNotification');
+
+  let currentUser    = null;
+  let clientProfile  = {};  // stores emailOptIn and other prefs
 
   // ── AUTH GUARD ────────────────────────────────────────────
   onAuthStateChanged(auth, async (user) => {
@@ -937,15 +897,40 @@ function saveToast(msg='Changes saved!') { showToast('✓ ' + msg); }
     try {
       const snap = await getDoc(doc(db, 'clients', user.uid));
       if (snap.exists()) {
-        const data = snap.data();
+        clientProfile = snap.data();
         const phoneField = document.getElementById('profile-phone-field');
-        if (phoneField && data.phone) phoneField.value = data.phone;
+        if (phoneField && clientProfile.phone) phoneField.value = clientProfile.phone;
+        // Set notification toggles from saved prefs
+        const msgTog     = document.getElementById('tog-message-email');
+        const reportTog  = document.getElementById('tog-report-email');
+        const invoiceTog = document.getElementById('tog-invoice-email');
+        if (msgTog     && clientProfile.emailOptIn === false) msgTog.classList.remove('on');
+        if (reportTog  && clientProfile.reportEmailOptIn === false) reportTog.classList.remove('on');
+        if (invoiceTog && clientProfile.invoiceEmailOptIn === false) invoiceTog.classList.remove('on');
       }
     } catch (e) { /* profile not yet created or Firestore not enabled */ }
 
     // Load messages on first visit to messages tab
     setupMessaging(user.uid, displayName);
   });
+
+  // ── SAVE NOTIFICATION PREFERENCES ────────────────────────
+  window.saveNotificationPrefs = async function() {
+    if (!currentUser) return;
+    const emailOptIn        = document.getElementById('tog-message-email')?.classList.contains('on') ?? true;
+    const reportEmailOptIn  = document.getElementById('tog-report-email')?.classList.contains('on') ?? true;
+    const invoiceEmailOptIn = document.getElementById('tog-invoice-email')?.classList.contains('on') ?? true;
+    try {
+      await updateDoc(doc(db, 'clients', currentUser.uid), {
+        emailOptIn, reportEmailOptIn, invoiceEmailOptIn
+      });
+      clientProfile = { ...clientProfile, emailOptIn, reportEmailOptIn, invoiceEmailOptIn };
+      showToast('✓ Notification preferences saved!');
+    } catch (err) {
+      console.error('Save prefs error:', err);
+      showToast('⚠️ Could not save preferences.');
+    }
+  };
 
   // ── LOGOUT ────────────────────────────────────────────────
   window.doLogout = async function() {
@@ -1010,6 +995,17 @@ function saveToast(msg='Changes saved!') { showToast('✓ ' + msg); }
           createdAt:  serverTimestamp(),
         });
         await loadMessages(uid, msgCol);
+
+        // Notify staff of new client message
+        _sendEmailNotification({
+          to:       'cynthia@activeagingpartners.com',
+          toName:   'Cynthia',
+          subject:  `New message from ${displayName}`,
+          type:     'client_message',
+          bodyText: `${displayName} sent you a message:\n\n"${text}"\n\nLog in to the staff dashboard to reply.`,
+          clientName: displayName,
+        }).catch(err => console.warn('Staff notification failed:', err));
+
       } catch (err) {
         console.error('Send failed:', err);
         showToast('Message failed to send. Please try again.');
