@@ -530,8 +530,8 @@ footer { background: var(--charcoal); padding: 60px 80px 30px; }
     const user   = result.user;
     await updateProfile(user, { displayName });
 
-    // Save full profile to Firestore — retry up to 3 times
-    // (auth token propagation can take a moment after account creation)
+    // Save full profile to Firestore using REST API directly
+    // This bypasses the WebSocket/Listen channel CORS issue on GitHub Pages
     const profileDoc = {
       uid:               user.uid,
       displayName,
@@ -544,22 +544,47 @@ footer { background: var(--charcoal); padding: 60px 80px 30px; }
       reportEmailOptIn:  true,
       invoiceEmailOptIn: true,
       status:            'active',
-      createdAt:         serverTimestamp(),
     };
+
+    // Convert to Firestore REST format
+    function toFirestoreValue(val) {
+      if (typeof val === 'string')  return { stringValue: val };
+      if (typeof val === 'boolean') return { booleanValue: val };
+      if (typeof val === 'number')  return { integerValue: String(val) };
+      if (val === null)             return { nullValue: null };
+      return { stringValue: String(val) };
+    }
+    const fields = {};
+    Object.entries(profileDoc).forEach(([k, v]) => { fields[k] = toFirestoreValue(v); });
+    // Add createdAt as timestamp
+    fields.createdAt = { timestampValue: new Date().toISOString() };
+
+    const idToken = await user.getIdToken();
+    const url = `https://firestore.googleapis.com/v1/projects/active-aging-partners/databases/(default)/documents/clients/${user.uid}`;
 
     let saved = false;
     for (let attempt = 1; attempt <= 3; attempt++) {
       try {
-        await setDoc(doc(db, 'clients', user.uid), profileDoc);
-        saved = true;
-        console.log('Firestore profile saved on attempt', attempt);
-        break;
-      } catch (firestoreErr) {
-        console.warn(`Firestore setDoc attempt ${attempt} failed:`, firestoreErr.code, firestoreErr.message);
-        if (attempt < 3) {
-          await new Promise(resolve => setTimeout(resolve, attempt * 1000));
+        const res = await fetch(url, {
+          method:  'PATCH',
+          headers: {
+            'Content-Type':  'application/json',
+            'Authorization': `Bearer ${idToken}`,
+          },
+          body: JSON.stringify({ fields }),
+        });
+        if (res.ok) {
+          saved = true;
+          console.log('Firestore profile saved via REST on attempt', attempt);
+          break;
+        } else {
+          const err = await res.json();
+          console.warn(`REST attempt ${attempt} failed:`, res.status, JSON.stringify(err));
         }
+      } catch (fetchErr) {
+        console.warn(`REST attempt ${attempt} network error:`, fetchErr.message);
       }
+      if (attempt < 3) await new Promise(r => setTimeout(r, attempt * 1000));
     }
     if (!saved) {
       console.error('Firestore profile could not be saved after 3 attempts');
