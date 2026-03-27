@@ -419,7 +419,8 @@ footer { background: var(--charcoal); padding: 60px 80px 30px; }
     sendEmailVerification,
     sendPasswordResetEmail,
     onAuthStateChanged,
-    updateProfile
+    updateProfile,
+    reload
   } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
   import {
     getFirestore,
@@ -468,6 +469,13 @@ footer { background: var(--charcoal); padding: 60px 80px 30px; }
     }
   });
 
+  // Show success banner if redirected back from email verification
+  if (new URLSearchParams(window.location.search).get('verified') === 'true') {
+    setTimeout(() => showToast('✓ Email verified! Please log in to continue.'), 500);
+    // Clean up URL
+    window.history.replaceState({}, '', window.location.pathname);
+  }
+
   // ---- SHARED LOGIN LOGIC ----
   async function doLogin(email, password, btnEl, errorEl) {
     if (!email || !password) {
@@ -478,15 +486,18 @@ footer { background: var(--charcoal); padding: 60px 80px 30px; }
     hideError(errorEl);
     try {
       const result = await signInWithEmailAndPassword(auth, email, password);
-      const user = result.user;
+      const user   = result.user;
+      // Reload user to get latest emailVerified status from Firebase
+      await reload(user);
+      const freshUser = auth.currentUser;
       // Block unverified non-staff logins
-      if (!user.emailVerified && !isStaff(user.email)) {
+      if (!freshUser.emailVerified && !isStaff(freshUser.email)) {
         setLoading(btnEl, false);
         showError(errorEl, 'Please verify your email before logging in. Check your inbox for the verification link.');
         return;
       }
       showToast('✓ Signed in! Redirecting…');
-      setTimeout(() => { window.location.href = portalFor(user); }, 800);
+      setTimeout(() => { window.location.href = portalFor(freshUser); }, 800);
     } catch (err) {
       setLoading(btnEl, false);
       showError(errorEl, friendlyError(err.code));
@@ -518,6 +529,8 @@ footer { background: var(--charcoal); padding: 60px 80px 30px; }
     const result = await createUserWithEmailAndPassword(auth, email, password);
     const user   = result.user;
     await updateProfile(user, { displayName });
+    // Small delay to ensure Firebase has fully initialized the account
+    await new Promise(resolve => setTimeout(resolve, 500));
     await sendEmailVerification(user);
     // Save full profile to Firestore clients collection
     await setDoc(doc(db, 'clients', user.uid), {
