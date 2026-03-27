@@ -529,19 +529,42 @@ footer { background: var(--charcoal); padding: 60px 80px 30px; }
     const result = await createUserWithEmailAndPassword(auth, email, password);
     const user   = result.user;
     await updateProfile(user, { displayName });
-    // Save full profile to Firestore clients collection
-    await setDoc(doc(db, 'clients', user.uid), {
-      uid:         user.uid,
+
+    // Save full profile to Firestore — retry up to 3 times
+    // (auth token propagation can take a moment after account creation)
+    const profileDoc = {
+      uid:               user.uid,
       displayName,
       email,
-      role:        profileData.role        || 'client',
-      phone:       profileData.phone       || '',
-      seniorName:  profileData.seniorName  || '',
-      smsOptIn:    profileData.smsOptIn    ?? true,
-      emailOptIn:  profileData.emailOptIn  ?? true,
-      status:      'active',
-      createdAt:   serverTimestamp(),
-    });
+      role:              profileData.role        || 'client',
+      phone:             profileData.phone       || '',
+      seniorName:        profileData.seniorName  || '',
+      smsOptIn:          profileData.smsOptIn    ?? true,
+      emailOptIn:        profileData.emailOptIn  ?? true,
+      reportEmailOptIn:  true,
+      invoiceEmailOptIn: true,
+      status:            'active',
+      createdAt:         serverTimestamp(),
+    };
+
+    let saved = false;
+    for (let attempt = 1; attempt <= 3; attempt++) {
+      try {
+        await setDoc(doc(db, 'clients', user.uid), profileDoc);
+        saved = true;
+        console.log('Firestore profile saved on attempt', attempt);
+        break;
+      } catch (firestoreErr) {
+        console.warn(`Firestore setDoc attempt ${attempt} failed:`, firestoreErr.code, firestoreErr.message);
+        if (attempt < 3) {
+          await new Promise(resolve => setTimeout(resolve, attempt * 1000));
+        }
+      }
+    }
+    if (!saved) {
+      console.error('Firestore profile could not be saved after 3 attempts');
+    }
+
     // Verification email sent from verify-email.html on arrival
     return user;
   }
