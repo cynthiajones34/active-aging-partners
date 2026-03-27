@@ -529,9 +529,15 @@ footer { background: var(--charcoal); padding: 60px 80px 30px; }
     const result = await createUserWithEmailAndPassword(auth, email, password);
     const user   = result.user;
     await updateProfile(user, { displayName });
-    // Small delay to ensure Firebase has fully initialized the account
-    await new Promise(resolve => setTimeout(resolve, 500));
-    await sendEmailVerification(user);
+    // Wait for Firebase to fully initialize the new account before sending verification
+    await new Promise(resolve => setTimeout(resolve, 1500));
+    try {
+      await sendEmailVerification(user);
+      console.log('Verification email sent to:', email);
+    } catch (verifyErr) {
+      // Non-fatal — user can resend from verify-email.html
+      console.warn('Auto verification email failed:', verifyErr.code, verifyErr.message);
+    }
     // Save full profile to Firestore clients collection
     await setDoc(doc(db, 'clients', user.uid), {
       uid:         user.uid,
