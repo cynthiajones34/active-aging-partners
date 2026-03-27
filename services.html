@@ -598,7 +598,7 @@ footer { background: var(--charcoal); padding: 40px 80px; }
 
   const app  = initializeApp(firebaseConfig);
   const auth = getAuth(app);
-  const db   = getFirestore(app);
+  const db   = initializeFirestore(app, { experimentalAutoDetectLongPolling: true });
 
   window.servicesSignup = async function() {
     const first    = document.getElementById('sv-first').value.trim();
