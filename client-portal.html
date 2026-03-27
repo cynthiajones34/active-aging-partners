@@ -498,36 +498,22 @@ body { font-family:'Jost',sans-serif; background:var(--cream); color:var(--charc
           <div class="msg-list">
             <div class="msg-search"><input type="text" placeholder="🔍 Search…"></div>
             <div class="thread-items">
-              <div class="thread active" onclick="loadThread(this,'Your Companion','forest','YC',staffMsgs)">
-                <div class="thread-av" style="background:var(--forest)">YC</div>
+              <div class="thread active" id="main-thread">
+                <div class="thread-av" style="background:var(--forest)">🌿</div>
                 <div style="flex:1;min-width:0">
-                  <div style="display:flex;justify-content:space-between"><div class="thread-name">Your Companion</div><div style="font-size:10px;color:var(--mid)">9:12am</div></div>
+                  <div style="display:flex;justify-content:space-between">
+                    <div class="thread-name">Active Aging Partners</div>
+                  </div>
                   <div class="thread-prev" id="thread-preview">Your message thread</div>
-                </div>
-                <div class="unread-dot"></div>
-              </div>
-              <div class="thread" onclick="loadThread(this,'Session Report','clay','SR',reportThread)">
-                <div class="thread-av" style="background:var(--clay)">📋</div>
-                <div style="flex:1;min-width:0">
-                  <div style="display:flex;justify-content:space-between"><div class="thread-name">Session Report</div><div style="font-size:10px;color:var(--mid)">Mar 1</div></div>
-                  <div class="thread-prev">Mar 1 · Morning Walk · Riverside Park</div>
-                </div>
-                <div class="unread-dot"></div>
-              </div>
-              <div class="thread" onclick="loadThread(this,'Billing & Payments','gold','BP',billingThread)">
-                <div class="thread-av" style="background:var(--gold)">💳</div>
-                <div style="flex:1;min-width:0">
-                  <div style="display:flex;justify-content:space-between"><div class="thread-name">Billing & Payments</div><div style="font-size:10px;color:var(--mid)">Feb 28</div></div>
-                  <div class="thread-prev">Invoice #1042 — $150 paid ✓</div>
                 </div>
               </div>
             </div>
           </div>
           <div class="chat-area">
             <div class="chat-header" id="chat-header">
-              <div class="thread-av" id="chat-av" style="background:var(--forest);width:34px;height:34px;font-size:11px">YC</div>
+              <div class="thread-av" id="chat-av" style="background:var(--forest);width:34px;height:34px;font-size:11px">🌿</div>
               <div>
-                <div style="font-weight:600;font-size:14px" id="chat-name">Your Companion</div>
+                <div style="font-weight:600;font-size:14px" id="chat-name">Active Aging Partners</div>
                 <div style="font-size:11px;color:var(--mid)">Active Aging Partners Staff</div>
               </div>
             </div>
@@ -898,17 +884,38 @@ function saveToast(msg='Changes saved!') { showToast('✓ ' + msg); }
       const snap = await getDoc(doc(db, 'clients', user.uid));
       if (snap.exists()) {
         clientProfile = snap.data();
-        const phoneField = document.getElementById('profile-phone-field');
-        if (phoneField && clientProfile.phone) phoneField.value = clientProfile.phone;
+
+        // Populate profile tab fields
+        const phoneField  = document.getElementById('profile-phone-field');
+        const seniorField = document.querySelector('#view-profile input[placeholder="e.g. Margaret Reynolds"]') ||
+                            document.querySelector('#view-profile .settings-card:nth-child(3) input');
+
+        if (phoneField && clientProfile.phone)      phoneField.value = clientProfile.phone;
+
+        // Senior name — find the input in Senior Client Info card
+        document.querySelectorAll('#view-profile input').forEach(input => {
+          if (input.placeholder && input.placeholder.includes('Margaret')) {
+            input.value = clientProfile.seniorName || '';
+          }
+        });
+
         // Set notification toggles from saved prefs
         const msgTog     = document.getElementById('tog-message-email');
         const reportTog  = document.getElementById('tog-report-email');
         const invoiceTog = document.getElementById('tog-invoice-email');
-        if (msgTog     && clientProfile.emailOptIn === false) msgTog.classList.remove('on');
-        if (reportTog  && clientProfile.reportEmailOptIn === false) reportTog.classList.remove('on');
+        if (msgTog     && clientProfile.emailOptIn        === false) msgTog.classList.remove('on');
+        if (reportTog  && clientProfile.reportEmailOptIn  === false) reportTog.classList.remove('on');
         if (invoiceTog && clientProfile.invoiceEmailOptIn === false) invoiceTog.classList.remove('on');
+
+        // Update page subtitle with senior name if available
+        const pageSub = document.getElementById('page-sub');
+        if (pageSub && clientProfile.seniorName) {
+          pageSub.textContent = `Sessions for ${clientProfile.seniorName}`;
+        }
       }
-    } catch (e) { /* profile not yet created or Firestore not enabled */ }
+    } catch (e) {
+      console.warn('Profile load error:', e.code, e.message);
+    }
 
     // Load messages on first visit to messages tab
     setupMessaging(user.uid, displayName);
