@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%232d4a32'/><text y='.9em' font-size='75' x='50%' text-anchor='middle' dominant-baseline='auto'>🌿</text></svg>">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Welcome — Active Aging Partners</title>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Jost:wght@300;400;500;600&display=swap" rel="stylesheet">
@@ -204,19 +205,15 @@ textarea.form-input { resize: vertical; min-height: 90px; line-height: 1.6; }
       </div>
     </div>
     <div class="form-card">
-      <div class="form-card-title">💬 SMS Notifications</div>
-      <div class="form-group">
-        <label class="form-label">Mobile Number for SMS</label>
-        <input type="tel" class="form-input" id="ob-phone" placeholder="(404) 555-0000">
-      </div>
+      <div class="form-card-title">📧 Email Notifications</div>
       <div class="toggle-list">
         <div class="toggle-row">
-          <div class="toggle-info"><div class="toggle-title">Session reminders</div><div class="toggle-sub">SMS 24 hrs and 1 hr before each session</div></div>
-          <div class="tog on" id="tog-sms-reminder" onclick="toggleTog(this)"><div class="tok"></div></div>
+          <div class="toggle-info"><div class="toggle-title">New message alerts</div><div class="toggle-sub">Email when your companion sends you a message</div></div>
+          <div class="tog on" id="tog-email-message" onclick="toggleTog(this)"><div class="tok"></div></div>
         </div>
         <div class="toggle-row">
-          <div class="toggle-info"><div class="toggle-title">New message alerts</div><div class="toggle-sub">SMS when staff sends you a message</div></div>
-          <div class="tog on" id="tog-sms-message" onclick="toggleTog(this)"><div class="tok"></div></div>
+          <div class="toggle-info"><div class="toggle-title">Session reports</div><div class="toggle-sub">Full report emailed after every visit</div></div>
+          <div class="tog on" id="tog-email-report" onclick="toggleTog(this)"><div class="tok"></div></div>
         </div>
       </div>
     </div>
@@ -282,7 +279,41 @@ textarea.form-input { resize: vertical; min-height: 90px; line-height: 1.6; }
   onAuthStateChanged(auth, (user) => {
     if (!user) { window.location.href = 'index.html'; return; }
     // Guard: must have verified email to reach onboarding
-    if (!user.emailVerified) { window.location.href = 'verify-email.html'; }
+    if (!user.emailVerified) { window.location.href = 'verify-email.html'; return; }
+
+    // Wire up goToPortal to save data first
+    window.goToPortal = async function() {
+      const btn = document.getElementById('portal-btn');
+      if (btn) { btn.textContent = 'Saving…'; btn.disabled = true; }
+
+      try {
+        const seniorFirst = document.getElementById('ob-senior-first')?.value.trim() || '';
+        const seniorLast  = document.getElementById('ob-senior-last')?.value.trim()  || '';
+        const seniorAge   = document.getElementById('ob-senior-age')?.value.trim()   || '';
+        const seniorName  = [seniorFirst, seniorLast].filter(Boolean).join(' ');
+        const emailMsg    = document.getElementById('tog-email-message')?.classList.contains('on') ?? true;
+        const emailReport = document.getElementById('tog-email-report')?.classList.contains('on')  ?? true;
+        const emailInv    = document.getElementById('tog-email-invoice')?.classList.contains('on') ?? true;
+
+        const { getFirestore, doc, updateDoc } =
+          await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js');
+        const db = getFirestore(app);
+
+        await updateDoc(doc(db, 'clients', user.uid), {
+          seniorName,
+          seniorAge:         seniorAge ? parseInt(seniorAge) : '',
+          emailOptIn:        emailMsg,
+          reportEmailOptIn:  emailReport,
+          invoiceEmailOptIn: emailInv,
+          onboardingComplete: true,
+        });
+        console.log('Onboarding data saved');
+      } catch (err) {
+        console.warn('Onboarding save failed (non-fatal):', err.code, err.message);
+      }
+
+      window.location.href = 'client-portal.html';
+    };
   });
 </script>
 
