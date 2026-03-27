@@ -866,8 +866,8 @@ function saveToast(msg='Changes saved!') { showToast('✓ ' + msg); }
 
   const app       = initializeApp(firebaseConfig);
   const auth      = getAuth(app);
-  const db        = getFirestore(app);
-  const functions = getFunctions(app);
+  const db        = initializeFirestore(app, { experimentalAutoDetectLongPolling: true });
+  const functions = getFunctions(app, 'us-east1');
 
   const _sendEmailNotification = httpsCallable(functions, 'sendEmailNotification');
 
@@ -1140,5 +1140,3 @@ function saveToast(msg='Changes saved!') { showToast('✓ ' + msg); }
 </script>
 </body>
 </html>
-
-
