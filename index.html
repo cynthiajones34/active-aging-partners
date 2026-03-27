@@ -526,14 +526,12 @@ footer { background: var(--charcoal); padding: 60px 80px 30px; }
 
   // ---- SHARED SIGNUP HELPER ----
   async function doSignup(displayName, email, password, profileData = {}) {
-    console.log('doSignup: starting for', email);
     const result = await createUserWithEmailAndPassword(auth, email, password);
-    console.log('doSignup: account created, uid=', result.user.uid);
-    const user = result.user;
+    const user   = result.user;
     await updateProfile(user, { displayName });
-    console.log('doSignup: profile updated');
 
     // Save full profile to Firestore using REST API directly
+    // (bypasses WebSocket/Listen channel CORS issue on GitHub Pages)
     const profileDoc = {
       uid:               user.uid,
       displayName,
@@ -559,38 +557,27 @@ footer { background: var(--charcoal); padding: 60px 80px 30px; }
     Object.entries(profileDoc).forEach(([k, v]) => { fields[k] = toFirestoreValue(v); });
     fields.createdAt = { timestampValue: new Date().toISOString() };
 
-    console.log('doSignup: getting ID token');
-    const idToken = await user.getIdToken(); // no force refresh on new accounts
-    console.log('doSignup: got token, length=', idToken.length);
-
-    const url = `https://firestore.googleapis.com/v1/projects/active-aging-partners/databases/(default)/documents/clients/${user.uid}`;
-    let saved = false;
-    for (let attempt = 1; attempt <= 3; attempt++) {
-      try {
-        const res = await fetch(url, {
+    try {
+      const idToken = await user.getIdToken();
+      const res = await fetch(
+        `https://firestore.googleapis.com/v1/projects/active-aging-partners/databases/(default)/documents/clients/${user.uid}`,
+        {
           method:  'PATCH',
           headers: {
             'Content-Type':  'application/json',
             'Authorization': `Bearer ${idToken}`,
           },
           body: JSON.stringify({ fields }),
-        });
-        const resBody = await res.json();
-        console.log(`doSignup: REST attempt ${attempt} — status ${res.status}`, JSON.stringify(resBody).substring(0, 200));
-        if (res.ok) {
-          saved = true;
-          break;
         }
-      } catch (fetchErr) {
-        console.warn(`doSignup: REST attempt ${attempt} network error:`, fetchErr.message);
+      );
+      if (!res.ok) {
+        const err = await res.json();
+        console.warn('Profile save failed:', res.status, JSON.stringify(err));
       }
-      if (attempt < 3) await new Promise(r => setTimeout(r, attempt * 1000));
-    }
-    if (!saved) {
-      console.error('doSignup: Firestore profile could not be saved after 3 attempts');
+    } catch (err) {
+      console.warn('Profile save error:', err.message);
     }
 
-    console.log('doSignup: complete, saved=', saved);
     return user;
   }
 
@@ -610,7 +597,7 @@ footer { background: var(--charcoal); padding: 60px 80px 30px; }
     try {
       await doSignup(name, email, password);
       showToast('🌿 Account created! Check your email to verify.');
-      setTimeout(() => { window.location.href = 'verify-email.html'; }, 8000);
+      setTimeout(() => { window.location.href = 'verify-email.html'; }, 1500);
     } catch (err) {
       setLoading(btn, false);
       showError(errorEl, friendlyError(err.code));
@@ -643,11 +630,10 @@ footer { background: var(--charcoal); padding: 60px 80px 30px; }
         role, phone, seniorName, smsOptIn, emailOptIn
       });
       showToast('🌿 Welcome! Check your email to verify your account.');
-      setTimeout(() => { window.location.href = 'verify-email.html'; }, 8000);
+      setTimeout(() => { window.location.href = 'verify-email.html'; }, 1500);
     } catch (err) {
       setLoading(btn, false);
-      console.error('fullSignup error:', err.code, err.message, err);
-      showError(errorEl, friendlyError(err.code) + ' (' + (err.code || err.message) + ')');
+      showError(errorEl, friendlyError(err.code));
     }
   };
 
