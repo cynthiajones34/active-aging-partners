@@ -621,20 +621,38 @@ footer { background: var(--charcoal); padding: 40px 80px; }
       const result = await createUserWithEmailAndPassword(auth, email, password);
       const user   = result.user;
       await updateProfile(user, { displayName: `${first} ${last}` });
-      await sendEmailVerification(user);
-      // Save profile to Firestore
-      await setDoc(doc(db, 'clients', user.uid), {
-        uid:         user.uid,
-        displayName: `${first} ${last}`,
-        email,
-        role:        role || 'client',
-        phone:       '',
-        seniorName:  '',
-        smsOptIn,
-        emailOptIn:  true,
-        status:      'active',
-        createdAt:   serverTimestamp(),
-      });
+
+      // Save profile via REST API to bypass WebSocket/CORS issues
+      const fields = {
+        uid:               { stringValue: user.uid },
+        displayName:       { stringValue: `${first} ${last}` },
+        email:             { stringValue: email },
+        role:              { stringValue: role || 'client' },
+        phone:             { stringValue: '' },
+        seniorName:        { stringValue: '' },
+        smsOptIn:          { booleanValue: smsOptIn },
+        emailOptIn:        { booleanValue: true },
+        reportEmailOptIn:  { booleanValue: true },
+        invoiceEmailOptIn: { booleanValue: true },
+        status:            { stringValue: 'active' },
+        createdAt:         { timestampValue: new Date().toISOString() },
+      };
+      const idToken = await user.getIdToken();
+      const res = await fetch(
+        `https://firestore.googleapis.com/v1/projects/active-aging-partners/databases/(default)/documents/clients/${user.uid}`,
+        {
+          method: 'PATCH',
+          headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${idToken}` },
+          body: JSON.stringify({ fields }),
+        }
+      );
+      if (res.ok) {
+        console.log('Services signup: profile saved via REST');
+      } else {
+        const e = await res.json();
+        console.warn('Services signup: profile save failed', res.status, JSON.stringify(e));
+      }
+
       showToast('🌿 Welcome! Check your email to verify your account.');
       setTimeout(() => { window.location.href = 'verify-email.html'; }, 1000);
     } catch (err) {
