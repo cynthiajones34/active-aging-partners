@@ -560,8 +560,8 @@ footer { background: var(--charcoal); padding: 60px 80px 30px; }
     fields.createdAt = { timestampValue: new Date().toISOString() };
 
     console.log('doSignup: getting ID token');
-    const idToken = await user.getIdToken(true); // force refresh
-    console.log('doSignup: got token, firing REST PATCH');
+    const idToken = await user.getIdToken(); // no force refresh on new accounts
+    console.log('doSignup: got token, length=', idToken.length);
 
     const url = `https://firestore.googleapis.com/v1/projects/active-aging-partners/databases/(default)/documents/clients/${user.uid}`;
     let saved = false;
