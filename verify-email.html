@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%232d4a32'/><text y='.9em' font-size='75' x='50%' text-anchor='middle' dominant-baseline='auto'>🌿</text></svg>">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Check Your Email — Active Aging Partners</title>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Jost:wght@300;400;500;600&display=swap" rel="stylesheet">
@@ -161,8 +162,10 @@ body::before {
 
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-  import { getAuth, onAuthStateChanged, sendEmailVerification, reload }
-    from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+  import {
+    getAuth, onAuthStateChanged, sendEmailVerification,
+    reload, applyActionCode
+  } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
 
   const firebaseConfig = {
     apiKey: "AIzaSyAuXMMnVjij0x1X5sQ5Jm1NuJUvquwDb0k",
@@ -173,24 +176,70 @@ body::before {
     appId: "1:239822066888:web:8599d14fce0388d510c1fd"
   };
 
-  const app = initializeApp(firebaseConfig);
+  const app  = initializeApp(firebaseConfig);
   const auth = getAuth(app);
 
+  // ── Handle verification link click ───────────────────────
+  // When user clicks the link in their email, Firebase redirects
+  // to this page with ?mode=verifyEmail&oobCode=XXXX in the URL.
+  // We read the oobCode and apply it to complete verification.
+  const params  = new URLSearchParams(window.location.search);
+  const mode    = params.get('mode');
+  const oobCode = params.get('oobCode');
+
+  if (mode === 'verifyEmail' && oobCode) {
+    applyActionCode(auth, oobCode)
+      .then(() => {
+        showToast('✓ Email verified!');
+        const user = auth.currentUser;
+        if (user) {
+          // User is logged in — reload and go to onboarding
+          reload(user).then(() => {
+            setTimeout(() => { window.location.href = 'onboarding.html'; }, 1500);
+          });
+        } else {
+          // User is not logged in — show success and redirect to login
+          setTimeout(() => {
+            window.location.href = 'index.html?verified=true';
+          }, 2000);
+        }
+      })
+      .catch((err) => {
+        console.error('applyActionCode error:', err.code, err.message);
+        if (err.code === 'auth/invalid-action-code') {
+          showToast('⚠️ This link has expired. Please request a new one below.', true);
+        } else {
+          showToast('⚠️ Verification failed — please try again.', true);
+        }
+      });
+  }
+
+  // ── Auth state — populate email and check if already verified ──
   onAuthStateChanged(auth, (user) => {
-    if (!user) { window.location.href = 'index.html'; return; }
-    // Populate email display
-    document.getElementById('user-email').textContent = user.email;
-    document.getElementById('user-email-pill').textContent = user.email;
-    // If already verified, go straight to onboarding
-    if (user.emailVerified) { window.location.href = 'onboarding.html'; }
+    if (!user && !oobCode) {
+      // Not logged in and no verification code — send to login
+      window.location.href = 'index.html';
+      return;
+    }
+    if (user) {
+      const emailEl     = document.getElementById('user-email');
+      const emailPillEl = document.getElementById('user-email-pill');
+      if (emailEl)     emailEl.textContent     = user.email;
+      if (emailPillEl) emailPillEl.textContent = user.email;
+      // Already verified — skip straight to onboarding
+      if (user.emailVerified && !oobCode) {
+        window.location.href = 'onboarding.html';
+      }
+    }
   });
 
+  // ── Manual check button ───────────────────────────────────
   window.checkVerification = async function() {
-    const btn = document.getElementById('check-btn');
+    const btn  = document.getElementById('check-btn');
     const user = auth.currentUser;
     if (!user) { window.location.href = 'index.html'; return; }
     btn.innerHTML = '<span class="spinner"></span> Checking…';
-    btn.disabled = true;
+    btn.disabled  = true;
     try {
       await reload(user);
       if (auth.currentUser.emailVerified) {
@@ -198,19 +247,24 @@ body::before {
         setTimeout(() => { window.location.href = 'onboarding.html'; }, 1200);
       } else {
         btn.innerHTML = "I've verified my email →";
-        btn.disabled = false;
-        showToast("⚠️ Not verified yet — please click the link in your email.", true);
+        btn.disabled  = false;
+        showToast('⚠️ Not verified yet — please click the link in your email.', true);
       }
     } catch (err) {
       btn.innerHTML = "I've verified my email →";
-      btn.disabled = false;
+      btn.disabled  = false;
+      console.error('checkVerification error:', err);
     }
   };
 
+  // ── Resend button ─────────────────────────────────────────
   let lastResend = 0;
   window.resendEmail = async function() {
     const now = Date.now();
-    if (now - lastResend < 60000) { showToast('Please wait a minute before resending.', true); return; }
+    if (now - lastResend < 60000) {
+      showToast('Please wait a minute before resending.', true);
+      return;
+    }
     const user = auth.currentUser;
     if (!user) return;
     try {
@@ -224,7 +278,7 @@ body::before {
 
   window.showToast = function(msg, isError) {
     const t = document.getElementById('toast');
-    t.textContent = msg;
+    t.textContent    = msg;
     t.style.background = isError ? '#b03030' : 'var(--forest)';
     t.classList.add('show');
     setTimeout(() => t.classList.remove('show'), 3500);
