@@ -628,7 +628,9 @@ function downloadCSV(type){
   // ── LOAD CLIENT LIST ──────────────────────────────────────
   async function loadClientList(){
     try{
+      console.log('loadClientList: starting, user=', currentUser?.email);
       const snap=await getDocs(collection(db,'clients'));
+      console.log('loadClientList: snap size=', snap.size, 'empty=', snap.empty);
       const threadList=document.getElementById('staff-thread-list');
       const clientGrid=document.getElementById('client-grid');
       const clientCount=document.getElementById('client-count');
@@ -676,7 +678,9 @@ function downloadCSV(type){
       const opts=snap.docs.map(d=>`<option value="${d.id}">${clientMap[d.id].name}</option>`).join('');
       if(bm)bm.innerHTML='<option value="">Select client…</option>'+opts;
       if(rm)rm.innerHTML='<option value="">Select client…</option>'+opts;
-    }catch(err){console.error('loadClientList:',err);}
+    }catch(err){
+      console.error('loadClientList ERROR:', err.code, err.message, err);
+    }
   }
 
   // ── LOAD SCHEDULE ─────────────────────────────────────────
