@@ -423,7 +423,7 @@ footer { background: var(--charcoal); padding: 60px 80px 30px; }
     reload
   } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
   import {
-    getFirestore,
+    getFirestore, initializeFirestore,
     doc,
     setDoc,
     serverTimestamp
@@ -441,7 +441,7 @@ footer { background: var(--charcoal); padding: 60px 80px 30px; }
 
   const app  = initializeApp(firebaseConfig);
   const auth = getAuth(app);
-  const db   = getFirestore(app);
+  const db   = initializeFirestore(app, { experimentalAutoDetectLongPolling: true });
 
   // Staff email addresses — add yours here
   // Anyone NOT in this list is treated as a client
