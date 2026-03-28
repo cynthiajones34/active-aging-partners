@@ -458,7 +458,8 @@ body { font-family:'Jost',sans-serif; background:var(--cream); color:var(--charc
             </div>
           </div>
 
-          <button class="btn btn-primary" style="padding:13px 32px;font-size:14px" onclick="confirmBooking()">✓ Confirm Booking — $50</button>
+          <button class="btn btn-primary" style="padding:13px 32px;font-size:14px" onclick="confirmBooking()">✓ Send Booking Request — $50</button>
+          <div style="margin-top:12px;font-size:13px;color:var(--mid);text-align:center">We'll review your request and confirm via email within 24 hours.</div>
         </div>
       </div>
 
@@ -773,7 +774,7 @@ function confirmBooking() {
   const service      = document.querySelector('.service-option.selected .name');
   if(!selectedDay)  { showToast('Please select a date.'); return; }
   if(!selectedTime) { showToast('Please select a time.'); return; }
-  showToast('✓ Session request sent! We\'ll confirm your booking shortly.');
+  showToast('✓ Session request sent! We\'ll email you to confirm.');
   nav('schedule', document.querySelectorAll('.nav-item')[0]);
 }
 
@@ -910,46 +911,76 @@ function saveToast(msg='Changes saved!') { showToast('✓ ' + msg); }
     if (profileName)  profileName.textContent = displayName;
     if (profileEmail) profileEmail.value      = user.email;
 
-    // Load client profile from Firestore
+    // Load client profile via REST API (bypasses WebSocket CORS issue)
     try {
-      const snap = await getDoc(doc(db, 'clients', user.uid));
-      if (snap.exists()) {
-        clientProfile = snap.data();
+      const idToken = await user.getIdToken();
+      const res = await fetch(
+        `https://firestore.googleapis.com/v1/projects/active-aging-partners/databases/(default)/documents/clients/${user.uid}`,
+        { headers: { 'Authorization': `Bearer ${idToken}` } }
+      );
+      if (res.ok) {
+        const data = await res.json();
+        const get = (field) => {
+          const f = data.fields?.[field];
+          if (!f) return '';
+          return f.stringValue ?? f.booleanValue ?? f.integerValue ?? '';
+        };
+        clientProfile = {
+          displayName:       get('displayName'),
+          email:             get('email'),
+          phone:             get('phone'),
+          seniorName:        get('seniorName'),
+          seniorAge:         get('seniorAge'),
+          emailOptIn:        data.fields?.emailOptIn?.booleanValue,
+          reportEmailOptIn:  data.fields?.reportEmailOptIn?.booleanValue,
+          invoiceEmailOptIn: data.fields?.invoiceEmailOptIn?.booleanValue,
+        };
 
         // Split displayName into first/last
-        const nameParts = (clientProfile.displayName || displayName).split(' ');
-        const firstName = nameParts[0] || '';
-        const lastName  = nameParts.slice(1).join(' ') || '';
+        const dn = clientProfile.displayName || displayName;
+        const parts = dn.split(' ');
+        const f = (id, val) => { const el = document.getElementById(id); if(el && val !== undefined && val !== '') el.value = val; };
+        f('profile-first',       parts[0] || '');
+        f('profile-last',        parts.slice(1).join(' ') || '');
+        f('profile-email-field', clientProfile.email || user.email);
+        f('profile-phone-field', clientProfile.phone);
+        f('profile-senior-name', clientProfile.seniorName);
+        f('profile-senior-age',  clientProfile.seniorAge);
 
-        // Populate contact info fields
-        const f = (id, val) => { const el = document.getElementById(id); if(el && val) el.value = val; };
-        f('profile-first',        firstName);
-        f('profile-last',         lastName);
-        f('profile-email-field',  clientProfile.email || user.email);
-        f('profile-phone-field',  clientProfile.phone);
-        f('profile-senior-name',  clientProfile.seniorName);
-        f('profile-senior-age',   clientProfile.seniorAge);
+        // Update profile display name and role label
+        const pdn = document.getElementById('profile-display-name');
+        const prl = document.getElementById('profile-role-label');
+        if (pdn) pdn.textContent = dn;
+        if (prl) prl.textContent = clientProfile.seniorName
+          ? `Family contact for ${clientProfile.seniorName}`
+          : 'Client';
 
-        // Update sidebar and page subtitle with senior name
+        // Update sidebar name now that we have full profile
+        document.getElementById('sidebar-name').textContent = dn;
+
+        // Update page subtitle
         const pageSub = document.getElementById('page-sub');
         if (pageSub && clientProfile.seniorName) {
           pageSub.textContent = `Sessions for ${clientProfile.seniorName}`;
         }
 
-        // Set notification toggles from saved prefs
-        const msgTog     = document.getElementById('tog-message-email');
-        const reportTog  = document.getElementById('tog-report-email');
-        const invoiceTog = document.getElementById('tog-invoice-email');
-        if (msgTog     && clientProfile.emailOptIn        === false) msgTog.classList.remove('on');
-        if (reportTog  && clientProfile.reportEmailOptIn  === false) reportTog.classList.remove('on');
-        if (invoiceTog && clientProfile.invoiceEmailOptIn === false) invoiceTog.classList.remove('on');
+        // Set notification toggles
+        const togMsg     = document.getElementById('tog-message-email');
+        const togReport  = document.getElementById('tog-report-email');
+        const togInvoice = document.getElementById('tog-invoice-email');
+        if (togMsg     && clientProfile.emailOptIn        === false) togMsg.classList.remove('on');
+        if (togReport  && clientProfile.reportEmailOptIn  === false) togReport.classList.remove('on');
+        if (togInvoice && clientProfile.invoiceEmailOptIn === false) togInvoice.classList.remove('on');
       }
     } catch (e) {
-      console.warn('Profile load error:', e.code, e.message);
+      console.warn('Profile load error:', e.message);
     }
 
-    // Load messages on first visit to messages tab
-    setupMessaging(user.uid, displayName);
+    // Set up messaging (only on first load)
+    if (!window._messagingSetup) {
+      window._messagingSetup = true;
+      setupMessaging(user.uid, displayName);
+    }
   });
 
   // ── SAVE NOTIFICATION PREFERENCES ────────────────────────
@@ -1009,7 +1040,7 @@ function saveToast(msg='Changes saved!') { showToast('✓ ' + msg); }
       refreshBtn.className = 'btn btn-primary btn-sm';
       refreshBtn.title     = 'Refresh messages';
       refreshBtn.textContent = '↻';
-      refreshBtn.onclick   = () => loadMessages(uid, msgCol);
+      refreshBtn.onclick   = () => loadMessages(window._msgUid || uid, window._msgCol || msgCol);
       chatFooter.insertBefore(refreshBtn, chatFooter.firstChild);
     }
 
@@ -1061,8 +1092,11 @@ function saveToast(msg='Changes saved!') { showToast('✓ ' + msg); }
     const sendBtn = document.querySelector('.chat-footer .btn-primary');
     if (sendBtn) sendBtn.onclick = () => window._sendFirestoreMsg({key:'Enter'});
 
-    // Load messages immediately on setup
+    // Load messages immediately on first setup
     loadMessages(uid, msgCol);
+    // Store msgCol for refresh button
+    window._msgCol = msgCol;
+    window._msgUid = uid;
   }
 
   async function loadMessages(uid, msgCol) {
