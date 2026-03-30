@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%232d4a32'/><text y='.9em' font-size='75' x='50%' text-anchor='middle' dominant-baseline='auto'>🌿</text></svg>">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Page Not Found — Active Aging Partners</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Jost:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --forest: #2d4a32; --sage: #7a9e7e; --sage-light: #b8d4bb;
+  --cream: #f8f4ed; --warm: #fdf9f3; --clay: #c4845a;
+  --charcoal: #1e2820; --mid: #607060;
+}
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+  font-family: 'Jost', sans-serif;
+  background: var(--forest);
+  color: #fff;
+  min-height: 100vh;
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  position: relative; overflow: hidden;
+  text-align: center;
+  padding: 40px 24px;
+}
+
+/* Background */
+body::before {
+  content: '';
+  position: absolute; inset: 0;
+  background:
+    radial-gradient(ellipse at 20% 30%, rgba(122,158,126,0.2) 0%, transparent 55%),
+    radial-gradient(ellipse at 85% 75%, rgba(201,168,76,0.06) 0%, transparent 50%);
+}
+.dot-grid {
+  position: absolute; inset: 0;
+  background-image: radial-gradient(circle, rgba(255,255,255,0.05) 1px, transparent 1px);
+  background-size: 32px 32px;
+}
+
+/* Floating leaves */
+.leaf { position: absolute; opacity: 0.07; animation: drift linear infinite; pointer-events: none; }
+.leaf:nth-child(1) { top: 8%;  left: 6%;  font-size: 24px; animation-duration: 20s; }
+.leaf:nth-child(2) { top: 70%; left: 4%;  font-size: 32px; animation-duration: 25s; animation-delay: -8s; }
+.leaf:nth-child(3) { top: 15%; right: 6%; font-size: 18px; animation-duration: 17s; animation-delay: -4s; }
+.leaf:nth-child(4) { top: 80%; right: 5%; font-size: 26px; animation-duration: 22s; animation-delay: -12s; }
+.leaf:nth-child(5) { top: 42%; left: 2%;  font-size: 20px; animation-duration: 28s; animation-delay: -6s; }
+.leaf:nth-child(6) { top: 50%; right: 3%; font-size: 22px; animation-duration: 19s; animation-delay: -9s; }
+@keyframes drift { 0%,100% { transform: translateY(0) rotate(0deg); } 50% { transform: translateY(-22px) rotate(14deg); } }
+
+/* Content */
+.content {
+  position: relative; z-index: 10;
+  max-width: 560px;
+  opacity: 0;
+  animation: fadeUp 0.8s 0.2s cubic-bezier(0.16,1,0.3,1) forwards;
+}
+@keyframes fadeUp { from { opacity: 0; transform: translateY(28px); } to { opacity: 1; transform: none; } }
+
+/* Logo */
+.logo { display: inline-flex; align-items: center; gap: 10px; margin-bottom: 52px; text-decoration: none; }
+.logo-leaf { width: 36px; height: 36px; background: rgba(255,255,255,0.15); border-radius: 50% 50% 50% 10%; transform: rotate(-30deg); display: flex; align-items: center; justify-content: center; font-size: 16px; }
+.logo-text { font-family: 'Cormorant Garamond', serif; font-size: 20px; font-weight: 600; color: rgba(255,255,255,0.9); }
+
+/* 404 number */
+.four-oh-four {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(100px, 20vw, 160px);
+  font-weight: 700;
+  line-height: 1;
+  color: rgba(255,255,255,0.07);
+  margin-bottom: -20px;
+  letter-spacing: -4px;
+  display: block;
+}
+
+.icon-wrap {
+  width: 80px; height: 80px;
+  background: rgba(255,255,255,0.1);
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  margin: 0 auto 28px;
+  font-size: 36px;
+  animation: bob 3s ease-in-out infinite;
+}
+@keyframes bob { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-8px); } }
+
+.title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(32px, 5vw, 48px);
+  font-weight: 600; line-height: 1.15;
+  margin-bottom: 16px;
+}
+.title em { font-style: italic; color: var(--sage-light); }
+
+.subtitle {
+  font-size: 16px; line-height: 1.75;
+  color: rgba(255,255,255,0.55);
+  margin-bottom: 44px;
+}
+
+/* Quick links */
+.quick-links {
+  display: flex; flex-direction: column; gap: 12px;
+  margin-bottom: 36px;
+}
+.link-row {
+  display: flex; gap: 12px; justify-content: center; flex-wrap: wrap;
+}
+.btn { font-family: 'Jost', sans-serif; font-size: 14px; font-weight: 600; padding: 13px 28px; border-radius: 50px; border: none; cursor: pointer; letter-spacing: 0.03em; text-decoration: none; display: inline-flex; align-items: center; gap: 8px; transition: all 0.25s; }
+.btn-light { background: #fff; color: var(--forest); box-shadow: 0 4px 20px rgba(0,0,0,0.2); }
+.btn-light:hover { transform: translateY(-2px); box-shadow: 0 8px 28px rgba(0,0,0,0.25); }
+.btn-ghost { background: rgba(255,255,255,0.1); color: rgba(255,255,255,0.8); border: 1px solid rgba(255,255,255,0.2); }
+.btn-ghost:hover { background: rgba(255,255,255,0.18); color: #fff; transform: translateY(-1px); }
+
+/* Helpful links grid */
+.helpful {
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 20px;
+  padding: 28px;
+  margin-bottom: 32px;
+}
+.helpful-title {
+  font-size: 11px; letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.35);
+  margin-bottom: 18px;
+}
+.helpful-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+}
+.helpful-link {
+  display: flex; align-items: center; gap: 10px;
+  padding: 12px 14px;
+  background: rgba(255,255,255,0.05);
+  border-radius: 12px;
+  text-decoration: none;
+  transition: background 0.2s;
+}
+.helpful-link:hover { background: rgba(255,255,255,0.1); }
+.hl-icon { font-size: 18px; flex-shrink: 0; }
+.hl-label { font-size: 13px; font-weight: 600; color: rgba(255,255,255,0.75); }
+.hl-desc { font-size: 11px; color: rgba(255,255,255,0.35); margin-top: 1px; }
+
+/* Countdown */
+.countdown { font-size: 13px; color: rgba(255,255,255,0.3); }
+.countdown span { color: rgba(255,255,255,0.55); font-weight: 600; }
+</style>
+</head>
+<body>
+
+<div class="dot-grid"></div>
+<span class="leaf">🌿</span>
+<span class="leaf">🌱</span>
+<span class="leaf">🍃</span>
+<span class="leaf">🌿</span>
+<span class="leaf">🌱</span>
+<span class="leaf">🍃</span>
+
+<div class="content">
+  <a href="index.html" class="logo">
+    <div class="logo-leaf">🌿</div>
+    <div class="logo-text">Active Aging Partners</div>
+  </a>
+
+  <span class="four-oh-four">404</span>
+
+  <div class="icon-wrap">🗺️</div>
+
+  <h1 class="title">We've lost the <em>trail</em></h1>
+  <p class="subtitle">The page you're looking for doesn't exist or may have moved. Let's get you back on the right path.</p>
+
+  <div class="link-row" style="margin-bottom:28px">
+    <a href="index.html" class="btn btn-light">← Back to Home</a>
+    <a href="contact.html" class="btn btn-ghost">Contact Us</a>
+  </div>
+
+  <div class="helpful">
+    <div class="helpful-title">Where would you like to go?</div>
+    <div class="helpful-grid">
+      <a href="services.html" class="helpful-link">
+        <span class="hl-icon">🚶</span>
+        <div><div class="hl-label">Our Services</div><div class="hl-desc">Walking, appointments, errands</div></div>
+      </a>
+      <a href="about.html" class="helpful-link">
+        <span class="hl-icon">🌿</span>
+        <div><div class="hl-label">About Us</div><div class="hl-desc">Our mission and approach</div></div>
+      </a>
+      <a href="index.html#signup" class="helpful-link">
+        <span class="hl-icon">✨</span>
+        <div><div class="hl-label">Sign Up Free</div><div class="hl-desc">Create your account</div></div>
+      </a>
+      <a href="contact.html" class="helpful-link">
+        <span class="hl-icon">💬</span>
+        <div><div class="hl-label">Contact Us</div><div class="hl-desc">We respond within 24 hours</div></div>
+      </a>
+    </div>
+  </div>
+
+  <div class="countdown">Redirecting to home in <span id="timer">15</span> seconds</div>
+</div>
+
+<script>
+  let secs = 15;
+  const timer = document.getElementById('timer');
+  const interval = setInterval(() => {
+    secs--;
+    timer.textContent = secs;
+    if (secs <= 0) { clearInterval(interval); window.location.href = 'index.html'; }
+  }, 1000);
+</script>
+</body>
+</html>
