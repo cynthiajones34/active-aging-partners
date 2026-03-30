@@ -142,7 +142,7 @@ textarea.fi{resize:vertical;min-height:80px;line-height:1.5;}
   <div class="nav">
     <div class="nl">Overview</div>
     <div class="ni active" onclick="nav('dashboard',this)"><span class="ni-icon">📊</span> Dashboard</div>
-    <div class="ni" onclick="nav('schedule',this)"><span class="ni-icon">📅</span> Schedule</div>
+    <div class="ni" onclick="nav('schedule',this)"><span class="ni-icon">📅</span> Schedule <span class="nav-badge" id="pending-badge" style="display:none">0</span></div>
     <div class="ni" onclick="nav('clients',this)"><span class="ni-icon">👥</span> Clients</div>
     <div class="ni" onclick="nav('messages',this)"><span class="ni-icon">💬</span> Messages</div>
     <div class="nl">Business</div>
@@ -546,7 +546,7 @@ function downloadCSV(type){
                               from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
   import {
     getFirestore, initializeFirestore, collection, addDoc, query,
-    orderBy, getDocs, serverTimestamp, doc, getDoc, where
+    orderBy, getDocs, serverTimestamp, doc, getDoc, where, updateDoc
   }                           from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
   import { getFunctions, httpsCallable }
                               from "https://www.gstatic.com/firebasejs/10.12.0/firebase-functions.js";
@@ -683,58 +683,83 @@ function downloadCSV(type){
 
   // ── LOAD SCHEDULE ─────────────────────────────────────────
   async function loadSchedule(){
-    const schedView=document.getElementById('view-schedule');
-    const listEl=schedView?.querySelector('.schedule-list') ||
-                 (() => {
-                   const d=document.createElement('div');
-                   d.className='schedule-list';
-                   schedView?.querySelector('div:last-child')?.replaceWith(d);
-                   return d;
-                 })();
-
     try{
       const today=new Date();
       today.setHours(0,0,0,0);
-      const snap=await getDocs(query(
-        collection(db,'sessions'),
-        orderBy('date','asc')
-      ));
+      const todayStr=today.toISOString().split('T')[0];
 
-      if(snap.empty){
-        // Keep the existing empty state
-        return;
+      const snap=await getDocs(query(collection(db,'sessions'),orderBy('date','asc')));
+
+      const pending  =snap.docs.filter(d=>d.data().status==='pending');
+      const confirmed=snap.docs.filter(d=>d.data().status==='confirmed');
+
+      // Store pending sessions for approve/decline
+      window._pendingSessions={};
+      pending.forEach(d=>{window._pendingSessions[d.id]={...d.data(),_id:d.id};});
+
+      // Update pending badge in nav
+      const badge=document.getElementById('pending-badge');
+      if(badge){badge.textContent=pending.length;badge.style.display=pending.length?'inline':'none';}
+
+      let html='';
+
+      // ── Pending requests section
+      if(pending.length>0){
+        html+=`<div style="margin-bottom:16px;padding:16px;background:rgba(201,168,76,0.07);border-radius:14px;border:1px solid rgba(201,168,76,0.25)">
+          <div style="font-size:11px;font-weight:700;color:#7a5800;text-transform:uppercase;letter-spacing:0.08em;margin-bottom:12px">⏳ Booking Requests — ${pending.length} pending</div>
+          ${pending.map(d=>{
+            const s=d.data();
+            const clientName=clientMap[s.clientUid]?.name||s.clientName||'Client';
+            return `<div style="background:#fff;border-radius:10px;padding:14px 16px;margin-bottom:8px;border:1px solid rgba(0,0,0,0.06)">
+              <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:12px;flex-wrap:wrap">
+                <div>
+                  <div style="font-size:14px;font-weight:600">${clientName}</div>
+                  <div style="font-size:12px;color:var(--mid);margin-top:2px">${s.service||'Session'} · ${s.date} at ${s.time||'TBD'} · ${s.durationMinutes||60} min · $${s.cost||50}</div>
+                  ${s.notes?`<div style="font-size:12px;color:var(--mid);margin-top:3px;font-style:italic">${s.notes}</div>`:''}
+                </div>
+                <div style="display:flex;gap:8px;flex-shrink:0">
+                  <button class="btn btn-p btn-sm" onclick="approveSession('${d.id}')">✓ Approve</button>
+                  <button class="btn btn-ghost btn-sm" onclick="declineSession('${d.id}')">Decline</button>
+                </div>
+              </div>
+            </div>`;
+          }).join('')}
+        </div>`;
       }
 
-      // Build session list
-      const sessionCards=snap.docs.map(d=>{
-        const s=d.data();
-        const clientName=clientMap[s.clientUid]?.name||s.clientName||'Client';
-        const dateStr=s.date||'';
-        const timeStr=s.time||'';
-        const dur=s.durationMinutes||60;
-        const cost=Math.round(dur/60*50);
-        const isToday=dateStr===today.toISOString().split('T')[0];
-        return `<div style="background:#fff;border-radius:14px;padding:16px 18px;margin-bottom:10px;
-                            border:1px solid rgba(0,0,0,0.05);box-shadow:0 2px 8px var(--shadow);
-                            border-left:4px solid ${isToday?'var(--sage)':'rgba(0,0,0,0.08)'};">
-          <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px">
-            <div>
-              <div style="font-size:14px;font-weight:600">${clientName}</div>
-              <div style="font-size:12px;color:var(--mid);margin-top:2px">${s.service||'Session'} · ${dateStr} at ${timeStr} · ${dur} min · $${cost}</div>
-              ${s.notes?`<div style="font-size:12px;color:var(--mid);margin-top:4px;font-style:italic">${s.notes}</div>`:''}
+      // ── Confirmed sessions
+      if(confirmed.length>0){
+        html+=confirmed.map(d=>{
+          const s=d.data();
+          const clientName=clientMap[s.clientUid]?.name||s.clientName||'Client';
+          const dur=s.durationMinutes||60;
+          const cost=s.cost||Math.round(dur/60*50);
+          const isToday=s.date===todayStr;
+          return `<div style="background:#fff;border-radius:14px;padding:16px 18px;margin-bottom:10px;
+                              border:1px solid rgba(0,0,0,0.05);box-shadow:0 2px 8px var(--shadow);
+                              border-left:4px solid ${isToday?'var(--sage)':'rgba(0,0,0,0.08)'}">
+            <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px">
+              <div>
+                <div style="font-size:14px;font-weight:600">${clientName}</div>
+                <div style="font-size:12px;color:var(--mid);margin-top:2px">${s.service||'Session'} · ${s.date} at ${s.time||'TBD'} · ${dur} min · $${cost}</div>
+                ${s.notes?`<div style="font-size:12px;color:var(--mid);margin-top:4px;font-style:italic">${s.notes}</div>`:''}
+              </div>
+              <span style="background:rgba(45,74,50,0.09);color:var(--forest);padding:3px 10px;border-radius:20px;font-size:11px;font-weight:700">${isToday?'📅 Today':'Upcoming'}</span>
             </div>
-            <span style="background:rgba(45,74,50,0.09);color:var(--forest);padding:3px 10px;border-radius:20px;font-size:11px;font-weight:700">${isToday?'📅 Today':'Upcoming'}</span>
-          </div>
-        </div>`;
-      }).join('');
+          </div>`;
+        }).join('');
+      }
 
-      // Replace empty state with session list in schedule view
+      // Render into schedule view
       const schedContainer=document.querySelector('#view-schedule > div:last-child');
-      if(schedContainer) schedContainer.innerHTML=sessionCards;
+      if(schedContainer){
+        if(html) schedContainer.innerHTML=html;
+        // else keep the empty state
+      }
 
-      // Also populate today's sessions in the dashboard card
-      const todaySessions=snap.docs.filter(d=>d.data().date===today.toISOString().split('T')[0]);
-      const todayCard=document.getElementById('view-dashboard')?.querySelector('.card-body');
+      // Populate today's sessions in the dashboard card
+      const todaySessions=confirmed.filter(d=>d.data().date===todayStr);
+      const todayCard=document.querySelector('#view-dashboard .card-body');
       if(todayCard&&todaySessions.length>0){
         todayCard.innerHTML=todaySessions.map(d=>{
           const s=d.data();
@@ -750,6 +775,99 @@ function downloadCSV(type){
       console.error('loadSchedule:',err);
     }
   }
+
+  // ── APPROVE BOOKING REQUEST ────────────────────────────────
+  window.approveSession=async function(sessionId){
+    const s=window._pendingSessions?.[sessionId];
+    if(!s){showToast('Session not found.');return;}
+    try{
+      await updateDoc(doc(db,'sessions',sessionId),{
+        status:'confirmed',
+        confirmedBy:currentUser?.displayName||'Staff',
+        confirmedAt:serverTimestamp(),
+      });
+
+      // Calculate end time for confirmation message
+      const[h,m]=(s.time||'09:00').split(':').map(Number);
+      const endMins=h*60+m+(s.durationMinutes||60);
+      const endTime=`${String(Math.floor(endMins/60)%24).padStart(2,'0')}:${String(endMins%60).padStart(2,'0')}`;
+      const readableDate=new Date(s.date+'T12:00:00').toLocaleDateString('en-US',{weekday:'long',month:'long',day:'numeric',year:'numeric'});
+      const readableTime=new Date(`2000-01-01T${s.time||'09:00'}`).toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit'});
+      const readableEnd=new Date(`2000-01-01T${endTime}`).toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit'});
+
+      const confirmText=`BOOKING CONFIRMED ✓\n\nService: ${s.service}\nDate: ${readableDate}\nTime: ${readableTime} – ${readableEnd}\nDuration: ${s.durationMinutes||60} minutes\nCost: $${s.cost||50}${s.notes?'\n\nNotes: '+s.notes:''}`;
+
+      // Send confirmation to client message thread
+      await addDoc(collection(db,'clients',s.clientUid,'messages'),{
+        text:confirmText,
+        senderUid:currentUser?.uid||'staff',
+        senderName:currentUser?.displayName||'Staff',
+        senderRole:'staff',
+        type:'booking',
+        sessionId,
+        createdAt:serverTimestamp(),
+      });
+
+      // Fire Zapier → Google Calendar
+      const tzOffset=(()=>{
+        const jan=new Date(new Date().getFullYear(),0,1);
+        const jul=new Date(new Date().getFullYear(),6,1);
+        const isDST=new Date().getTimezoneOffset()<Math.max(jan.getTimezoneOffset(),jul.getTimezoneOffset());
+        return isDST?'-04:00':'-05:00';
+      })();
+      fetch('https://hooks.zapier.com/hooks/catch/26972834/un3sk3c/',{
+        method:'POST',
+        body:JSON.stringify({
+          title:`AAP: ${s.service} — ${s.clientName}`,
+          start:`${s.date}T${s.time||'09:00'}:00${tzOffset}`,
+          end:`${s.date}T${endTime}:00${tzOffset}`,
+          service:s.service,client_name:s.clientName,
+          client_email:s.clientEmail,
+          duration:`${s.durationMinutes||60} minutes`,
+          cost:`$${s.cost||50}`,notes:s.notes||'None',
+        }),
+      }).catch(err=>console.warn('Zapier error:',err));
+
+      // Email confirmation to client
+      _sendEmailNotification({
+        to:s.clientEmail,subject:`Session Confirmed — ${readableDate}`,
+        type:'booking_confirmed',bodyText:confirmText,clientName:s.clientName,
+      }).catch(err=>console.warn('Client email failed:',err));
+
+      showToast('✓ Session approved and client notified!');
+      await loadSchedule();
+    }catch(err){
+      console.error('approveSession error:',err);
+      showToast('⚠️ Could not approve session. Try again.');
+    }
+  };
+
+  // ── DECLINE BOOKING REQUEST ────────────────────────────────
+  window.declineSession=async function(sessionId){
+    const s=window._pendingSessions?.[sessionId];
+    if(!s){showToast('Session not found.');return;}
+    try{
+      await updateDoc(doc(db,'sessions',sessionId),{
+        status:'declined',
+        declinedBy:currentUser?.displayName||'Staff',
+        declinedAt:serverTimestamp(),
+      });
+
+      // Notify client in their message thread
+      await addDoc(collection(db,'clients',s.clientUid,'messages'),{
+        text:`Hi ${s.clientName?.split(' ')[0]||'there'}, unfortunately we're not able to accommodate your ${s.service} request for ${s.date}. Please reach out or use the booking tab to choose a different time — we'd love to find a time that works!`,
+        senderUid:currentUser?.uid||'staff',
+        senderName:currentUser?.displayName||'Staff',
+        senderRole:'staff',type:'chat',createdAt:serverTimestamp(),
+      });
+
+      showToast('Request declined. Client has been notified.');
+      await loadSchedule();
+    }catch(err){
+      console.error('declineSession error:',err);
+      showToast('⚠️ Could not decline session. Try again.');
+    }
+  };
 
   // ── CONFIRM BOOKING → FIRESTORE → GOOGLE CALENDAR VIA ZAPIER ──
   window.confirmBooking=async function(){

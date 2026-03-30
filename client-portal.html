@@ -340,7 +340,7 @@ body { font-family:'Jost',sans-serif; background:var(--cream); color:var(--charc
     </div>
     <div class="nav">
       <div class="nav-label">My Care</div>
-      <div class="nav-item active" onclick="nav('schedule',this)"><span class="nav-icon">📅</span> My Schedule</div>
+      <div class="nav-item active" onclick="nav('schedule',this); window.loadClientSchedule && window.loadClientSchedule()"><span class="nav-icon">📅</span> My Schedule</div>
       <div class="nav-item" onclick="nav('book',this)"><span class="nav-icon">➕</span> Book a Service</div>
 
       <div class="nav-label">Communication</div>
@@ -446,15 +446,15 @@ body { font-family:'Jost',sans-serif; background:var(--cream); color:var(--charc
           <div style="background:#fff;border-radius:14px;border:1px solid rgba(0,0,0,0.06);padding:22px;margin-bottom:16px">
             <div class="form-group" style="margin-bottom:12px">
               <label class="form-label">Duration</label>
-              <select class="form-select">
-                <option>1 hour — $50</option>
-                <option>1.5 hours — $75</option>
-                <option>2 hours — $100</option>
+              <select class="form-select" id="book-duration">
+                <option value="60">1 hour — $50</option>
+                <option value="90">1.5 hours — $75</option>
+                <option value="120">2 hours — $100</option>
               </select>
             </div>
             <div class="form-group" style="margin-bottom:0">
               <label class="form-label">Notes for your companion (optional)</label>
-              <textarea class="form-input" rows="2" placeholder="e.g. Prefers shaded routes. Has a knee brace on right knee."></textarea>
+              <textarea class="form-input" id="book-notes" rows="2" placeholder="e.g. Prefers shaded routes. Has a knee brace on right knee."></textarea>
             </div>
           </div>
 
@@ -763,15 +763,7 @@ function renderCalendar() {
   }
   grid.innerHTML = html;
 }
-function confirmBooking() {
-  const selectedDay  = document.querySelector('.day-cell.selected');
-  const selectedTime = document.querySelector('.time-chip.selected');
-  const service      = document.querySelector('.service-option.selected .name');
-  if(!selectedDay)  { showToast('Please select a date.'); return; }
-  if(!selectedTime) { showToast('Please select a time.'); return; }
-  showToast('✓ Session request sent! We\'ll email you to confirm.');
-  nav('schedule', document.querySelectorAll('.nav-item')[0]);
-}
+// confirmBooking is defined in the Firebase module below
 
 function showCancel(name) {
   document.getElementById('cancel-session-name').textContent = name;
@@ -863,7 +855,7 @@ function escapeHtml(str) {
   import { getAuth, onAuthStateChanged, signOut }
                               from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
   import {
-    initializeFirestore, collection, addDoc, query,
+    initializeFirestore, collection, addDoc, query, where,
     orderBy, getDocs, serverTimestamp, doc, setDoc, updateDoc
   }                           from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
   import { getFunctions, httpsCallable }
@@ -979,12 +971,144 @@ function escapeHtml(str) {
       console.warn('Profile load error:', e.message);
     }
 
+    // Load client's session schedule
+    loadClientSchedule();
+
     // Set up messaging (only on first load)
     if (!window._messagingSetup) {
       window._messagingSetup = true;
       setupMessaging(user.uid, displayName);
     }
   });
+
+  // ── CLIENT SCHEDULE ───────────────────────────────────────
+  async function loadClientSchedule() {
+    if (!currentUser) return;
+    const listEl = document.getElementById('schedule-list');
+    if (!listEl) return;
+
+    try {
+      const snap = await getDocs(query(
+        collection(db, 'sessions'),
+        where('clientUid', '==', currentUser.uid)
+      ));
+
+      const sessions = snap.docs
+        .map(d => ({ id: d.id, ...d.data() }))
+        .filter(s => s.status !== 'declined')
+        .sort((a, b) => (a.date + a.time).localeCompare(b.date + b.time));
+
+      if (sessions.length === 0) {
+        listEl.innerHTML = `
+          <div style="text-align:center;padding:48px 20px;background:#fff;border-radius:16px;border:1px solid rgba(0,0,0,0.06)">
+            <div style="font-size:40px;margin-bottom:14px">📅</div>
+            <div style="font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:600;margin-bottom:8px">No sessions booked yet</div>
+            <div style="font-size:14px;color:var(--mid);margin-bottom:20px">Use the Book a Service tab to schedule your first session.</div>
+            <button class="btn btn-primary" onclick="nav('book', document.querySelectorAll('.nav-item')[1])">Book a Session →</button>
+          </div>`;
+        return;
+      }
+
+      listEl.innerHTML = sessions.map(s => {
+        const isPending   = s.status === 'pending';
+        const dateObj     = new Date(s.date + 'T12:00:00');
+        const month       = dateObj.toLocaleString('en-US', { month: 'short' });
+        const day         = dateObj.getDate();
+        const readableDate = dateObj.toLocaleDateString('en-US', { weekday: 'short', month: 'long', day: 'numeric' });
+        const readableTime = s.time
+          ? new Date(`2000-01-01T${s.time}`).toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' })
+          : '';
+
+        const badge = isPending
+          ? `<span class="session-type-badge" style="background:rgba(201,168,76,0.15);color:#7a5800">⏳ Pending Approval</span>`
+          : `<span class="session-type-badge" style="background:rgba(45,74,50,0.1);color:var(--forest)">✓ Confirmed</span>`;
+
+        return `
+          <div class="session-card" style="opacity:${isPending ? '0.85' : '1'}">
+            <div class="session-date-block">
+              <div class="date-month">${month}</div>
+              <div class="date-day">${day}</div>
+            </div>
+            <div class="session-info">
+              <div class="session-title">${escapeHtml(s.service || 'Session')}</div>
+              <div class="session-meta">${readableDate}${readableTime ? ' · ' + readableTime : ''} · ${s.durationMinutes || 60} min · $${s.cost || 50}</div>
+              ${s.notes ? `<div style="font-size:12px;color:var(--mid);margin-top:3px;font-style:italic">${escapeHtml(s.notes)}</div>` : ''}
+              ${isPending ? `<div style="font-size:12px;color:#7a5800;margin-top:4px">We'll confirm your request within 24 hours.</div>` : ''}
+            </div>
+            ${badge}
+          </div>`;
+      }).join('');
+
+    } catch (err) {
+      console.error('loadClientSchedule error:', err);
+    }
+  }
+  window.loadClientSchedule = loadClientSchedule;
+
+  // ── CLIENT BOOKING REQUEST ────────────────────────────────
+  window.confirmBooking = async function() {
+    const selectedDay  = document.querySelector('.day-cell.selected');
+    const selectedTime = document.querySelector('.time-chip.selected');
+    if (!selectedDay)  { showToast('Please select a date.'); return; }
+    if (!selectedTime) { showToast('Please select a time.'); return; }
+    if (!currentUser)  return;
+
+    const service      = document.querySelector('.service-option.selected .name')?.textContent || 'Walking & Wellness';
+    const durationMins = parseInt(document.getElementById('book-duration')?.value) || 60;
+    const notes        = document.getElementById('book-notes')?.value.trim() || '';
+    const cost         = Math.round(durationMins / 60 * 50);
+
+    // Build date string from calendar state
+    const monthLabel = document.getElementById('cal-month-label').textContent.split(' — ')[0]; // "March 2026"
+    const [monthStr, yearStr] = monthLabel.split(' ');
+    const monthIndex = ['January','February','March','April','May','June','July','August','September','October','November','December'].indexOf(monthStr);
+    const dayNum = parseInt(selectedDay.textContent.trim());
+    const dateStr = `${yearStr}-${String(monthIndex + 1).padStart(2,'0')}-${String(dayNum).padStart(2,'0')}`;
+
+    // Build time string from selected chip ("9:00 AM" → "09:00")
+    const timeText = selectedTime.textContent.trim();
+    const timeParsed = new Date(`2000-01-01 ${timeText}`);
+    const timeStr = `${String(timeParsed.getHours()).padStart(2,'0')}:${String(timeParsed.getMinutes()).padStart(2,'0')}`;
+
+    const btn = document.querySelector('#view-book .btn-primary');
+    if (btn) { btn.textContent = 'Sending…'; btn.disabled = true; }
+
+    try {
+      await addDoc(collection(db, 'sessions'), {
+        clientUid:       currentUser.uid,
+        clientName:      currentUser.displayName || currentUser.email,
+        clientEmail:     currentUser.email,
+        service,
+        date:            dateStr,
+        time:            timeStr,
+        durationMinutes: durationMins,
+        cost,
+        notes,
+        status:          'pending',
+        bookedBy:        'client',
+        createdAt:       serverTimestamp(),
+      });
+
+      // Notify staff by email
+      _sendEmailNotification({
+        to:         'cynthia@activeagingpartners.com',
+        toName:     'Cynthia',
+        subject:    `New Booking Request — ${currentUser.displayName || currentUser.email}`,
+        type:       'booking_request',
+        bodyText:   `${currentUser.displayName || 'A client'} has requested a session:\n\nService: ${service}\nDate: ${dateStr}\nTime: ${timeText}\nDuration: ${durationMins} min\nCost: $${cost}${notes ? '\n\nNotes: ' + notes : ''}\n\nLog in to the staff dashboard to approve or decline.`,
+        clientName: currentUser.displayName || currentUser.email,
+      }).catch(err => console.warn('Staff notification failed:', err));
+
+      showToast('✓ Request sent! We\'ll confirm within 24 hours.');
+      nav('schedule', document.querySelectorAll('.nav-item')[0]);
+      await loadClientSchedule();
+    } catch (err) {
+      console.error('Booking request error:', err);
+      showToast('⚠️ Could not send request. Please try again.');
+    } finally {
+      if (btn) { btn.textContent = '✓ Send Booking Request — $50'; btn.disabled = false; }
+    }
+  };
 
   // ── SAVE NOTIFICATION PREFERENCES ────────────────────────
   window.saveNotificationPrefs = async function() {
