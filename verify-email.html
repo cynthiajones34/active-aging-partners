@@ -238,6 +238,43 @@ body::before {
         const createdAt  = new Date(user.metadata.creationTime).getTime();
         const ageSeconds = (Date.now() - createdAt) / 1000;
         if (ageSeconds < 120) {
+          // ── Save Firestore profile if not yet created ──────
+          // Do this here since the page is stable (no redirect firing)
+          try {
+            const checkRes = await fetch(
+              `https://firestore.googleapis.com/v1/projects/active-aging-partners/databases/(default)/documents/clients/${user.uid}`,
+              { headers: { 'Authorization': `Bearer ${await user.getIdToken()}` } }
+            );
+            if (checkRes.status === 404) {
+              // Document doesn't exist — create it now
+              const displayName = user.displayName || user.email.split('@')[0];
+              const fields = {
+                uid:               { stringValue: user.uid },
+                displayName:       { stringValue: displayName },
+                email:             { stringValue: user.email },
+                role:              { stringValue: 'client' },
+                phone:             { stringValue: '' },
+                seniorName:        { stringValue: '' },
+                smsOptIn:          { booleanValue: true },
+                emailOptIn:        { booleanValue: true },
+                reportEmailOptIn:  { booleanValue: true },
+                invoiceEmailOptIn: { booleanValue: true },
+                status:            { stringValue: 'active' },
+                createdAt:         { timestampValue: new Date().toISOString() },
+              };
+              const writeRes = await fetch(
+                `https://firestore.googleapis.com/v1/projects/active-aging-partners/databases/(default)/documents/clients/${user.uid}`,
+                {
+                  method: 'PATCH',
+                  headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${await user.getIdToken()}` },
+                  body: JSON.stringify({ fields }),
+                }
+              );
+              console.log('Profile created on verify-email page:', writeRes.status);
+            }
+          } catch (profileErr) {
+            console.warn('Profile check/create error:', profileErr.message);
+          }
           try {
             await sendEmailVerification(user);
             console.log('Verification email auto-sent to:', user.email);
