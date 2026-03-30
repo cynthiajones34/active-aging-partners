@@ -422,13 +422,6 @@ footer { background: var(--charcoal); padding: 60px 80px 30px; }
     updateProfile,
     reload
   } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
-  import {
-    getFirestore, initializeFirestore,
-    doc,
-    setDoc,
-    serverTimestamp
-  } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
-
   // ---- YOUR FIREBASE CONFIG ----
   const firebaseConfig = {
     apiKey: "AIzaSyAuXMMnVjij0x1X5sQ5Jm1NuJUvquwDb0k",
@@ -441,7 +434,6 @@ footer { background: var(--charcoal); padding: 60px 80px 30px; }
 
   const app  = initializeApp(firebaseConfig);
   const auth = getAuth(app);
-  const db   = initializeFirestore(app, { experimentalAutoDetectLongPolling: true });
 
   // Staff email addresses — add yours here
   // Anyone NOT in this list is treated as a client
@@ -530,53 +522,8 @@ footer { background: var(--charcoal); padding: 60px 80px 30px; }
     const user   = result.user;
     await updateProfile(user, { displayName });
 
-    // Save full profile to Firestore using REST API directly
-    // (bypasses WebSocket/Listen channel CORS issue on GitHub Pages)
-    const profileDoc = {
-      uid:               user.uid,
-      displayName,
-      email,
-      role:              profileData.role        || 'client',
-      phone:             profileData.phone       || '',
-      seniorName:        profileData.seniorName  || '',
-      smsOptIn:          profileData.smsOptIn    ?? true,
-      emailOptIn:        profileData.emailOptIn  ?? true,
-      reportEmailOptIn:  true,
-      invoiceEmailOptIn: true,
-      status:            'active',
-    };
-
-    function toFirestoreValue(val) {
-      if (typeof val === 'string')  return { stringValue: val };
-      if (typeof val === 'boolean') return { booleanValue: val };
-      if (typeof val === 'number')  return { integerValue: String(val) };
-      if (val === null)             return { nullValue: null };
-      return { stringValue: String(val) };
-    }
-    const fields = {};
-    Object.entries(profileDoc).forEach(([k, v]) => { fields[k] = toFirestoreValue(v); });
-    fields.createdAt = { timestampValue: new Date().toISOString() };
-
-    try {
-      const idToken = await user.getIdToken();
-      const res = await fetch(
-        `https://firestore.googleapis.com/v1/projects/active-aging-partners/databases/(default)/documents/clients/${user.uid}`,
-        {
-          method:  'PATCH',
-          headers: {
-            'Content-Type':  'application/json',
-            'Authorization': `Bearer ${idToken}`,
-          },
-          body: JSON.stringify({ fields }),
-        }
-      );
-      if (!res.ok) {
-        const err = await res.json();
-        console.warn('Profile save failed:', res.status, JSON.stringify(err));
-      }
-    } catch (err) {
-      console.warn('Profile save error:', err.message);
-    }
+    // Firestore profile document is created in onboarding.html after email verification,
+    // where the user's token has email_verified=true and security rules allow the write.
 
     return user;
   }

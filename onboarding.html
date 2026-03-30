@@ -276,10 +276,27 @@ textarea.form-input { resize: vertical; min-height: 90px; line-height: 1.6; }
   const app = initializeApp(firebaseConfig);
   const auth = getAuth(app);
 
-  onAuthStateChanged(auth, (user) => {
+  onAuthStateChanged(auth, async (user) => {
     if (!user) { window.location.href = 'index.html'; return; }
     // Guard: must have verified email to reach onboarding
     if (!user.emailVerified) { window.location.href = 'verify-email.html'; return; }
+
+    // Ensure a client document exists regardless of which exit path the user takes.
+    // Uses merge:true so it won't overwrite any data written by doSignup if that succeeded.
+    try {
+      const { getFirestore, doc, setDoc } =
+        await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js');
+      const db = getFirestore(app);
+      await setDoc(doc(db, 'clients', user.uid), {
+        uid:         user.uid,
+        email:       user.email,
+        displayName: user.displayName || '',
+        role:        'client',
+        status:      'active',
+      }, { merge: true });
+    } catch (err) {
+      console.warn('Baseline profile write failed:', err.code, err.message);
+    }
 
     // Wire up goToPortal to save data first
     window.goToPortal = async function() {
@@ -291,22 +308,33 @@ textarea.form-input { resize: vertical; min-height: 90px; line-height: 1.6; }
         const seniorLast  = document.getElementById('ob-senior-last')?.value.trim()  || '';
         const seniorAge   = document.getElementById('ob-senior-age')?.value.trim()   || '';
         const seniorName  = [seniorFirst, seniorLast].filter(Boolean).join(' ');
+        const mobility    = document.getElementById('ob-mobility')?.value            || '';
+        const address     = document.getElementById('ob-address')?.value.trim()      || '';
+        const notes       = document.getElementById('ob-notes')?.value.trim()        || '';
         const emailMsg    = document.getElementById('tog-email-message')?.classList.contains('on') ?? true;
         const emailReport = document.getElementById('tog-email-report')?.classList.contains('on')  ?? true;
         const emailInv    = document.getElementById('tog-email-invoice')?.classList.contains('on') ?? true;
 
-        const { getFirestore, doc, updateDoc } =
+        const { getFirestore, doc, setDoc } =
           await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js');
         const db = getFirestore(app);
 
-        await updateDoc(doc(db, 'clients', user.uid), {
+        // setDoc with merge:true creates the document if it doesn't exist yet
+        // (covers the case where the signup-time write failed due to unverified email)
+        await setDoc(doc(db, 'clients', user.uid), {
+          uid:               user.uid,
+          email:             user.email,
+          displayName:       user.displayName || '',
           seniorName,
           seniorAge:         seniorAge ? parseInt(seniorAge) : '',
+          mobility,
+          address,
+          notes,
           emailOptIn:        emailMsg,
           reportEmailOptIn:  emailReport,
           invoiceEmailOptIn: emailInv,
           onboardingComplete: true,
-        });
+        }, { merge: true });
         console.log('Onboarding data saved');
       } catch (err) {
         console.warn('Onboarding save failed (non-fatal):', err.code, err.message);

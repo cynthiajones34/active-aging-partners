@@ -510,8 +510,6 @@ body { font-family:'Jost',sans-serif; background:var(--cream); color:var(--charc
       </div>
 
       <!-- PROFILE -->
-
-      <!-- PROFILE -->
       <div class="view" id="view-profile">
         <div class="settings-grid">
           <div class="settings-card" style="grid-column:1/-1">
@@ -554,7 +552,7 @@ body { font-family:'Jost',sans-serif; background:var(--cream); color:var(--charc
               <label class="form-label">Mailing Address</label>
               <input type="text" class="form-input" id="profile-address" value="">
             </div>
-            <button class="btn btn-primary btn-sm" onclick="saveToast()">Save Changes</button>
+            <button class="btn btn-primary btn-sm" onclick="saveContactInfo()">Save Changes</button>
           </div>
 
           <div class="settings-card">
@@ -575,7 +573,7 @@ body { font-family:'Jost',sans-serif; background:var(--cream); color:var(--charc
               <label class="form-label">Health Notes</label>
               <textarea class="form-input" id="profile-health-notes" rows="3" placeholder="Any health notes, preferences, or things your companion should know…"></textarea>
             </div>
-            <button class="btn btn-primary btn-sm" onclick="saveToast()">Save Changes</button>
+            <button class="btn btn-primary btn-sm" onclick="saveSeniorInfo()">Save Changes</button>
           </div>
 
           <div class="settings-card">
@@ -765,9 +763,6 @@ function renderCalendar() {
   }
   grid.innerHTML = html;
 }
-// Init calendar when book tab is opened
-const _origNav = window.nav || function(){};
-
 function confirmBooking() {
   const selectedDay  = document.querySelector('.day-cell.selected');
   const selectedTime = document.querySelector('.time-chip.selected');
@@ -782,12 +777,6 @@ function showCancel(name) {
   document.getElementById('cancel-session-name').textContent = name;
   openModal('cancel-modal');
 }
-
-// Message data loaded from Firestore
-
-// Message data loaded from Firestore
-
-// Message data loaded from Firestore
 
 function loadThread(el, name, color, initials, msgs) {
   document.querySelectorAll('.thread').forEach(t=>t.classList.remove('active'));
@@ -811,8 +800,6 @@ function loadThread(el, name, color, initials, msgs) {
   `).join('');
   body.scrollTop = body.scrollHeight;
 }
-
-// Messages loaded from Firestore via Firebase module
 
 function sendMsg(e) {
   if (e.key !== 'Enter') return;
@@ -859,6 +846,15 @@ function showToast(msg) {
 }
 
 function saveToast(msg='Changes saved!') { showToast('✓ ' + msg); }
+
+function escapeHtml(str) {
+  return String(str)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
+}
 </script>
 
 <!-- FIREBASE AUTH GUARD + FIRESTORE MESSAGING -->
@@ -867,8 +863,8 @@ function saveToast(msg='Changes saved!') { showToast('✓ ' + msg); }
   import { getAuth, onAuthStateChanged, signOut }
                               from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
   import {
-    getFirestore, collection, addDoc, query,
-    orderBy, getDocs, serverTimestamp, doc, getDoc, updateDoc
+    initializeFirestore, collection, addDoc, query,
+    orderBy, getDocs, serverTimestamp, doc, setDoc, updateDoc
   }                           from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
   import { getFunctions, httpsCallable }
                               from "https://www.gstatic.com/firebasejs/10.12.0/firebase-functions.js";
@@ -904,6 +900,8 @@ function saveToast(msg='Changes saved!') { showToast('✓ ' + msg); }
     const initials    = displayName.split(' ').map(w => w[0]).slice(0, 2).join('').toUpperCase();
     document.getElementById('sidebar-name').textContent     = displayName;
     document.getElementById('sidebar-initials').textContent = initials;
+    const photoInitialsEl = document.getElementById('photo-initials');
+    if (photoInitialsEl) photoInitialsEl.textContent = initials;
 
     // Populate profile fields if visible
     const profileName  = document.getElementById('profile-display-name');
@@ -929,8 +927,10 @@ function saveToast(msg='Changes saved!') { showToast('✓ ' + msg); }
           displayName:       get('displayName'),
           email:             get('email'),
           phone:             get('phone'),
+          address:           get('address'),
           seniorName:        get('seniorName'),
           seniorAge:         get('seniorAge'),
+          notes:             get('notes'),
           emailOptIn:        data.fields?.emailOptIn?.booleanValue,
           reportEmailOptIn:  data.fields?.reportEmailOptIn?.booleanValue,
           invoiceEmailOptIn: data.fields?.invoiceEmailOptIn?.booleanValue,
@@ -940,12 +940,15 @@ function saveToast(msg='Changes saved!') { showToast('✓ ' + msg); }
         const dn = clientProfile.displayName || displayName;
         const parts = dn.split(' ');
         const f = (id, val) => { const el = document.getElementById(id); if(el && val !== undefined && val !== '') el.value = val; };
-        f('profile-first',       parts[0] || '');
-        f('profile-last',        parts.slice(1).join(' ') || '');
-        f('profile-email-field', clientProfile.email || user.email);
-        f('profile-phone-field', clientProfile.phone);
-        f('profile-senior-name', clientProfile.seniorName);
-        f('profile-senior-age',  clientProfile.seniorAge);
+        f('profile-first',          parts[0] || '');
+        f('profile-last',           parts.slice(1).join(' ') || '');
+        f('profile-email-field',    clientProfile.email || user.email);
+        f('profile-phone-field',    clientProfile.phone);
+        f('profile-address',        clientProfile.address);
+        f('profile-senior-name',    clientProfile.seniorName);
+        f('profile-senior-age',     clientProfile.seniorAge);
+        f('profile-senior-address', clientProfile.address);
+        f('profile-health-notes',   clientProfile.notes);
 
         // Update profile display name and role label
         const pdn = document.getElementById('profile-display-name');
@@ -990,9 +993,9 @@ function saveToast(msg='Changes saved!') { showToast('✓ ' + msg); }
     const reportEmailOptIn  = document.getElementById('tog-report-email')?.classList.contains('on') ?? true;
     const invoiceEmailOptIn = document.getElementById('tog-invoice-email')?.classList.contains('on') ?? true;
     try {
-      await updateDoc(doc(db, 'clients', currentUser.uid), {
+      await setDoc(doc(db, 'clients', currentUser.uid), {
         emailOptIn, reportEmailOptIn, invoiceEmailOptIn
-      });
+      }, { merge: true });
       clientProfile = { ...clientProfile, emailOptIn, reportEmailOptIn, invoiceEmailOptIn };
       showToast('✓ Notification preferences saved!');
     } catch (err) {
@@ -1137,7 +1140,7 @@ function saveToast(msg='Changes saved!') { showToast('✓ ' + msg); }
                           letter-spacing:0.06em;text-transform:uppercase;margin-bottom:6px">
                 📋 Session Report · ${time}
               </div>
-              <div style="font-size:13px;color:var(--mid);white-space:pre-line">${m.text}</div>
+              <div style="font-size:13px;color:var(--mid);white-space:pre-line">${escapeHtml(m.text)}</div>
             </div>`;
         }
 
@@ -1149,7 +1152,7 @@ function saveToast(msg='Changes saved!') { showToast('✓ ' + msg); }
                           letter-spacing:0.06em;text-transform:uppercase;margin-bottom:6px">
                 📅 Booking Confirmation · ${time}
               </div>
-              <div style="font-size:13px;color:var(--mid);white-space:pre-line">${m.text}</div>
+              <div style="font-size:13px;color:var(--mid);white-space:pre-line">${escapeHtml(m.text)}</div>
             </div>`;
         }
 
@@ -1161,7 +1164,7 @@ function saveToast(msg='Changes saved!') { showToast('✓ ' + msg); }
                           letter-spacing:0.06em;text-transform:uppercase;margin-bottom:6px">
                 🔔 Reminder · ${time}
               </div>
-              <div style="font-size:13px;color:var(--mid);white-space:pre-line">${m.text}</div>
+              <div style="font-size:13px;color:var(--mid);white-space:pre-line">${escapeHtml(m.text)}</div>
             </div>`;
         }
 
@@ -1173,7 +1176,7 @@ function saveToast(msg='Changes saved!') { showToast('✓ ' + msg); }
                           letter-spacing:0.06em;text-transform:uppercase;margin-bottom:6px">
                 💳 Invoice · ${time}
               </div>
-              <div style="font-size:13px;color:var(--mid);white-space:pre-line">${m.text}</div>
+              <div style="font-size:13px;color:var(--mid);white-space:pre-line">${escapeHtml(m.text)}</div>
             </div>`;
         }
 
@@ -1183,7 +1186,7 @@ function saveToast(msg='Changes saved!') { showToast('✓ ' + msg); }
             ${!isMe ? `<div class="thread-av" style="background:var(--forest);width:28px;height:28px;font-size:10px;flex-shrink:0">🌿</div>` : ''}
             <div>
               <div class="btime" style="${isMe ? 'text-align:right' : ''}">${time}</div>
-              <div class="bubble" style="white-space:pre-line">${m.text}</div>
+              <div class="bubble" style="white-space:pre-line">${escapeHtml(m.text)}</div>
             </div>
           </div>`;
       }).join('');
@@ -1209,6 +1212,47 @@ function saveToast(msg='Changes saved!') { showToast('✓ ' + msg); }
 
   // Expose loadMessages globally so the refresh button can call it
   window._loadMessages = loadMessages;
+
+  // ── SAVE CONTACT INFO ────────────────────────────────────────
+  window.saveContactInfo = async function() {
+    if (!currentUser) return;
+    const first   = document.getElementById('profile-first')?.value.trim()        || '';
+    const last    = document.getElementById('profile-last')?.value.trim()         || '';
+    const phone   = document.getElementById('profile-phone-field')?.value.trim()  || '';
+    const address = document.getElementById('profile-address')?.value.trim()      || '';
+    try {
+      await setDoc(doc(db, 'clients', currentUser.uid), {
+        displayName: [first, last].filter(Boolean).join(' ') || currentUser.displayName || '',
+        phone,
+        address,
+      }, { merge: true });
+      showToast('✓ Contact info saved!');
+    } catch (err) {
+      console.error('Save contact info error:', err);
+      showToast('⚠️ Could not save. Please try again.');
+    }
+  };
+
+  // ── SAVE SENIOR CLIENT INFO ───────────────────────────────────
+  window.saveSeniorInfo = async function() {
+    if (!currentUser) return;
+    const seniorName    = document.getElementById('profile-senior-name')?.value.trim()    || '';
+    const seniorAge     = document.getElementById('profile-senior-age')?.value.trim()     || '';
+    const seniorAddress = document.getElementById('profile-senior-address')?.value.trim() || '';
+    const notes         = document.getElementById('profile-health-notes')?.value.trim()   || '';
+    try {
+      await setDoc(doc(db, 'clients', currentUser.uid), {
+        seniorName,
+        seniorAge:  seniorAge ? parseInt(seniorAge) : '',
+        address:    seniorAddress,
+        notes,
+      }, { merge: true });
+      showToast('✓ Senior info saved!');
+    } catch (err) {
+      console.error('Save senior info error:', err);
+      showToast('⚠️ Could not save. Please try again.');
+    }
+  };
 </script>
 </body>
 </html>
