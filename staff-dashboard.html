@@ -116,6 +116,19 @@ textarea.fi{resize:vertical;min-height:80px;line-height:1.5;}
 .modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.4);backdrop-filter:blur(4px);z-index:200;display:none;align-items:center;justify-content:center;}
 .modal-overlay.open{display:flex;}
 .modal{background:#fff;border-radius:20px;width:500px;max-height:88vh;overflow-y:auto;box-shadow:0 20px 60px rgba(0,0,0,0.2);animation:mi 0.25s ease;}
+.modal-wide{background:#fff;border-radius:20px;width:780px;max-width:95vw;max-height:90vh;overflow-y:auto;box-shadow:0 20px 60px rgba(0,0,0,0.2);animation:mi 0.25s ease;}
+.cp-grid{display:grid;grid-template-columns:1fr 1fr;gap:0;border-top:1px solid rgba(0,0,0,0.06);}
+.cp-section{padding:20px 24px;}
+.cp-section+.cp-section{border-left:1px solid rgba(0,0,0,0.06);}
+.cp-full{grid-column:1/-1;border-top:1px solid rgba(0,0,0,0.06);padding:20px 24px;}
+.cp-label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:var(--mid);margin-bottom:12px;}
+.cp-row{display:flex;gap:8px;align-items:baseline;margin-bottom:8px;font-size:13px;}
+.cp-row-key{color:var(--mid);width:80px;flex-shrink:0;font-size:12px;}
+.cp-session{background:var(--cream);border-radius:10px;padding:10px 12px;margin-bottom:8px;font-size:12px;}
+.cp-session-title{font-weight:600;font-size:13px;margin-bottom:3px;}
+.cp-msg{padding:8px 0;border-bottom:1px solid rgba(0,0,0,0.05);font-size:12px;}
+.cp-msg:last-child{border-bottom:none;}
+.cp-msg-meta{font-size:10px;color:var(--mid);margin-top:2px;}
 @keyframes mi{from{opacity:0;transform:scale(0.95) translateY(10px)}to{opacity:1;transform:scale(1) translateY(0)}}
 .mhdr{padding:22px 24px 16px;border-bottom:1px solid rgba(0,0,0,0.06);display:flex;justify-content:space-between;align-items:center;}
 .mtitle{font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:600;}
@@ -464,6 +477,56 @@ textarea.fi{resize:vertical;min-height:80px;line-height:1.5;}
   </div>
 </div>
 
+<!-- Client Profile Modal -->
+<div class="modal-overlay" id="client-profile-modal">
+  <div class="modal-wide">
+    <div class="mhdr">
+      <div style="display:flex;align-items:center;gap:14px">
+        <div id="cp-avatar" class="cav" style="width:46px;height:46px;font-size:15px;flex-shrink:0"></div>
+        <div>
+          <div class="mtitle" id="cp-name">Client</div>
+          <div style="font-size:12px;color:var(--mid)" id="cp-sub"></div>
+        </div>
+      </div>
+      <div style="display:flex;align-items:center;gap:8px">
+        <button class="btn btn-g btn-sm" id="cp-msg-btn">💬 Message</button>
+        <button class="mclose" onclick="closeModal('client-profile-modal')">✕</button>
+      </div>
+    </div>
+
+    <!-- Contact info + senior info -->
+    <div class="cp-grid">
+      <div class="cp-section">
+        <div class="cp-label">Contact Information</div>
+        <div class="cp-row"><span class="cp-row-key">Email</span><span id="cp-email">—</span></div>
+        <div class="cp-row"><span class="cp-row-key">Phone</span><span id="cp-phone">—</span></div>
+        <div class="cp-row"><span class="cp-row-key">Address</span><span id="cp-address">—</span></div>
+      </div>
+      <div class="cp-section">
+        <div class="cp-label">Senior Information</div>
+        <div class="cp-row"><span class="cp-row-key">Name</span><span id="cp-senior-name">—</span></div>
+        <div class="cp-row"><span class="cp-row-key">Age</span><span id="cp-senior-age">—</span></div>
+        <div class="cp-row"><span class="cp-row-key">Notes</span><span id="cp-notes" style="color:var(--mid);font-style:italic">—</span></div>
+      </div>
+    </div>
+
+    <!-- Sessions -->
+    <div class="cp-full">
+      <div class="cp-label">Sessions</div>
+      <div id="cp-sessions"><div style="color:var(--mid);font-size:13px">Loading…</div></div>
+    </div>
+
+    <!-- Recent messages -->
+    <div class="cp-full" style="border-top:1px solid rgba(0,0,0,0.06)">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
+        <div class="cp-label" style="margin-bottom:0">Recent Messages</div>
+        <button class="btn btn-g btn-sm" id="cp-view-thread-btn">View full thread →</button>
+      </div>
+      <div id="cp-messages"><div style="color:var(--mid);font-size:13px">Loading…</div></div>
+    </div>
+  </div>
+</div>
+
 <div class="toast" id="toast"></div>
 
 <script>
@@ -738,7 +801,8 @@ function downloadCSV(type){
       const name=c.displayName||c.email||'Client';
       const ini=name.split(' ').map(w=>w[0]).slice(0,2).join('').toUpperCase();
       const sub=c.seniorName?`Senior: ${c.seniorName}`:'Client · Active';
-      return `<div class="cc"><div class="cc-hdr"><div class="cav" style="background:${colors[colorIdx%colors.length]}">${ini}</div>
+      return `<div class="cc" style="cursor:pointer;transition:box-shadow 0.2s" onmouseover="this.style.boxShadow='0 4px 20px rgba(45,74,50,0.15)'" onmouseout="this.style.boxShadow=''" onclick="window.openClientProfile('${id}')">
+        <div class="cc-hdr"><div class="cav" style="background:${colors[colorIdx%colors.length]}">${ini}</div>
         <div><div class="cc-name">${name}</div><div class="cc-age">${sub}</div></div></div>
         <div class="cc-foot">📧 ${c.email||'—'}${c.phone?' · 📞 '+c.phone:''}</div></div>`;
     }).join('');
@@ -756,6 +820,119 @@ function downloadCSV(type){
       return name.includes(q)||email.includes(q)||phone.includes(q)||senior.includes(q);
     });
     renderClientGrid(filtered);
+  };
+
+  // ── CLIENT PROFILE MODAL ─────────────────────────────────
+  window.openClientProfile = async function(uid) {
+    const all = window._allClientDocs || [];
+    const entry = all.find(d => d.id === uid);
+    if (!entry) return;
+    const c = entry.data;
+    const colors = ['#7a9e7e','#c4845a','#c9a84c','#5b9dab','#9b7ec8','#c87e9b'];
+    const name = c.displayName || c.email || 'Client';
+    const ini  = name.split(' ').map(w=>w[0]).slice(0,2).join('').toUpperCase();
+
+    // Populate header
+    document.getElementById('cp-avatar').textContent = ini;
+    document.getElementById('cp-avatar').style.background = colors[entry.colorIdx % colors.length];
+    document.getElementById('cp-name').textContent = name;
+    document.getElementById('cp-sub').textContent = c.seniorName ? `Family contact for ${c.seniorName}` : 'Client';
+
+    // Contact info
+    document.getElementById('cp-email').textContent   = c.email   || '—';
+    document.getElementById('cp-phone').textContent   = c.phone   || '—';
+    document.getElementById('cp-address').textContent = c.address || '—';
+
+    // Senior info
+    document.getElementById('cp-senior-name').textContent = c.seniorName || '—';
+    document.getElementById('cp-senior-age').textContent  = c.seniorAge  || '—';
+    document.getElementById('cp-notes').textContent       = c.notes      || '—';
+
+    // Message button → opens thread in Messages tab
+    document.getElementById('cp-msg-btn').onclick = () => {
+      closeModal('client-profile-modal');
+      nav('messages', document.querySelectorAll('.ni')[3]);
+      window._openClientThread(uid, name);
+    };
+    // View full thread button
+    document.getElementById('cp-view-thread-btn').onclick = () => {
+      closeModal('client-profile-modal');
+      nav('messages', document.querySelectorAll('.ni')[3]);
+      window._openClientThread(uid, name);
+    };
+
+    openModal('client-profile-modal');
+
+    // Load sessions async
+    const sessionsEl = document.getElementById('cp-sessions');
+    sessionsEl.innerHTML = '<div style="color:var(--mid);font-size:13px">Loading…</div>';
+    try {
+      const sessSnap = await getDocs(query(
+        collection(db, 'sessions'),
+        where('clientUid', '==', uid)
+      ));
+      const sessions = sessSnap.docs
+        .map(d => ({id:d.id,...d.data()}))
+        .filter(s => s.status !== 'declined' && s.status !== 'cancelled')
+        .sort((a,b) => b.date.localeCompare(a.date));
+
+      if (sessions.length === 0) {
+        sessionsEl.innerHTML = '<div style="color:var(--mid);font-size:13px">No sessions yet.</div>';
+      } else {
+        sessionsEl.innerHTML = sessions.map(s => {
+          const readableDate = new Date(s.date+'T12:00:00').toLocaleDateString('en-US',{weekday:'short',month:'short',day:'numeric',year:'numeric'});
+          const readableTime = s.time ? new Date('2000-01-01T'+s.time).toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit'}) : '';
+          const statusColor  = s.status==='confirmed' ? 'rgba(45,74,50,0.1)' : 'rgba(201,168,76,0.12)';
+          const statusText   = s.status==='confirmed' ? '✓ Confirmed' : '⏳ Pending';
+          const statusFg     = s.status==='confirmed' ? 'var(--forest)' : '#7a5800';
+          return `<div class="cp-session">
+            <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:8px">
+              <div>
+                <div class="cp-session-title">${s.service||'Session'}</div>
+                <div style="color:var(--mid)">${readableDate}${readableTime?' · '+readableTime:''} · ${s.durationMinutes||60} min · $${s.cost||50}</div>
+                ${s.notes?`<div style="color:var(--mid);font-style:italic;margin-top:2px">${s.notes}</div>`:''}
+              </div>
+              <span style="background:${statusColor};color:${statusFg};padding:2px 9px;border-radius:20px;font-size:11px;font-weight:600;flex-shrink:0">${statusText}</span>
+            </div>
+          </div>`;
+        }).join('');
+      }
+    } catch(e) {
+      sessionsEl.innerHTML = '<div style="color:#b03030;font-size:13px">Could not load sessions.</div>';
+      console.error(e);
+    }
+
+    // Load recent messages async
+    const msgsEl = document.getElementById('cp-messages');
+    msgsEl.innerHTML = '<div style="color:var(--mid);font-size:13px">Loading…</div>';
+    try {
+      const msgSnap = await getDocs(query(
+        collection(db, 'clients', uid, 'messages'),
+        orderBy('createdAt', 'asc')
+      ));
+      if (msgSnap.empty) {
+        msgsEl.innerHTML = '<div style="color:var(--mid);font-size:13px">No messages yet.</div>';
+      } else {
+        // Show last 5 messages
+        const msgs = msgSnap.docs.slice(-5);
+        msgsEl.innerHTML = msgs.map(d => {
+          const m = d.data();
+          const isClient = m.senderRole === 'client';
+          const ts = m.createdAt?.toDate?.();
+          const time = ts ? ts.toLocaleString('en-US',{month:'short',day:'numeric',hour:'numeric',minute:'2-digit'}) : '';
+          return `<div class="cp-msg">
+            <div style="display:flex;justify-content:space-between;gap:8px">
+              <span style="font-weight:600;font-size:11px;color:${isClient?'var(--clay)':'var(--forest)'}">${isClient?name:'Staff'}</span>
+              <span style="font-size:10px;color:var(--mid)">${time}</span>
+            </div>
+            <div style="margin-top:2px">${m.text}</div>
+          </div>`;
+        }).join('');
+      }
+    } catch(e) {
+      msgsEl.innerHTML = '<div style="color:#b03030;font-size:13px">Could not load messages.</div>';
+      console.error(e);
+    }
   };
 
   // ── CALENDAR STATE ────────────────────────────────────────
