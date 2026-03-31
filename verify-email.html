@@ -164,7 +164,7 @@ body::before {
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
   import {
     getAuth, onAuthStateChanged, sendEmailVerification,
-    reload, applyActionCode
+    reload, applyActionCode, verifyPasswordResetCode, confirmPasswordReset
   } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
 
   const firebaseConfig = {
@@ -186,6 +186,80 @@ body::before {
   const params  = new URLSearchParams(window.location.search);
   const mode    = params.get('mode');
   const oobCode = params.get('oobCode');
+
+  // ── Handle password reset link click ─────────────────────
+  if (mode === 'resetPassword' && oobCode) {
+    // Swap the card UI to show a password reset form
+    document.querySelector('.card').innerHTML = `
+      <div class="logo">
+        <div class="logo-leaf">🌿</div>
+        <div class="logo-text">Active Aging Partners</div>
+      </div>
+      <div class="envelope-wrap">🔐</div>
+      <div class="card-title">Reset your <em>password</em></div>
+      <p class="card-sub" id="reset-sub">Enter a new password for your account.</p>
+      <div id="reset-error" style="background:rgba(180,40,40,0.08);border:1px solid rgba(180,40,40,0.2);color:#b03030;border-radius:8px;padding:10px 12px;font-size:13px;margin-bottom:14px;display:none"></div>
+      <div style="margin-bottom:14px;text-align:left">
+        <label style="font-size:11px;font-weight:600;letter-spacing:0.07em;text-transform:uppercase;color:var(--mid);display:block;margin-bottom:5px">New Password</label>
+        <input type="password" id="reset-pw1" placeholder="New password (min 6 characters)"
+          style="width:100%;padding:11px 14px;border-radius:10px;border:1.5px solid rgba(0,0,0,0.1);font-family:'Jost',sans-serif;font-size:14px;outline:none;background:var(--warm)">
+      </div>
+      <div style="margin-bottom:22px;text-align:left">
+        <label style="font-size:11px;font-weight:600;letter-spacing:0.07em;text-transform:uppercase;color:var(--mid);display:block;margin-bottom:5px">Confirm Password</label>
+        <input type="password" id="reset-pw2" placeholder="Confirm new password"
+          style="width:100%;padding:11px 14px;border-radius:10px;border:1.5px solid rgba(0,0,0,0.1);font-family:'Jost',sans-serif;font-size:14px;outline:none;background:var(--warm)">
+      </div>
+      <button class="btn btn-solid" id="reset-btn" onclick="window.doReset()">Set New Password</button>
+      <a href="index.html" class="btn btn-ghost" style="margin-top:8px">← Back to login</a>
+    `;
+
+    // Verify the code is valid and pre-fill the email hint
+    verifyPasswordResetCode(auth, oobCode)
+      .then(email => {
+        const sub = document.getElementById('reset-sub');
+        if (sub) sub.textContent = `Enter a new password for ${email}.`;
+      })
+      .catch(() => {
+        const errEl = document.getElementById('reset-error');
+        if (errEl) {
+          errEl.textContent = 'This reset link has expired or already been used. Please request a new one.';
+          errEl.style.display = 'block';
+        }
+        const btn = document.getElementById('reset-btn');
+        if (btn) btn.disabled = true;
+      });
+
+    window.doReset = async function() {
+      const pw1   = document.getElementById('reset-pw1')?.value  || '';
+      const pw2   = document.getElementById('reset-pw2')?.value  || '';
+      const errEl = document.getElementById('reset-error');
+      const btn   = document.getElementById('reset-btn');
+
+      errEl.style.display = 'none';
+      if (pw1.length < 6) { errEl.textContent = 'Password must be at least 6 characters.'; errEl.style.display = 'block'; return; }
+      if (pw1 !== pw2)    { errEl.textContent = 'Passwords do not match.'; errEl.style.display = 'block'; return; }
+
+      btn.innerHTML = '<span class="spinner"></span> Updating…';
+      btn.disabled  = true;
+      try {
+        await confirmPasswordReset(auth, oobCode, pw1);
+        showToast('✓ Password updated! Taking you to login…');
+        setTimeout(() => { window.location.href = 'index.html?reset=true'; }, 2000);
+      } catch (err) {
+        btn.innerHTML = 'Set New Password';
+        btn.disabled  = false;
+        if (err.code === 'auth/expired-action-code' || err.code === 'auth/invalid-action-code') {
+          errEl.textContent = 'This reset link has expired. Please request a new one from the login page.';
+        } else if (err.code === 'auth/weak-password') {
+          errEl.textContent = 'Password must be at least 6 characters.';
+        } else {
+          errEl.textContent = 'Could not reset password. Please try again.';
+        }
+        errEl.style.display = 'block';
+        console.error('confirmPasswordReset error:', err.code, err.message);
+      }
+    };
+  }
 
   if (mode === 'verifyEmail' && oobCode) {
     applyActionCode(auth, oobCode)

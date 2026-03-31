@@ -461,9 +461,14 @@ footer { background: var(--charcoal); padding: 60px 80px 30px; }
     }
   });
 
-  // Show success banner if redirected back from email verification
-  if (new URLSearchParams(window.location.search).get('verified') === 'true') {
+  // Show success banner if redirected back from email verification or password reset
+  const _urlParams = new URLSearchParams(window.location.search);
+  if (_urlParams.get('verified') === 'true') {
     setTimeout(() => showToast('✓ Email verified! Please log in to continue.'), 500);
+    window.history.replaceState({}, '', window.location.pathname);
+  }
+  if (_urlParams.get('reset') === 'true') {
+    setTimeout(() => showToast('✓ Password updated! Please log in with your new password.'), 500);
     // Clean up URL
     window.history.replaceState({}, '', window.location.pathname);
   }
