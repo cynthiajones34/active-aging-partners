@@ -1540,8 +1540,10 @@ function downloadCSV(type){
     if (searchEl) searchEl.value = '';
     listEl.innerHTML = '<div style="text-align:center;padding:24px;font-size:13px;color:var(--mid)">Loading reports…</div>';
     try {
-      const snap = await getDocs(query(collection(db, 'reports'), orderBy('date', 'desc')));
-      _allReports = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+      const snap = await getDocs(collection(db, 'reports'));
+      _allReports = snap.docs
+        .map(d => ({ id: d.id, ...d.data() }))
+        .sort((a, b) => (b.date || '').localeCompare(a.date || ''));
       renderReports(_allReports);
     } catch(err) {
       console.error('loadStaffReports error:', err);
