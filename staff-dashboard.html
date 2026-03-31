@@ -1445,10 +1445,12 @@ function downloadCSV(type){
       const client=clientMap[uid]||{};
       if(client.email){
         _sendEmailNotification({
-          to:client.email, toName:client.name,
+          to:client.email,
+          toName:client.name,
           subject:'Your session report is ready — Active Aging Partners',
-          type:'report', bodyText:text,
-          emailOptIn:client.reportEmailOptIn??client.emailOptIn,
+          type:'report',
+          bodyText:text,
+          clientName:client.name||'Client',
         }).catch(e=>console.warn('Report email failed:',e));
       }
     }catch(e){console.error(e);}
@@ -1465,11 +1467,12 @@ function downloadCSV(type){
       const client=clientMap[uid]||{};
       if(client.email){
         _sendEmailNotification({
-          to:client.email, toName:client.name,
+          to:client.email,
+          toName:client.name,
           subject:'Invoice from Active Aging Partners',
           type:'invoice',
           bodyText:text,
-          emailOptIn:client.invoiceEmailOptIn??client.emailOptIn,
+          clientName:client.name||'Client',
         }).catch(e=>console.warn('Invoice email failed:',e));
       }
     }catch(e){console.error(e);}
@@ -1481,11 +1484,12 @@ function downloadCSV(type){
       const client=clientMap[uid]||{};
       if(client.email){
         _sendEmailNotification({
-          to:client.email, toName:client.name,
+          to:client.email,
+          toName:client.name,
           subject:'Reminder from Active Aging Partners',
           type:'reminder',
           bodyText:text,
-          emailOptIn:client.emailOptIn,
+          clientName:client.name||'Client',
         }).catch(e=>console.warn('Reminder email failed:',e));
       }
     }catch(e){console.error(e);}
