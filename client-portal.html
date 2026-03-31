@@ -580,17 +580,18 @@ body { font-family:'Jost',sans-serif; background:var(--cream); color:var(--charc
             <div class="settings-title">Change Password</div>
             <div class="form-group">
               <label class="form-label">Current Password</label>
-              <input type="password" class="form-input" placeholder="••••••••">
+              <input type="password" class="form-input" id="pw-current" placeholder="••••••••">
             </div>
             <div class="form-group">
               <label class="form-label">New Password</label>
-              <input type="password" class="form-input" placeholder="New password">
+              <input type="password" class="form-input" id="pw-new" placeholder="New password (min 6 characters)">
             </div>
             <div class="form-group">
               <label class="form-label">Confirm New Password</label>
-              <input type="password" class="form-input" placeholder="Confirm password">
+              <input type="password" class="form-input" id="pw-confirm" placeholder="Confirm password">
             </div>
-            <button class="btn btn-primary btn-sm" onclick="saveToast('Password updated!')">Update Password</button>
+            <div id="pw-error" style="display:none;color:#b03030;font-size:13px;margin-bottom:10px"></div>
+            <button class="btn btn-primary btn-sm" id="pw-btn" onclick="window.doUpdatePassword()">Update Password</button>
           </div>
 
           <div class="settings-card">
@@ -852,7 +853,7 @@ function escapeHtml(str) {
 <!-- FIREBASE AUTH GUARD + FIRESTORE MESSAGING -->
 <script type="module">
   import { initializeApp }   from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-  import { getAuth, onAuthStateChanged, signOut }
+  import { getAuth, onAuthStateChanged, signOut, updatePassword, EmailAuthProvider, reauthenticateWithCredential }
                               from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
   import {
     initializeFirestore, collection, addDoc, query, where,
@@ -1454,6 +1455,47 @@ function escapeHtml(str) {
     } catch (err) {
       console.error('Save senior info error:', err);
       showToast('⚠️ Could not save. Please try again.');
+    }
+  };
+
+  // ── CHANGE PASSWORD ───────────────────────────────────────
+  window.doUpdatePassword = async function() {
+    const current  = document.getElementById('pw-current')?.value  || '';
+    const newPw    = document.getElementById('pw-new')?.value      || '';
+    const confirm  = document.getElementById('pw-confirm')?.value  || '';
+    const errEl    = document.getElementById('pw-error');
+    const btn      = document.getElementById('pw-btn');
+
+    const showErr = (msg) => { errEl.textContent = msg; errEl.style.display = 'block'; };
+    errEl.style.display = 'none';
+
+    if (!current)           return showErr('Please enter your current password.');
+    if (newPw.length < 6)   return showErr('New password must be at least 6 characters.');
+    if (newPw !== confirm)  return showErr('New passwords do not match.');
+    if (!currentUser)       return showErr('Not signed in. Please refresh and try again.');
+
+    btn.textContent = 'Updating…';
+    btn.disabled = true;
+    try {
+      const credential = EmailAuthProvider.credential(currentUser.email, current);
+      await reauthenticateWithCredential(currentUser, credential);
+      await updatePassword(currentUser, newPw);
+      document.getElementById('pw-current').value = '';
+      document.getElementById('pw-new').value     = '';
+      document.getElementById('pw-confirm').value = '';
+      showToast('✓ Password updated successfully!');
+    } catch (err) {
+      console.error('Password update error:', err);
+      if (err.code === 'auth/wrong-password' || err.code === 'auth/invalid-credential') {
+        showErr('Current password is incorrect.');
+      } else if (err.code === 'auth/too-many-requests') {
+        showErr('Too many attempts. Please try again later.');
+      } else {
+        showErr('Could not update password. Please try again.');
+      }
+    } finally {
+      btn.textContent = 'Update Password';
+      btn.disabled = false;
     }
   };
 </script>

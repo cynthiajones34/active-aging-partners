@@ -324,10 +324,11 @@ textarea.fi{resize:vertical;min-height:80px;line-height:1.5;}
         </div>
         <div class="sc">
           <div class="sc-title">Change Password</div>
-          <div class="fg"><label class="fl">Current Password</label><input type="password" class="fi" placeholder="••••••••"></div>
-          <div class="fg"><label class="fl">New Password</label><input type="password" class="fi" placeholder="New password"></div>
-          <div class="fg"><label class="fl">Confirm Password</label><input type="password" class="fi" placeholder="Confirm"></div>
-          <button class="btn btn-p btn-sm" onclick="saveToast('Password updated!')">Update Password</button>
+          <div class="fg"><label class="fl">Current Password</label><input type="password" class="fi" id="staff-pw-current" placeholder="••••••••"></div>
+          <div class="fg"><label class="fl">New Password</label><input type="password" class="fi" id="staff-pw-new" placeholder="New password (min 6 characters)"></div>
+          <div class="fg"><label class="fl">Confirm Password</label><input type="password" class="fi" id="staff-pw-confirm" placeholder="Confirm"></div>
+          <div id="staff-pw-error" style="display:none;color:#b03030;font-size:13px;margin-bottom:10px"></div>
+          <button class="btn btn-p btn-sm" id="staff-pw-btn" onclick="window.doUpdatePassword()">Update Password</button>
         </div>
       </div>
     </div>
@@ -543,7 +544,7 @@ function downloadCSV(type){
 <!-- FIREBASE AUTH GUARD + FIRESTORE MESSAGING + BOOKING -->
 <script type="module">
   import { initializeApp }   from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-  import { getAuth, onAuthStateChanged, signOut }
+  import { getAuth, onAuthStateChanged, signOut, updatePassword, EmailAuthProvider, reauthenticateWithCredential }
                               from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
   import {
     getFirestore, initializeFirestore, collection, addDoc, query,
@@ -1199,6 +1200,47 @@ function downloadCSV(type){
   window._staffBadgeInterval = setInterval(updateStaffBadges, 60000);
   // Called after auth sets currentUser
   window._updateStaffBadges = updateStaffBadges;
+
+  // ── CHANGE PASSWORD ───────────────────────────────────────
+  window.doUpdatePassword = async function() {
+    const current = document.getElementById('staff-pw-current')?.value || '';
+    const newPw   = document.getElementById('staff-pw-new')?.value     || '';
+    const confirm = document.getElementById('staff-pw-confirm')?.value || '';
+    const errEl   = document.getElementById('staff-pw-error');
+    const btn     = document.getElementById('staff-pw-btn');
+
+    const showErr = (msg) => { errEl.textContent = msg; errEl.style.display = 'block'; };
+    errEl.style.display = 'none';
+
+    if (!current)          return showErr('Please enter your current password.');
+    if (newPw.length < 6)  return showErr('New password must be at least 6 characters.');
+    if (newPw !== confirm)  return showErr('New passwords do not match.');
+    if (!currentUser)       return showErr('Not signed in. Please refresh and try again.');
+
+    btn.textContent = 'Updating…';
+    btn.disabled = true;
+    try {
+      const credential = EmailAuthProvider.credential(currentUser.email, current);
+      await reauthenticateWithCredential(currentUser, credential);
+      await updatePassword(currentUser, newPw);
+      document.getElementById('staff-pw-current').value = '';
+      document.getElementById('staff-pw-new').value     = '';
+      document.getElementById('staff-pw-confirm').value = '';
+      showToast('✓ Password updated successfully!');
+    } catch (err) {
+      console.error('Password update error:', err);
+      if (err.code === 'auth/wrong-password' || err.code === 'auth/invalid-credential') {
+        showErr('Current password is incorrect.');
+      } else if (err.code === 'auth/too-many-requests') {
+        showErr('Too many attempts. Please try again later.');
+      } else {
+        showErr('Could not update password. Please try again.');
+      }
+    } finally {
+      btn.textContent = 'Update Password';
+      btn.disabled = false;
+    }
+  };
 </script>
 </body>
 </html>
