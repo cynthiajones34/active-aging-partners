@@ -346,7 +346,7 @@ body { font-family:'Jost',sans-serif; background:var(--cream); color:var(--charc
 
       <div class="nav-label">Communication</div>
       <div class="nav-item" onclick="nav('messages',this); window._clearClientBadge && window._clearClientBadge('messages')"><span class="nav-icon">💬</span> Messages <span class="nav-badge" id="client-messages-badge" style="display:none">0</span></div>
-      <div class="nav-item" onclick="nav('reports',this); window._clearClientBadge && window._clearClientBadge('reports')"><span class="nav-icon">📋</span> My Reports <span class="nav-badge" id="client-reports-badge" style="display:none">0</span></div>
+      <div class="nav-item" onclick="nav('reports',this); window._clearClientBadge && window._clearClientBadge('reports'); window.loadClientReports && window.loadClientReports()"><span class="nav-icon">📋</span> My Reports <span class="nav-badge" id="client-reports-badge" style="display:none">0</span></div>
 
       <div class="nav-label">Account</div>
       <div class="nav-item" onclick="nav('profile',this)"><span class="nav-icon">👤</span> My Profile</div>
@@ -1020,8 +1020,9 @@ function escapeHtml(str) {
       console.warn('Profile load error:', e.message);
     }
 
-    // Load client's session schedule
+    // Load client's session schedule and reports
     loadClientSchedule();
+    loadClientReports();
 
     // Update notification badges
     updateClientBadges();
@@ -1102,6 +1103,51 @@ function escapeHtml(str) {
     }
   }
   window.loadClientSchedule = loadClientSchedule;
+
+  // ── CLIENT REPORTS ────────────────────────────────────────
+  async function loadClientReports() {
+    if (!currentUser) return;
+    const listEl = document.getElementById('reports-list');
+    if (!listEl) return;
+    listEl.innerHTML = '<div style="text-align:center;padding:24px;font-size:13px;color:var(--mid)">Loading reports…</div>';
+    try {
+      const snap = await getDocs(query(
+        collection(db, 'clients', currentUser.uid, 'messages'),
+        where('type', '==', 'report'),
+        orderBy('createdAt', 'desc')
+      ));
+      if (snap.empty) {
+        listEl.innerHTML = `
+          <div style="text-align:center;padding:48px 20px;background:#fff;border-radius:16px;border:1px solid rgba(0,0,0,0.06)">
+            <div style="font-size:40px;margin-bottom:14px">📋</div>
+            <div style="font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:600;margin-bottom:8px">No reports yet</div>
+            <div style="font-size:14px;color:var(--mid)">After each session, your companion will send a detailed report here and to your email.</div>
+          </div>`;
+        return;
+      }
+      listEl.innerHTML = snap.docs.map(d => {
+        const m = d.data();
+        const ts = m.createdAt?.toDate?.();
+        const dateStr = ts ? ts.toLocaleDateString('en-US', { weekday:'long', month:'long', day:'numeric', year:'numeric' }) : '';
+        const timeStr = ts ? ts.toLocaleTimeString('en-US', { hour:'numeric', minute:'2-digit' }) : '';
+        return `
+          <div style="background:#fff;border-radius:16px;border:1px solid rgba(0,0,0,0.06);padding:20px 24px;margin-bottom:14px">
+            <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px;padding-bottom:12px;border-bottom:1px solid rgba(0,0,0,0.06)">
+              <span style="font-size:20px">📋</span>
+              <div>
+                <div style="font-weight:600;font-size:14px">Session Report</div>
+                <div style="font-size:12px;color:var(--mid)">${dateStr}${timeStr ? ' · ' + timeStr : ''}</div>
+              </div>
+            </div>
+            <div style="font-size:13px;color:var(--mid);white-space:pre-line;line-height:1.7">${escapeHtml(m.text)}</div>
+          </div>`;
+      }).join('');
+    } catch (err) {
+      console.error('loadClientReports error:', err);
+      listEl.innerHTML = '<div style="text-align:center;padding:24px;font-size:13px;color:#b03030">Could not load reports. Please try again.</div>';
+    }
+  }
+  window.loadClientReports = loadClientReports;
 
   // ── CLIENT NOTIFICATION BADGES ───────────────────────────
   function setClientBadge(id, count) {
