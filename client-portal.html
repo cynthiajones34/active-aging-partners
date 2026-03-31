@@ -1194,8 +1194,11 @@ function escapeHtml(str) {
       await loadClientSchedule();
 
     } catch (err) {
-      console.error('Cancel session error:', err);
-      errEl.textContent = 'Could not cancel session. Please try again.';
+      console.error('Cancel session error — code:', err.code, '| message:', err.message, '| full:', err);
+      const msg = err.code === 'permission-denied'
+        ? 'Permission denied. Please sign out and back in, then try again.'
+        : `Could not cancel session. Please try again. (${err.code || err.message})`;
+      errEl.textContent = msg;
       errEl.style.display = 'block';
       btn.textContent = 'Cancel Session';
       btn.disabled = false;
