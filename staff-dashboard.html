@@ -161,7 +161,7 @@ textarea.fi{resize:vertical;min-height:80px;line-height:1.5;}
     <div class="ni" onclick="nav('clients',this);window._clearStaffBadge&&window._clearStaffBadge('clients')"><span class="ni-icon">👥</span> Clients <span class="nav-badge" id="staff-clients-badge" style="display:none">0</span></div>
     <div class="ni" onclick="nav('messages',this);window._clearStaffBadge&&window._clearStaffBadge('messages')"><span class="ni-icon">💬</span> Messages <span class="nav-badge" id="staff-messages-badge" style="display:none">0</span></div>
     <div class="nl">Business</div>
-    <div class="ni" onclick="nav('reports',this)"><span class="ni-icon">📋</span> Session Reports</div>
+    <div class="ni" onclick="nav('reports',this); window.loadStaffReports && window.loadStaffReports()"><span class="ni-icon">📋</span> Session Reports</div>
     <div class="ni" onclick="nav('payments',this)"><span class="ni-icon">💳</span> Payments</div>
     <div class="nl">Settings</div>
     <div class="ni" onclick="nav('profile',this)"><span class="ni-icon">👤</span> My Profile</div>
@@ -300,9 +300,14 @@ textarea.fi{resize:vertical;min-height:80px;line-height:1.5;}
 
     <!-- REPORTS -->
     <div class="view" id="view-reports">
-      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:18px">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px">
         <p style="font-size:13px;color:var(--mid)">Reports are automatically sent to family contacts after each session.</p>
         <button class="btn btn-p" onclick="openModal('report-modal')">✏️ New Report</button>
+      </div>
+      <div style="margin-bottom:16px">
+        <input type="text" class="fi" id="reports-search" placeholder="Search by client, senior name, or date (YYYY-MM-DD)…"
+               oninput="window._filterReports && window._filterReports(this.value)"
+               style="max-width:460px">
       </div>
       <div id="reports-list">
         <div style="background:#fff;border-radius:14px;padding:40px;border:1px solid rgba(0,0,0,0.05)">
@@ -597,7 +602,22 @@ async function submitReport(){
     document.getElementById('rm-duration').value='';
     document.getElementById('rm-date').value='';
 
-    // 2. Create Stripe invoice (runs after modal closes, non-blocking)
+    // 2. Save structured report record to reports collection for staff dashboard
+    if (typeof window.saveReportRecord === 'function') {
+      window.saveReportRecord({
+        clientUid:       uid,
+        clientName:      client.name     || 'Client',
+        seniorName:      client.seniorName || '',
+        service:         type,
+        date,
+        durationMinutes: dur,
+        mood,
+        notes,
+        text,
+      }).catch(e => console.warn('Report record save failed:', e));
+    }
+
+    // 3. Create Stripe invoice (runs after modal closes, non-blocking)
     if(typeof window.createInvoice==='function'){
       window.createInvoice({
         clientUid:       uid,
@@ -1493,6 +1513,79 @@ function downloadCSV(type){
         }).catch(e=>console.warn('Reminder email failed:',e));
       }
     }catch(e){console.error(e);}
+  };
+
+  // ── STAFF REPORTS ─────────────────────────────────────────
+  window.saveReportRecord = async function(data) {
+    await addDoc(collection(db, 'reports'), {
+      clientUid:       data.clientUid,
+      clientName:      data.clientName,
+      seniorName:      data.seniorName || '',
+      service:         data.service,
+      date:            data.date,
+      durationMinutes: data.durationMinutes,
+      mood:            data.mood,
+      notes:           data.notes,
+      text:            data.text,
+      createdAt:       serverTimestamp(),
+    });
+  };
+
+  let _allReports = [];
+
+  window.loadStaffReports = async function() {
+    const listEl = document.getElementById('reports-list');
+    if (!listEl) return;
+    const searchEl = document.getElementById('reports-search');
+    if (searchEl) searchEl.value = '';
+    listEl.innerHTML = '<div style="text-align:center;padding:24px;font-size:13px;color:var(--mid)">Loading reports…</div>';
+    try {
+      const snap = await getDocs(query(collection(db, 'reports'), orderBy('date', 'desc')));
+      _allReports = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+      renderReports(_allReports);
+    } catch(err) {
+      console.error('loadStaffReports error:', err);
+      listEl.innerHTML = '<div style="text-align:center;padding:24px;font-size:13px;color:#b03030">Could not load reports. Please try again.</div>';
+    }
+  };
+
+  function renderReports(reports) {
+    const listEl = document.getElementById('reports-list');
+    if (!listEl) return;
+    if (reports.length === 0) {
+      listEl.innerHTML = '<div style="background:#fff;border-radius:14px;padding:40px;border:1px solid rgba(0,0,0,0.05)"><div class="es"><div class="es-icon">📋</div><div class="es-title">No reports found</div><div class="es-body">Try a different search term, or write a new report.</div></div></div>';
+      return;
+    }
+    const esc = s => String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+    listEl.innerHTML = reports.map(r => {
+      const readableDate = r.date
+        ? new Date(r.date + 'T12:00:00').toLocaleDateString('en-US', {weekday:'long', month:'long', day:'numeric', year:'numeric'})
+        : '—';
+      return `<div style="background:#fff;border-radius:14px;border:1px solid rgba(0,0,0,0.05);padding:20px 24px;margin-bottom:12px;box-shadow:0 2px 8px var(--shadow)">
+        <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:10px">
+          <div>
+            <div style="font-weight:600;font-size:15px">${esc(r.clientName)}</div>
+            ${r.seniorName ? `<div style="font-size:12px;color:var(--mid)">Senior: ${esc(r.seniorName)}</div>` : ''}
+          </div>
+          <div style="text-align:right;flex-shrink:0">
+            <div style="font-size:13px;font-weight:600;color:var(--forest)">${readableDate}</div>
+            <div style="font-size:11px;color:var(--mid)">${esc(r.service)} · ${r.durationMinutes||60} min</div>
+          </div>
+        </div>
+        ${r.mood ? `<div style="font-size:12px;margin-bottom:8px">${esc(r.mood)}</div>` : ''}
+        <div style="font-size:13px;color:var(--mid);white-space:pre-line;line-height:1.7;border-top:1px solid rgba(0,0,0,0.05);padding-top:10px">${esc(r.notes||r.text||'')}</div>
+      </div>`;
+    }).join('');
+  }
+
+  window._filterReports = function(q) {
+    const term = q.trim().toLowerCase();
+    if (!term) { renderReports(_allReports); return; }
+    renderReports(_allReports.filter(r =>
+      (r.clientName||'').toLowerCase().includes(term) ||
+      (r.seniorName||'').toLowerCase().includes(term) ||
+      (r.date||'').includes(term)
+    ));
   };
 
   // ── STAFF NOTIFICATION BADGES ─────────────────────────────
