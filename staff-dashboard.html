@@ -533,6 +533,44 @@ textarea.fi{resize:vertical;min-height:80px;line-height:1.5;}
   </div>
 </div>
 
+<!-- Session Detail Modal -->
+<div class="modal-overlay" id="session-detail-modal">
+  <div class="modal-wide">
+    <div class="mhdr">
+      <div>
+        <div class="mtitle" id="sd-title">Session</div>
+        <div style="font-size:12px;color:var(--mid);margin-top:2px" id="sd-date"></div>
+      </div>
+      <div style="display:flex;align-items:center;gap:8px">
+        <button class="btn btn-g btn-sm" id="sd-msg-btn">💬 Message</button>
+        <button class="mclose" onclick="closeModal('session-detail-modal')">✕</button>
+      </div>
+    </div>
+    <div class="cp-grid">
+      <div class="cp-section">
+        <div class="cp-label">Booking Details</div>
+        <div class="cp-row"><span class="cp-row-key">Service</span><span id="sd-service">—</span></div>
+        <div class="cp-row"><span class="cp-row-key">Date</span><span id="sd-date-detail">—</span></div>
+        <div class="cp-row"><span class="cp-row-key">Time</span><span id="sd-time">—</span></div>
+        <div class="cp-row"><span class="cp-row-key">Duration</span><span id="sd-duration">—</span></div>
+        <div class="cp-row"><span class="cp-row-key">Cost</span><span id="sd-cost">—</span></div>
+        <div class="cp-row"><span class="cp-row-key">Status</span><span id="sd-status">—</span></div>
+        <div class="cp-row" id="sd-notes-row"><span class="cp-row-key">Notes</span><span id="sd-notes" style="color:var(--mid);font-style:italic">—</span></div>
+      </div>
+      <div class="cp-section">
+        <div class="cp-label">Client Contact</div>
+        <div class="cp-row"><span class="cp-row-key">Name</span><span id="sd-client-name">—</span></div>
+        <div class="cp-row"><span class="cp-row-key">Email</span><span id="sd-client-email">—</span></div>
+        <div class="cp-row"><span class="cp-row-key">Phone</span><span id="sd-client-phone">—</span></div>
+        <div class="cp-label" style="margin-top:16px">Senior Information</div>
+        <div class="cp-row"><span class="cp-row-key">Name</span><span id="sd-senior-name">—</span></div>
+        <div class="cp-row"><span class="cp-row-key">Age</span><span id="sd-senior-age">—</span></div>
+        <div class="cp-row"><span class="cp-row-key">Notes</span><span id="sd-senior-notes" style="color:var(--mid);font-style:italic">—</span></div>
+      </div>
+    </div>
+  </div>
+</div>
+
 <div class="toast" id="toast"></div>
 
 <script>
@@ -1032,12 +1070,12 @@ function downloadCSV(type){
         const time  = s.time
           ? new Date(`2000-01-01T${s.time}`).toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit'})
           : '';
-        return `<div title="${name} · ${s.service||'Session'}${time?' · '+time:''}" style="
+        return `<div onclick="window.openSessionDetail('${s.id}')" title="${name} · ${s.service||'Session'}${time?' · '+time:''}" style="
           background:var(--forest);color:#fff;border-radius:4px;
           padding:2px 5px;font-size:10px;font-weight:500;
           margin-bottom:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
-          cursor:default;line-height:1.5;
-        ">${time?time+' ':''}${first}</div>`;
+          cursor:pointer;line-height:1.5;transition:opacity 0.15s;
+        " onmouseover="this.style.opacity='0.8'" onmouseout="this.style.opacity='1'">${time?time+' ':''}${first}</div>`;
       }).join('');
 
       cells += `<div style="
@@ -1050,6 +1088,41 @@ function downloadCSV(type){
 
     grid.innerHTML = cells;
   }
+
+  // ── SESSION DETAIL MODAL ─────────────────────────────────
+  window.openSessionDetail = function(sessionId) {
+    const s = _confirmedSessions.find(s => s.id === sessionId);
+    if (!s) return;
+
+    const client = _allClientDocs?.find(d => d.id === s.clientUid)?.data || clientMap[s.clientUid] || {};
+    const readableDate = new Date(s.date + 'T12:00:00').toLocaleDateString('en-US', {weekday:'long', month:'long', day:'numeric', year:'numeric'});
+    const readableTime = s.time ? new Date(`2000-01-01T${s.time}`).toLocaleTimeString('en-US', {hour:'numeric', minute:'2-digit'}) : '—';
+
+    document.getElementById('sd-title').textContent   = s.service || 'Session';
+    document.getElementById('sd-date').textContent    = readableDate;
+    document.getElementById('sd-service').textContent = s.service || '—';
+    document.getElementById('sd-date-detail').textContent = readableDate;
+    document.getElementById('sd-time').textContent    = readableTime;
+    document.getElementById('sd-duration').textContent = `${s.durationMinutes || 60} minutes`;
+    document.getElementById('sd-cost').textContent    = s.cost ? `$${s.cost}` : '—';
+    document.getElementById('sd-status').textContent  = s.status === 'confirmed' ? '✓ Confirmed' : s.status;
+    document.getElementById('sd-notes').textContent   = s.notes || '—';
+
+    document.getElementById('sd-client-name').textContent  = client.displayName || s.clientName || '—';
+    document.getElementById('sd-client-email').textContent = client.email || s.clientEmail || '—';
+    document.getElementById('sd-client-phone').textContent = client.phone || '—';
+    document.getElementById('sd-senior-name').textContent  = client.seniorName || '—';
+    document.getElementById('sd-senior-age').textContent   = client.seniorAge  || '—';
+    document.getElementById('sd-senior-notes').textContent = client.notes      || '—';
+
+    document.getElementById('sd-msg-btn').onclick = () => {
+      closeModal('session-detail-modal');
+      nav('messages', document.querySelectorAll('.ni')[3]);
+      window._openClientThread(s.clientUid, client.displayName || s.clientName || 'Client');
+    };
+
+    openModal('session-detail-modal');
+  };
 
   window.staffCalPrev = function() {
     _calMonth--;
