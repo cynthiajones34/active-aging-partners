@@ -829,9 +829,15 @@ function previewPhoto(input) {
     const sbPhoto = document.getElementById('sidebar-photo');
     sbPhoto.src = src; sbPhoto.style.display = 'block';
     document.getElementById('sidebar-initials').style.display = 'none';
-    showToast('✓ Profile photo updated!');
+    showToast('Uploading photo…');
   };
   reader.readAsDataURL(file);
+  // Upload to Firebase Storage and save URL to Firestore
+  if (window._uploadClientPhoto) {
+    window._uploadClientPhoto(file)
+      .then(() => showToast('✓ Photo saved!'))
+      .catch(() => showToast('⚠️ Photo upload failed. Please try again.'));
+  }
 }
 
 function openModal(id) { document.getElementById(id).classList.add('open'); }
@@ -871,6 +877,8 @@ function escapeHtml(str) {
   }                           from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
   import { getFunctions, httpsCallable }
                               from "https://www.gstatic.com/firebasejs/10.12.0/firebase-functions.js";
+  import { getStorage, ref as storageRef, uploadBytes, getDownloadURL }
+                              from "https://www.gstatic.com/firebasejs/10.12.0/firebase-storage.js";
 
   const firebaseConfig = {
     apiKey:            "AIzaSyAuXMMnVjij0x1X5sQ5Jm1NuJUvquwDb0k",
@@ -885,6 +893,7 @@ function escapeHtml(str) {
   const auth      = getAuth(app);
   const db        = initializeFirestore(app, { experimentalAutoDetectLongPolling: true });
   const functions = getFunctions(app, 'us-east1');
+  const storage   = getStorage(app);
 
   const _sendEmailNotification = httpsCallable(functions, 'sendEmailNotification');
 
@@ -936,10 +945,23 @@ function escapeHtml(str) {
           seniorName:        get('seniorName'),
           seniorAge:         get('seniorAge'),
           notes:             get('notes'),
+          photoURL:          get('photoURL'),
           emailOptIn:        data.fields?.emailOptIn?.booleanValue,
           reportEmailOptIn:  data.fields?.reportEmailOptIn?.booleanValue,
           invoiceEmailOptIn: data.fields?.invoiceEmailOptIn?.booleanValue,
         };
+
+        // Show stored photo if one exists
+        if (clientProfile.photoURL) {
+          const preview = document.getElementById('photo-preview');
+          if (preview) { preview.src = clientProfile.photoURL; preview.style.display = 'block'; }
+          const photoInitEl = document.getElementById('photo-initials');
+          if (photoInitEl) photoInitEl.style.display = 'none';
+          const sbPhoto = document.getElementById('sidebar-photo');
+          if (sbPhoto) { sbPhoto.src = clientProfile.photoURL; sbPhoto.style.display = 'block'; }
+          const sbInit = document.getElementById('sidebar-initials');
+          if (sbInit) sbInit.style.display = 'none';
+        }
 
         // Split displayName into first/last
         const dn = clientProfile.displayName || displayName;
@@ -1298,6 +1320,15 @@ function escapeHtml(str) {
       console.error('Save prefs error:', err);
       showToast('⚠️ Could not save preferences.');
     }
+  };
+
+  // ── PHOTO UPLOAD ──────────────────────────────────────────
+  window._uploadClientPhoto = async function(file) {
+    if (!currentUser || !file) return;
+    const sRef = storageRef(storage, `client-photos/${currentUser.uid}`);
+    await uploadBytes(sRef, file);
+    const url = await getDownloadURL(sRef);
+    await setDoc(doc(db, 'clients', currentUser.uid), { photoURL: url }, { merge: true });
   };
 
   // ── LOGOUT ────────────────────────────────────────────────

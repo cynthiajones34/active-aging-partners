@@ -744,6 +744,7 @@ function downloadCSV(type){
           phone:c.phone||'',
           seniorName:c.seniorName||'',
           lastClientMessageAt:c.lastClientMessageAt||null,
+          photoURL:c.photoURL||'',
         };
       });
       // Expose globally so submitReport() can access client details
@@ -767,8 +768,11 @@ function downloadCSV(type){
           const ini=name.split(' ').map(w=>w[0]).slice(0,2).join('').toUpperCase();
           const ts=c.lastClientMessageAt?.toDate?.();
           const timeLabel=ts?ts.toLocaleDateString('en-US',{month:'short',day:'numeric'}):'';
+          const thrAvHtml=c.photoURL
+            ?`<div class="thr-av" style="overflow:hidden"><img src="${c.photoURL}" style="width:100%;height:100%;object-fit:cover;border-radius:50%"></div>`
+            :`<div class="thr-av" style="background:var(--forest)">${ini}</div>`;
           return `<div class="thr" data-uid="${d.id}" onclick="window._openClientThread('${d.id}','${name.replace(/'/g,"\\'")}')">
-            <div class="thr-av" style="background:var(--forest)">${ini}</div>
+            ${thrAvHtml}
             <div style="flex:1;min-width:0">
               <div style="display:flex;justify-content:space-between;align-items:baseline">
                 <div class="thr-name">${name}</div>
@@ -802,8 +806,11 @@ function downloadCSV(type){
       const name=c.displayName||c.email||'Client';
       const ini=name.split(' ').map(w=>w[0]).slice(0,2).join('').toUpperCase();
       const sub=c.seniorName?`Senior: ${c.seniorName}`:'Client · Active';
+      const avatarHtml=c.photoURL
+        ?`<div class="cav" style="overflow:hidden"><img src="${c.photoURL}" style="width:100%;height:100%;object-fit:cover;border-radius:50%"></div>`
+        :`<div class="cav" style="background:${colors[colorIdx%colors.length]}">${ini}</div>`;
       return `<div class="cc" style="cursor:pointer;transition:box-shadow 0.2s" onmouseover="this.style.boxShadow='0 4px 20px rgba(45,74,50,0.15)'" onmouseout="this.style.boxShadow=''" onclick="window.openClientProfile('${id}')">
-        <div class="cc-hdr"><div class="cav" style="background:${colors[colorIdx%colors.length]}">${ini}</div>
+        <div class="cc-hdr">${avatarHtml}
         <div><div class="cc-name">${name}</div><div class="cc-age">${sub}</div></div></div>
         <div class="cc-foot">📧 ${c.email||'—'}${c.phone?' · 📞 '+c.phone:''}</div></div>`;
     }).join('');
@@ -834,8 +841,16 @@ function downloadCSV(type){
     const ini  = name.split(' ').map(w=>w[0]).slice(0,2).join('').toUpperCase();
 
     // Populate header
-    document.getElementById('cp-avatar').textContent = ini;
-    document.getElementById('cp-avatar').style.background = colors[entry.colorIdx % colors.length];
+    const cpAvatar = document.getElementById('cp-avatar');
+    if (c.photoURL) {
+      cpAvatar.innerHTML = `<img src="${c.photoURL}" style="width:100%;height:100%;object-fit:cover;border-radius:50%">`;
+      cpAvatar.style.background = 'transparent';
+      cpAvatar.style.overflow = 'hidden';
+    } else {
+      cpAvatar.textContent = ini;
+      cpAvatar.style.background = colors[entry.colorIdx % colors.length];
+      cpAvatar.style.overflow = '';
+    }
     document.getElementById('cp-name').textContent = name;
     document.getElementById('cp-sub').textContent = c.seniorName ? `Family contact for ${c.seniorName}` : 'Client';
 
