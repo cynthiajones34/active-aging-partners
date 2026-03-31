@@ -665,12 +665,13 @@ body { font-family:'Jost',sans-serif; background:var(--cream); color:var(--charc
       <p style="font-size:14px;color:var(--mid);margin-bottom:16px">Are you sure you want to cancel <strong id="cancel-session-name"></strong>? Cancellations within 24 hours may be subject to a fee.</p>
       <div class="form-group">
         <label class="form-label">Reason (optional)</label>
-        <textarea class="form-input" rows="2" placeholder="e.g. Schedule conflict, feeling unwell…"></textarea>
+        <textarea class="form-input" id="cancel-reason" rows="2" placeholder="e.g. Schedule conflict, feeling unwell…"></textarea>
       </div>
+      <div id="cancel-error" style="display:none;color:#b03030;font-size:13px;margin-top:8px"></div>
     </div>
     <div class="modal-footer">
       <button class="btn btn-ghost" onclick="closeModal('cancel-modal')">Keep Session</button>
-      <button class="btn btn-danger" onclick="closeModal('cancel-modal');showToast('Session cancelled. Your companion has been notified.')">Cancel Session</button>
+      <button class="btn btn-danger" id="cancel-confirm-btn" onclick="window.doCancelSession()">Cancel Session</button>
     </div>
   </div>
 </div>
@@ -766,8 +767,16 @@ function renderCalendar() {
 }
 // confirmBooking is defined in the Firebase module below
 
-function showCancel(name) {
-  document.getElementById('cancel-session-name').textContent = name;
+function showCancel(sessionId, name, date, service) {
+  document.getElementById('cancel-session-name').textContent = `${service || 'Session'} on ${date}`;
+  document.getElementById('cancel-reason').value = '';
+  document.getElementById('cancel-error').style.display = 'none';
+  document.getElementById('cancel-confirm-btn').textContent = 'Cancel Session';
+  document.getElementById('cancel-confirm-btn').disabled = false;
+  window._cancelSessionId = sessionId;
+  window._cancelSessionName = name;
+  window._cancelService = service;
+  window._cancelDate = date;
   openModal('cancel-modal');
 }
 
@@ -999,7 +1008,7 @@ function escapeHtml(str) {
 
       const sessions = snap.docs
         .map(d => ({ id: d.id, ...d.data() }))
-        .filter(s => s.status !== 'declined')
+        .filter(s => s.status !== 'declined' && s.status !== 'cancelled')
         .sort((a, b) => (a.date + a.time).localeCompare(b.date + b.time));
 
       if (sessions.length === 0) {
@@ -1027,6 +1036,11 @@ function escapeHtml(str) {
           ? `<span class="session-type-badge" style="background:rgba(201,168,76,0.15);color:#7a5800">⏳ Pending Approval</span>`
           : `<span class="session-type-badge" style="background:rgba(45,74,50,0.1);color:var(--forest)">✓ Confirmed</span>`;
 
+        const clientName = currentUser.displayName || currentUser.email;
+        const cancelBtn = `<button onclick="showCancel('${s.id}','${escapeHtml(clientName).replace(/'/g,"\\'")}','${readableDate}','${escapeHtml(s.service||'Session').replace(/'/g,"\\'")}');event.stopPropagation()"
+          style="margin-top:10px;font-size:11px;color:var(--mid);background:none;border:none;cursor:pointer;padding:0;text-decoration:underline;text-underline-offset:2px">
+          Cancel session</button>`;
+
         return `
           <div class="session-card" style="opacity:${isPending ? '0.85' : '1'}">
             <div class="session-date-block">
@@ -1038,6 +1052,7 @@ function escapeHtml(str) {
               <div class="session-meta">${readableDate}${readableTime ? ' · ' + readableTime : ''} · ${s.durationMinutes || 60} min · $${s.cost || 50}</div>
               ${s.notes ? `<div style="font-size:12px;color:var(--mid);margin-top:3px;font-style:italic">${escapeHtml(s.notes)}</div>` : ''}
               ${isPending ? `<div style="font-size:12px;color:#7a5800;margin-top:4px">We'll confirm your request within 24 hours.</div>` : ''}
+              ${cancelBtn}
             </div>
             ${badge}
           </div>`;
@@ -1121,6 +1136,71 @@ function escapeHtml(str) {
 
   setInterval(updateClientBadges, 60000);
   window._updateClientBadges = updateClientBadges;
+
+  // ── CANCEL SESSION ───────────────────────────────────────
+  window.doCancelSession = async function() {
+    const sessionId = window._cancelSessionId;
+    const clientName = window._cancelSessionName || currentUser?.displayName || currentUser?.email || 'Client';
+    const service   = window._cancelService || 'Session';
+    const date      = window._cancelDate || '';
+    const reason    = document.getElementById('cancel-reason')?.value.trim() || '';
+    const errEl     = document.getElementById('cancel-error');
+    const btn       = document.getElementById('cancel-confirm-btn');
+
+    if (!sessionId) { errEl.textContent = 'Session not found. Please refresh and try again.'; errEl.style.display = 'block'; return; }
+    if (!currentUser) { errEl.textContent = 'Not signed in. Please refresh.'; errEl.style.display = 'block'; return; }
+
+    btn.textContent = 'Cancelling…';
+    btn.disabled = true;
+    errEl.style.display = 'none';
+
+    try {
+      // Mark session cancelled in Firestore
+      await updateDoc(doc(db, 'sessions', sessionId), {
+        status:       'cancelled',
+        cancelledBy:  currentUser.uid,
+        cancelledAt:  serverTimestamp(),
+        cancelReason: reason || '',
+      });
+
+      // Notify staff via client message thread
+      const cancelMsg = `Hi, I need to cancel my ${service} scheduled for ${date}.${reason ? ' Reason: ' + reason : ''} Please let me know if I need to rebook.`;
+      await addDoc(collection(db, 'clients', currentUser.uid, 'messages'), {
+        text:       cancelMsg,
+        senderUid:  currentUser.uid,
+        senderName: clientName,
+        senderRole: 'client',
+        type:       'cancellation',
+        sessionId,
+        createdAt:  serverTimestamp(),
+      });
+
+      // Update lastClientMessageAt so staff messages badge picks it up
+      setDoc(doc(db, 'clients', currentUser.uid), { lastClientMessageAt: serverTimestamp() }, { merge: true })
+        .catch(e => console.warn('lastClientMessageAt update failed:', e));
+
+      // Email staff
+      _sendEmailNotification({
+        to:         'cynthia@activeagingpartners.com',
+        toName:     'Cynthia',
+        subject:    `Session Cancellation — ${clientName}`,
+        type:       'cancellation',
+        bodyText:   `${clientName} has cancelled their ${service} session scheduled for ${date}.${reason ? '\n\nReason: ' + reason : ''}\n\nLog in to the staff dashboard to review and rebook if needed.`,
+        clientName,
+      }).catch(e => console.warn('Cancellation email failed:', e));
+
+      closeModal('cancel-modal');
+      showToast('✓ Session cancelled. Your companion has been notified.');
+      await loadClientSchedule();
+
+    } catch (err) {
+      console.error('Cancel session error:', err);
+      errEl.textContent = 'Could not cancel session. Please try again.';
+      errEl.style.display = 'block';
+      btn.textContent = 'Cancel Session';
+      btn.disabled = false;
+    }
+  };
 
   // ── CLIENT BOOKING REQUEST ────────────────────────────────
   window.confirmBooking = async function() {
