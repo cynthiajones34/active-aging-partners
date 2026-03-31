@@ -214,12 +214,31 @@ textarea.fi{resize:vertical;min-height:80px;line-height:1.5;}
 
     <!-- SCHEDULE -->
     <div class="view" id="view-schedule">
-      <div style="display:flex;align-items:center;gap:14px;margin-bottom:18px">
-        <div style="font-family:'Cormorant Garamond',serif;font-size:20px;font-weight:600;flex:1">Schedule</div>
+      <!-- Pending requests -->
+      <div id="pending-requests-section" style="display:none;margin-bottom:20px"></div>
+
+      <!-- Calendar header -->
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:16px">
+        <button class="btn btn-ghost btn-sm" onclick="staffCalPrev()">‹</button>
+        <div id="staff-cal-label" style="font-family:'Cormorant Garamond',serif;font-size:20px;font-weight:600;flex:1;text-align:center"></div>
+        <button class="btn btn-ghost btn-sm" onclick="staffCalNext()">›</button>
         <button class="btn btn-p btn-sm" onclick="openModal('booking-modal')">+ Book Session</button>
       </div>
-      <div style="background:#fff;border-radius:14px;padding:40px;border:1px solid rgba(0,0,0,0.05);box-shadow:0 2px 8px var(--shadow)">
-        <div class="es"><div class="es-icon">📅</div><div class="es-title">No sessions scheduled</div><div class="es-body">Book a session using the button above. Sessions will appear here once scheduled.</div></div>
+
+      <!-- Calendar grid -->
+      <div style="background:#fff;border-radius:14px;border:1px solid rgba(0,0,0,0.05);box-shadow:0 2px 8px var(--shadow);overflow:hidden">
+        <!-- Day-of-week headers -->
+        <div style="display:grid;grid-template-columns:repeat(7,1fr);border-bottom:1px solid rgba(0,0,0,0.07)">
+          <div style="padding:10px 0;text-align:center;font-size:11px;font-weight:600;color:var(--mid);text-transform:uppercase;letter-spacing:0.08em">Sun</div>
+          <div style="padding:10px 0;text-align:center;font-size:11px;font-weight:600;color:var(--mid);text-transform:uppercase;letter-spacing:0.08em">Mon</div>
+          <div style="padding:10px 0;text-align:center;font-size:11px;font-weight:600;color:var(--mid);text-transform:uppercase;letter-spacing:0.08em">Tue</div>
+          <div style="padding:10px 0;text-align:center;font-size:11px;font-weight:600;color:var(--mid);text-transform:uppercase;letter-spacing:0.08em">Wed</div>
+          <div style="padding:10px 0;text-align:center;font-size:11px;font-weight:600;color:var(--mid);text-transform:uppercase;letter-spacing:0.08em">Thu</div>
+          <div style="padding:10px 0;text-align:center;font-size:11px;font-weight:600;color:var(--mid);text-transform:uppercase;letter-spacing:0.08em">Fri</div>
+          <div style="padding:10px 0;text-align:center;font-size:11px;font-weight:600;color:var(--mid);text-transform:uppercase;letter-spacing:0.08em">Sat</div>
+        </div>
+        <!-- Calendar cells -->
+        <div id="staff-cal-grid" style="display:grid;grid-template-columns:repeat(7,1fr)"></div>
       </div>
     </div>
 
@@ -684,6 +703,97 @@ function downloadCSV(type){
     }
   }
 
+  // ── CALENDAR STATE ────────────────────────────────────────
+  let _calYear  = new Date().getFullYear();
+  let _calMonth = new Date().getMonth(); // 0-based
+  let _confirmedSessions = []; // cached for re-renders on month nav
+
+  function renderCalendar() {
+    const today    = new Date();
+    today.setHours(0,0,0,0);
+    const todayStr = today.toISOString().split('T')[0];
+
+    const label    = document.getElementById('staff-cal-label');
+    const grid     = document.getElementById('staff-cal-grid');
+    if (!label || !grid) return;
+
+    const monthName = new Date(_calYear, _calMonth, 1)
+      .toLocaleString('en-US', { month: 'long', year: 'numeric' });
+    label.textContent = monthName;
+
+    // Build a map: dateStr → [sessions]
+    const byDate = {};
+    _confirmedSessions.forEach(s => {
+      if (!byDate[s.date]) byDate[s.date] = [];
+      byDate[s.date].push(s);
+    });
+
+    // First day of month and number of days
+    const firstDay  = new Date(_calYear, _calMonth, 1).getDay(); // 0=Sun
+    const daysInMonth = new Date(_calYear, _calMonth + 1, 0).getDate();
+
+    let cells = '';
+    const totalCells = Math.ceil((firstDay + daysInMonth) / 7) * 7;
+
+    for (let i = 0; i < totalCells; i++) {
+      const dayNum = i - firstDay + 1;
+      const inMonth = dayNum >= 1 && dayNum <= daysInMonth;
+      const dateStr = inMonth
+        ? `${_calYear}-${String(_calMonth + 1).padStart(2,'0')}-${String(dayNum).padStart(2,'0')}`
+        : null;
+      const isToday   = dateStr === todayStr;
+      const isPast    = dateStr && dateStr < todayStr;
+      const sessions  = dateStr ? (byDate[dateStr] || []) : [];
+
+      const borderBottom = i < totalCells - 7 ? '1px solid rgba(0,0,0,0.05)' : 'none';
+      const borderRight  = (i + 1) % 7 !== 0  ? '1px solid rgba(0,0,0,0.05)' : 'none';
+
+      const dayNumHtml = inMonth
+        ? `<div style="
+            width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;
+            font-size:13px;font-weight:${isToday?'700':'500'};
+            background:${isToday?'var(--forest)':'transparent'};
+            color:${isToday?'#fff':isPast?'rgba(0,0,0,0.25)':'var(--charcoal)'};
+            margin-bottom:4px;
+          ">${dayNum}</div>`
+        : '';
+
+      const sessionPills = sessions.map(s => {
+        const name  = clientMap[s.clientUid]?.name || s.clientName || 'Client';
+        const first = name.split(' ')[0];
+        const time  = s.time
+          ? new Date(`2000-01-01T${s.time}`).toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit'})
+          : '';
+        return `<div title="${name} · ${s.service||'Session'}${time?' · '+time:''}" style="
+          background:var(--forest);color:#fff;border-radius:4px;
+          padding:2px 5px;font-size:10px;font-weight:500;
+          margin-bottom:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+          cursor:default;line-height:1.5;
+        ">${time?time+' ':''}${first}</div>`;
+      }).join('');
+
+      cells += `<div style="
+        min-height:90px;padding:8px 6px;
+        border-right:${borderRight};border-bottom:${borderBottom};
+        background:${isToday?'rgba(45,74,50,0.03)':'transparent'};
+        vertical-align:top;
+      ">${dayNumHtml}${sessionPills}</div>`;
+    }
+
+    grid.innerHTML = cells;
+  }
+
+  window.staffCalPrev = function() {
+    _calMonth--;
+    if (_calMonth < 0) { _calMonth = 11; _calYear--; }
+    renderCalendar();
+  };
+  window.staffCalNext = function() {
+    _calMonth++;
+    if (_calMonth > 11) { _calMonth = 0; _calYear++; }
+    renderCalendar();
+  };
+
   // ── LOAD SCHEDULE ─────────────────────────────────────────
   async function loadSchedule(){
     try{
@@ -700,65 +810,49 @@ function downloadCSV(type){
       window._pendingSessions={};
       pending.forEach(d=>{window._pendingSessions[d.id]={...d.data(),_id:d.id};});
 
+      // Cache confirmed for calendar renders
+      _confirmedSessions = confirmed.map(d=>({id:d.id,...d.data()}));
+
       // Update pending badge in nav
       const badge=document.getElementById('pending-badge');
       if(badge){badge.textContent=pending.length;badge.style.display=pending.length?'inline':'none';}
 
-      let html='';
-
       // ── Pending requests section
-      if(pending.length>0){
-        html+=`<div style="margin-bottom:16px;padding:16px;background:rgba(201,168,76,0.07);border-radius:14px;border:1px solid rgba(201,168,76,0.25)">
-          <div style="font-size:11px;font-weight:700;color:#7a5800;text-transform:uppercase;letter-spacing:0.08em;margin-bottom:12px">⏳ Booking Requests — ${pending.length} pending</div>
-          ${pending.map(d=>{
-            const s=d.data();
-            const clientName=clientMap[s.clientUid]?.name||s.clientName||'Client';
-            return `<div style="background:#fff;border-radius:10px;padding:14px 16px;margin-bottom:8px;border:1px solid rgba(0,0,0,0.06)">
-              <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:12px;flex-wrap:wrap">
-                <div>
-                  <div style="font-size:14px;font-weight:600">${clientName}</div>
-                  <div style="font-size:12px;color:var(--mid);margin-top:2px">${s.service||'Session'} · ${s.date} at ${s.time||'TBD'} · ${s.durationMinutes||60} min · $${s.cost||50}</div>
-                  ${s.notes?`<div style="font-size:12px;color:var(--mid);margin-top:3px;font-style:italic">${s.notes}</div>`:''}
-                </div>
-                <div style="display:flex;gap:8px;flex-shrink:0">
-                  <button class="btn btn-p btn-sm" onclick="approveSession('${d.id}')">✓ Approve</button>
-                  <button class="btn btn-ghost btn-sm" onclick="declineSession('${d.id}')">Decline</button>
-                </div>
-              </div>
+      const pendingSection=document.getElementById('pending-requests-section');
+      if(pendingSection){
+        if(pending.length>0){
+          pendingSection.style.display='block';
+          pendingSection.innerHTML=`
+            <div style="padding:16px;background:rgba(201,168,76,0.07);border-radius:14px;border:1px solid rgba(201,168,76,0.25)">
+              <div style="font-size:11px;font-weight:700;color:#7a5800;text-transform:uppercase;letter-spacing:0.08em;margin-bottom:12px">⏳ Booking Requests — ${pending.length} pending</div>
+              ${pending.map(d=>{
+                const s=d.data();
+                const clientName=clientMap[s.clientUid]?.name||s.clientName||'Client';
+                const readableDate=new Date(s.date+'T12:00:00').toLocaleDateString('en-US',{weekday:'short',month:'short',day:'numeric'});
+                const readableTime=s.time?new Date('2000-01-01T'+s.time).toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit'}):'TBD';
+                return `<div style="background:#fff;border-radius:10px;padding:14px 16px;margin-bottom:8px;border:1px solid rgba(0,0,0,0.06)">
+                  <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:12px;flex-wrap:wrap">
+                    <div>
+                      <div style="font-size:14px;font-weight:600">${clientName}</div>
+                      <div style="font-size:12px;color:var(--mid);margin-top:2px">${s.service||'Session'} · ${readableDate} at ${readableTime} · ${s.durationMinutes||60} min · $${s.cost||50}</div>
+                      ${s.notes?`<div style="font-size:12px;color:var(--mid);margin-top:3px;font-style:italic">${s.notes}</div>`:''}
+                    </div>
+                    <div style="display:flex;gap:8px;flex-shrink:0">
+                      <button class="btn btn-p btn-sm" onclick="approveSession('${d.id}')">✓ Approve</button>
+                      <button class="btn btn-ghost btn-sm" onclick="declineSession('${d.id}')">Decline</button>
+                    </div>
+                  </div>
+                </div>`;
+              }).join('')}
             </div>`;
-          }).join('')}
-        </div>`;
+        } else {
+          pendingSection.style.display='none';
+          pendingSection.innerHTML='';
+        }
       }
 
-      // ── Confirmed sessions
-      if(confirmed.length>0){
-        html+=confirmed.map(d=>{
-          const s=d.data();
-          const clientName=clientMap[s.clientUid]?.name||s.clientName||'Client';
-          const dur=s.durationMinutes||60;
-          const cost=s.cost||Math.round(dur/60*50);
-          const isToday=s.date===todayStr;
-          return `<div style="background:#fff;border-radius:14px;padding:16px 18px;margin-bottom:10px;
-                              border:1px solid rgba(0,0,0,0.05);box-shadow:0 2px 8px var(--shadow);
-                              border-left:4px solid ${isToday?'var(--sage)':'rgba(0,0,0,0.08)'}">
-            <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px">
-              <div>
-                <div style="font-size:14px;font-weight:600">${clientName}</div>
-                <div style="font-size:12px;color:var(--mid);margin-top:2px">${s.service||'Session'} · ${s.date} at ${s.time||'TBD'} · ${dur} min · $${cost}</div>
-                ${s.notes?`<div style="font-size:12px;color:var(--mid);margin-top:4px;font-style:italic">${s.notes}</div>`:''}
-              </div>
-              <span style="background:rgba(45,74,50,0.09);color:var(--forest);padding:3px 10px;border-radius:20px;font-size:11px;font-weight:700">${isToday?'📅 Today':'Upcoming'}</span>
-            </div>
-          </div>`;
-        }).join('');
-      }
-
-      // Render into schedule view
-      const schedContainer=document.querySelector('#view-schedule > div:last-child');
-      if(schedContainer){
-        if(html) schedContainer.innerHTML=html;
-        // else keep the empty state
-      }
+      // Render calendar for current month
+      renderCalendar();
 
       // Populate today's sessions in the dashboard card
       const todaySessions=confirmed.filter(d=>d.data().date===todayStr);
