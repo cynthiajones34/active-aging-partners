@@ -340,12 +340,12 @@ body { font-family:'Jost',sans-serif; background:var(--cream); color:var(--charc
     </div>
     <div class="nav">
       <div class="nav-label">My Care</div>
-      <div class="nav-item active" onclick="nav('schedule',this); window.loadClientSchedule && window.loadClientSchedule()"><span class="nav-icon">📅</span> My Schedule</div>
+      <div class="nav-item active" onclick="nav('schedule',this); window.loadClientSchedule && window.loadClientSchedule(); window._clearClientBadge && window._clearClientBadge('schedule')"><span class="nav-icon">📅</span> My Schedule <span class="nav-badge" id="client-schedule-badge" style="display:none">0</span></div>
       <div class="nav-item" onclick="nav('book',this)"><span class="nav-icon">➕</span> Book a Service</div>
 
       <div class="nav-label">Communication</div>
-      <div class="nav-item" onclick="nav('messages',this)"><span class="nav-icon">💬</span> Messages</div>
-      <div class="nav-item" onclick="nav('reports',this)"><span class="nav-icon">📋</span> My Reports</div>
+      <div class="nav-item" onclick="nav('messages',this); window._clearClientBadge && window._clearClientBadge('messages')"><span class="nav-icon">💬</span> Messages <span class="nav-badge" id="client-messages-badge" style="display:none">0</span></div>
+      <div class="nav-item" onclick="nav('reports',this); window._clearClientBadge && window._clearClientBadge('reports')"><span class="nav-icon">📋</span> My Reports <span class="nav-badge" id="client-reports-badge" style="display:none">0</span></div>
 
       <div class="nav-label">Account</div>
       <div class="nav-item" onclick="nav('profile',this)"><span class="nav-icon">👤</span> My Profile</div>
@@ -974,6 +974,9 @@ function escapeHtml(str) {
     // Load client's session schedule
     loadClientSchedule();
 
+    // Update notification badges
+    updateClientBadges();
+
     // Set up messaging (only on first load)
     if (!window._messagingSetup) {
       window._messagingSetup = true;
@@ -1044,6 +1047,79 @@ function escapeHtml(str) {
     }
   }
   window.loadClientSchedule = loadClientSchedule;
+
+  // ── CLIENT NOTIFICATION BADGES ───────────────────────────
+  function setClientBadge(id, count) {
+    const el = document.getElementById(id);
+    if (!el) return;
+    if (count > 0) { el.textContent = count; el.style.display = ''; }
+    else { el.style.display = 'none'; }
+  }
+
+  window._clearClientBadge = function(tab) {
+    const uid = currentUser?.uid;
+    if (!uid) return;
+    if (tab === 'messages') {
+      localStorage.setItem(`aap_seen_messages_${uid}`, Date.now());
+      setClientBadge('client-messages-badge', 0);
+    } else if (tab === 'schedule') {
+      localStorage.setItem(`aap_seen_schedule_${uid}`, Date.now());
+      setClientBadge('client-schedule-badge', 0);
+    } else if (tab === 'reports') {
+      localStorage.setItem(`aap_seen_reports_${uid}`, Date.now());
+      setClientBadge('client-reports-badge', 0);
+    }
+  };
+
+  async function updateClientBadges() {
+    const uid = currentUser?.uid;
+    if (!uid) return;
+    try {
+      const lastMsg      = parseInt(localStorage.getItem(`aap_seen_messages_${uid}`) || '0');
+      const lastSchedule = parseInt(localStorage.getItem(`aap_seen_schedule_${uid}`) || '0');
+      const lastReports  = parseInt(localStorage.getItem(`aap_seen_reports_${uid}`) || '0');
+      const lastMsgDate  = new Date(lastMsg);
+      const lastSchDate  = new Date(lastSchedule);
+      const lastRptDate  = new Date(lastReports);
+
+      // Fetch messages subcollection
+      const msgSnap = await getDocs(query(
+        collection(db, 'clients', uid, 'messages'),
+        orderBy('createdAt', 'asc')
+      ));
+      let unreadMessages = 0;
+      let unreadReports  = 0;
+      msgSnap.docs.forEach(d => {
+        const m = d.data();
+        const ts = m.createdAt?.toDate?.() || new Date(0);
+        if (m.senderRole === 'staff' && m.type === 'chat' && ts > lastMsgDate) unreadMessages++;
+        if (m.type === 'report' && ts > lastRptDate) unreadReports++;
+      });
+
+      // Fetch sessions for newly confirmed
+      const schSnap = await getDocs(query(
+        collection(db, 'sessions'),
+        where('clientUid', '==', uid)
+      ));
+      let unreadSchedule = 0;
+      schSnap.docs.forEach(d => {
+        const s = d.data();
+        if (s.status === 'confirmed') {
+          const ts = s.confirmedAt?.toDate?.() || new Date(0);
+          if (ts > lastSchDate) unreadSchedule++;
+        }
+      });
+
+      setClientBadge('client-messages-badge', unreadMessages);
+      setClientBadge('client-schedule-badge', unreadSchedule);
+      setClientBadge('client-reports-badge',  unreadReports);
+    } catch (e) {
+      console.warn('Client badge update error:', e.message);
+    }
+  }
+
+  setInterval(updateClientBadges, 60000);
+  window._updateClientBadges = updateClientBadges;
 
   // ── CLIENT BOOKING REQUEST ────────────────────────────────
   window.confirmBooking = async function() {
@@ -1190,6 +1266,9 @@ function escapeHtml(str) {
           type:       'chat',
           createdAt:  serverTimestamp(),
         });
+        // Update client doc so staff messages badge detects new activity
+        setDoc(doc(db, 'clients', currentUser.uid), { lastClientMessageAt: serverTimestamp() }, { merge: true })
+          .catch(e => console.warn('lastClientMessageAt update failed:', e));
         await loadMessages(uid, msgCol);
 
         // Notify staff of new client message

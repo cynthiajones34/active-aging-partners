@@ -22,6 +22,7 @@ body{font-family:'Jost',sans-serif;background:var(--cream);color:var(--charcoal)
 .ni:hover{background:rgba(255,255,255,0.06);color:rgba(255,255,255,0.9);}
 .ni.active{background:linear-gradient(135deg,rgba(45,74,50,0.8),rgba(122,158,126,0.4));color:#fff;}
 .ni-icon{font-size:16px;width:20px;text-align:center;}
+.nav-badge{margin-left:auto;background:var(--clay);color:#fff;font-size:10px;font-weight:700;padding:2px 7px;border-radius:20px;}
 .sb-footer{padding:12px 10px;border-top:1px solid rgba(255,255,255,0.07);}
 .user-pill{display:flex;align-items:center;gap:10px;padding:9px 10px;border-radius:10px;cursor:pointer;transition:background 0.2s;}
 .user-pill:hover{background:rgba(255,255,255,0.06);}
@@ -143,8 +144,8 @@ textarea.fi{resize:vertical;min-height:80px;line-height:1.5;}
     <div class="nl">Overview</div>
     <div class="ni active" onclick="nav('dashboard',this)"><span class="ni-icon">📊</span> Dashboard</div>
     <div class="ni" onclick="nav('schedule',this)"><span class="ni-icon">📅</span> Schedule <span class="nav-badge" id="pending-badge" style="display:none">0</span></div>
-    <div class="ni" onclick="nav('clients',this)"><span class="ni-icon">👥</span> Clients</div>
-    <div class="ni" onclick="nav('messages',this)"><span class="ni-icon">💬</span> Messages</div>
+    <div class="ni" onclick="nav('clients',this);window._clearStaffBadge&&window._clearStaffBadge('clients')"><span class="ni-icon">👥</span> Clients <span class="nav-badge" id="staff-clients-badge" style="display:none">0</span></div>
+    <div class="ni" onclick="nav('messages',this);window._clearStaffBadge&&window._clearStaffBadge('messages')"><span class="ni-icon">💬</span> Messages <span class="nav-badge" id="staff-messages-badge" style="display:none">0</span></div>
     <div class="nl">Business</div>
     <div class="ni" onclick="nav('reports',this)"><span class="ni-icon">📋</span> Session Reports</div>
     <div class="ni" onclick="nav('payments',this)"><span class="ni-icon">💳</span> Payments</div>
@@ -621,6 +622,7 @@ function downloadCSV(type){
     document.getElementById('staff-ph-init').textContent=ini;
     await loadClientList();
     await loadSchedule();
+    updateStaffBadges();
   });
 
   window.doLogout=async function(){await signOut(auth);window.location.href='logout.html';};
@@ -1099,6 +1101,58 @@ function downloadCSV(type){
     try{await addDoc(collection(db,'clients',uid,'messages'),{text,senderUid:currentUser?.uid||'staff',senderName:currentUser?.displayName||'Staff',senderRole:'staff',type:'reminder',createdAt:serverTimestamp()});}
     catch(e){console.error(e);}
   };
+
+  // ── STAFF NOTIFICATION BADGES ─────────────────────────────
+  function setStaffBadge(id, count) {
+    const el = document.getElementById(id);
+    if (!el) return;
+    if (count > 0) { el.textContent = count; el.style.display = ''; }
+    else { el.style.display = 'none'; }
+  }
+
+  window._clearStaffBadge = function(tab) {
+    if (tab === 'clients') {
+      localStorage.setItem('aap_staff_seen_clients', Date.now());
+      setStaffBadge('staff-clients-badge', 0);
+    } else if (tab === 'messages') {
+      localStorage.setItem('aap_staff_seen_messages', Date.now());
+      setStaffBadge('staff-messages-badge', 0);
+    }
+  };
+
+  async function updateStaffBadges() {
+    try {
+      const lastClients  = parseInt(localStorage.getItem('aap_staff_seen_clients')  || '0');
+      const lastMessages = parseInt(localStorage.getItem('aap_staff_seen_messages') || '0');
+      const lastClientsDate  = new Date(lastClients);
+      const lastMessagesDate = new Date(lastMessages);
+
+      const snap = await getDocs(collection(db, 'clients'));
+
+      let newClients  = 0;
+      let newMessages = 0;
+
+      snap.docs.forEach(d => {
+        const c = d.data();
+        // New clients: createdAt newer than last seen
+        const createdAt = c.createdAt?.toDate?.() || new Date(0);
+        if (createdAt > lastClientsDate) newClients++;
+        // Unread client messages: lastClientMessageAt newer than last seen messages
+        const lastMsg = c.lastClientMessageAt?.toDate?.() || new Date(0);
+        if (lastMsg > lastMessagesDate) newMessages++;
+      });
+
+      setStaffBadge('staff-clients-badge',  newClients);
+      setStaffBadge('staff-messages-badge', newMessages);
+    } catch (e) {
+      console.warn('Staff badge update error:', e.message);
+    }
+  }
+
+  // Run on load and every 60 seconds
+  window._staffBadgeInterval = setInterval(updateStaffBadges, 60000);
+  // Called after auth sets currentUser
+  window._updateStaffBadges = updateStaffBadges;
 </script>
 </body>
 </html>
