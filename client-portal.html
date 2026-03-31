@@ -360,7 +360,7 @@ body { font-family:'Jost',sans-serif; background:var(--cream); color:var(--charc
         </div>
         <div>
           <div class="user-name" id="sidebar-name">Loading…</div>
-          <div class="user-role">Family Contact</div>
+          <div class="user-role" id="sidebar-role">Loading…</div>
         </div>
       </div>
       <div onclick="doLogout()" style="display:flex;align-items:center;gap:8px;padding:9px 10px;margin-top:6px;border-radius:10px;cursor:pointer;color:rgba(255,255,255,0.4);font-size:12px;transition:all 0.2s" onmouseover="this.style.background='rgba(255,255,255,0.07)';this.style.color='rgba(255,255,255,0.8)'" onmouseout="this.style.background='transparent';this.style.color='rgba(255,255,255,0.4)'">
@@ -514,7 +514,7 @@ body { font-family:'Jost',sans-serif; background:var(--cream); color:var(--charc
       <div class="view" id="view-profile">
         <div class="settings-grid">
           <div class="settings-card" style="grid-column:1/-1">
-            <div class="settings-title">Profile Photo</div>
+            <div class="settings-title">Senior's Photo</div>
             <div class="photo-upload-area">
               <div class="photo-circle" onclick="document.getElementById('photo-input').click()">
                 <span id="photo-initials"></span>
@@ -528,7 +528,7 @@ body { font-family:'Jost',sans-serif; background:var(--cream); color:var(--charc
                 <button class="btn btn-ghost btn-sm" onclick="document.getElementById('photo-input').click()">📷 Upload Photo</button>
               </div>
             </div>
-            <p style="font-size:12px;color:var(--mid)">Your photo appears on your profile and in messages. Accepted: JPG, PNG (max 5MB)</p>
+            <p style="font-size:12px;color:var(--mid)">The senior's photo appears on their profile and in messages. Accepted: JPG, PNG (max 5MB)</p>
           </div>
 
           <div class="settings-card">
@@ -898,11 +898,13 @@ function escapeHtml(str) {
 
     currentUser = user;
 
-    // Populate sidebar name & initials
+    // Populate sidebar name & initials (temporary until Firestore loads senior info)
     const displayName = user.displayName || user.email;
     const initials    = displayName.split(' ').map(w => w[0]).slice(0, 2).join('').toUpperCase();
     document.getElementById('sidebar-name').textContent     = displayName;
     document.getElementById('sidebar-initials').textContent = initials;
+    const sbRoleEl = document.getElementById('sidebar-role');
+    if (sbRoleEl) sbRoleEl.textContent = 'Client';
     const photoInitialsEl = document.getElementById('photo-initials');
     if (photoInitialsEl) photoInitialsEl.textContent = initials;
 
@@ -953,16 +955,25 @@ function escapeHtml(str) {
         f('profile-senior-address', clientProfile.address);
         f('profile-health-notes',   clientProfile.notes);
 
-        // Update profile display name and role label
+        // Update profile photo section and sidebar to reflect the senior
         const pdn = document.getElementById('profile-display-name');
         const prl = document.getElementById('profile-role-label');
-        if (pdn) pdn.textContent = dn;
-        if (prl) prl.textContent = clientProfile.seniorName
-          ? `Family contact for ${clientProfile.seniorName}`
-          : 'Client';
-
-        // Update sidebar name now that we have full profile
-        document.getElementById('sidebar-name').textContent = dn;
+        const sbRole = document.getElementById('sidebar-role');
+        if (clientProfile.seniorName) {
+          const seniorInitials = clientProfile.seniorName.split(' ').map(w => w[0]).slice(0, 2).join('').toUpperCase();
+          const photoEl = document.getElementById('photo-initials');
+          if (photoEl) photoEl.textContent = seniorInitials;
+          const sbInit = document.getElementById('sidebar-initials');
+          if (sbInit) sbInit.textContent = seniorInitials;
+          document.getElementById('sidebar-name').textContent = clientProfile.seniorName;
+          if (sbRole) sbRole.textContent = 'Senior Client';
+          if (pdn) pdn.textContent = clientProfile.seniorName;
+          if (prl) prl.textContent = 'Senior Contact';
+        } else {
+          if (pdn) pdn.textContent = dn;
+          if (sbRole) sbRole.textContent = 'Client';
+          if (prl) prl.textContent = 'Client';
+        }
 
         // Update page subtitle
         const pageSub = document.getElementById('page-sub');
