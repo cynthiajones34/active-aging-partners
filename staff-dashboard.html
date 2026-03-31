@@ -863,6 +863,18 @@ function downloadCSV(type){
         senderRole:'staff',type:'chat',createdAt:serverTimestamp(),
       });
 
+      // Email client about decline
+      if(s.clientEmail){
+        _sendEmailNotification({
+          to:s.clientEmail,
+          toName:s.clientName,
+          subject:'Booking Request Update — Active Aging Partners',
+          type:'booking_declined',
+          bodyText:`Hi ${s.clientName?.split(' ')[0]||'there'},\n\nUnfortunately we're not able to accommodate your ${s.service} request for ${s.date}. Please reach out or use the booking tab to choose a different time — we'd love to find a time that works!\n\n— The Active Aging Partners Team`,
+          clientName:s.clientName,
+        }).catch(e=>console.warn('Decline email failed:',e));
+      }
+
       showToast('Request declined. Client has been notified.');
       await loadSchedule();
     }catch(err){
@@ -975,6 +987,18 @@ function downloadCSV(type){
         sessionId:sessionRef.id,
         createdAt:serverTimestamp(),
       });
+
+      // 4️⃣ Email client confirmation
+      if(clientEmail){
+        _sendEmailNotification({
+          to:clientEmail,
+          toName:clientName,
+          subject:`Session Confirmed — ${readableDate}`,
+          type:'booking_confirmed',
+          bodyText:confirmText,
+          clientName,
+        }).catch(e=>console.warn('Client booking email failed:',e));
+      }
 
       closeModal('booking-modal');
       showToast('✓ Session booked and added to Google Calendar!');
@@ -1093,13 +1117,35 @@ function downloadCSV(type){
   };
   window.sendInvoiceToThread=async function(uid,text){
     if(!uid||!text)return;
-    try{await addDoc(collection(db,'clients',uid,'messages'),{text,senderUid:currentUser?.uid||'staff',senderName:currentUser?.displayName||'Staff',senderRole:'staff',type:'invoice',createdAt:serverTimestamp()});}
-    catch(e){console.error(e);}
+    try{
+      await addDoc(collection(db,'clients',uid,'messages'),{text,senderUid:currentUser?.uid||'staff',senderName:currentUser?.displayName||'Staff',senderRole:'staff',type:'invoice',createdAt:serverTimestamp()});
+      const client=clientMap[uid]||{};
+      if(client.email){
+        _sendEmailNotification({
+          to:client.email, toName:client.name,
+          subject:'Invoice from Active Aging Partners',
+          type:'invoice',
+          bodyText:text,
+          emailOptIn:client.invoiceEmailOptIn??client.emailOptIn,
+        }).catch(e=>console.warn('Invoice email failed:',e));
+      }
+    }catch(e){console.error(e);}
   };
   window.sendReminder=async function(uid,text){
     if(!uid||!text)return;
-    try{await addDoc(collection(db,'clients',uid,'messages'),{text,senderUid:currentUser?.uid||'staff',senderName:currentUser?.displayName||'Staff',senderRole:'staff',type:'reminder',createdAt:serverTimestamp()});}
-    catch(e){console.error(e);}
+    try{
+      await addDoc(collection(db,'clients',uid,'messages'),{text,senderUid:currentUser?.uid||'staff',senderName:currentUser?.displayName||'Staff',senderRole:'staff',type:'reminder',createdAt:serverTimestamp()});
+      const client=clientMap[uid]||{};
+      if(client.email){
+        _sendEmailNotification({
+          to:client.email, toName:client.name,
+          subject:'Reminder from Active Aging Partners',
+          type:'reminder',
+          bodyText:text,
+          emailOptIn:client.emailOptIn,
+        }).catch(e=>console.warn('Reminder email failed:',e));
+      }
+    }catch(e){console.error(e);}
   };
 
   // ── STAFF NOTIFICATION BADGES ─────────────────────────────
