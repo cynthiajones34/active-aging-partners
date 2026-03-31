@@ -565,6 +565,7 @@ textarea.fi{resize:vertical;min-height:80px;line-height:1.5;}
         <div class="cp-label" style="margin-top:16px">Senior Information</div>
         <div class="cp-row"><span class="cp-row-key">Name</span><span id="sd-senior-name">—</span></div>
         <div class="cp-row"><span class="cp-row-key">Age</span><span id="sd-senior-age">—</span></div>
+        <div class="cp-row"><span class="cp-row-key">Address</span><span id="sd-senior-address" style="color:var(--mid)">—</span></div>
         <div class="cp-row"><span class="cp-row-key">Notes</span><span id="sd-senior-notes" style="color:var(--mid);font-style:italic">—</span></div>
       </div>
     </div>
@@ -915,7 +916,8 @@ function downloadCSV(type){
     // Contact info
     document.getElementById('cp-email').textContent   = c.email   || '—';
     document.getElementById('cp-phone').textContent   = c.phone   || '—';
-    document.getElementById('cp-address').textContent = c.address || '—';
+    const addrParts = [c.address, c.city, c.state, c.zip].filter(Boolean);
+    document.getElementById('cp-address').textContent = addrParts.length ? addrParts.join(', ') : '—';
 
     // Senior info
     document.getElementById('cp-senior-name').textContent = c.seniorName || '—';
@@ -1113,6 +1115,8 @@ function downloadCSV(type){
     document.getElementById('sd-client-phone').textContent = client.phone || '—';
     document.getElementById('sd-senior-name').textContent  = client.seniorName || '—';
     document.getElementById('sd-senior-age').textContent   = client.seniorAge  || '—';
+    const seniorAddrParts = [client.seniorAddress, client.seniorCity, client.seniorState, client.seniorZip].filter(Boolean);
+    document.getElementById('sd-senior-address').textContent = seniorAddrParts.length ? seniorAddrParts.join(', ') : '—';
     document.getElementById('sd-senior-notes').textContent = client.notes      || '—';
 
     document.getElementById('sd-msg-btn').onclick = () => {

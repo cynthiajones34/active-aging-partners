@@ -550,8 +550,22 @@ body { font-family:'Jost',sans-serif; background:var(--cream); color:var(--charc
               <input type="tel" class="form-input" id="profile-phone-field" value="">
             </div>
             <div class="form-group">
-              <label class="form-label">Mailing Address</label>
+              <label class="form-label">Street Address</label>
               <input type="text" class="form-input" id="profile-address" value="">
+            </div>
+            <div style="display:grid;grid-template-columns:1fr 80px 100px;gap:10px">
+              <div class="form-group">
+                <label class="form-label">City</label>
+                <input type="text" class="form-input" id="profile-city" value="">
+              </div>
+              <div class="form-group">
+                <label class="form-label">State</label>
+                <input type="text" class="form-input" id="profile-state" placeholder="GA" maxlength="2" value="">
+              </div>
+              <div class="form-group">
+                <label class="form-label">Zip Code</label>
+                <input type="text" class="form-input" id="profile-zip" maxlength="10" value="">
+              </div>
             </div>
             <button class="btn btn-primary btn-sm" onclick="saveContactInfo()">Save Changes</button>
           </div>
@@ -567,8 +581,22 @@ body { font-family:'Jost',sans-serif; background:var(--cream); color:var(--charc
               <input type="number" class="form-input" id="profile-senior-age" value="">
             </div>
             <div class="form-group">
-              <label class="form-label">Home Address</label>
+              <label class="form-label">Street Address</label>
               <input type="text" class="form-input" id="profile-senior-address" value="">
+            </div>
+            <div style="display:grid;grid-template-columns:1fr 80px 100px;gap:10px">
+              <div class="form-group">
+                <label class="form-label">City</label>
+                <input type="text" class="form-input" id="profile-senior-city" value="">
+              </div>
+              <div class="form-group">
+                <label class="form-label">State</label>
+                <input type="text" class="form-input" id="profile-senior-state" placeholder="GA" maxlength="2" value="">
+              </div>
+              <div class="form-group">
+                <label class="form-label">Zip Code</label>
+                <input type="text" class="form-input" id="profile-senior-zip" maxlength="10" value="">
+              </div>
             </div>
             <div class="form-group">
               <label class="form-label">Health Notes</label>
@@ -947,8 +975,15 @@ function escapeHtml(str) {
           email:             get('email'),
           phone:             get('phone'),
           address:           get('address'),
+          city:              get('city'),
+          state:             get('state'),
+          zip:               get('zip'),
           seniorName:        get('seniorName'),
           seniorAge:         get('seniorAge'),
+          seniorAddress:     get('seniorAddress'),
+          seniorCity:        get('seniorCity'),
+          seniorState:       get('seniorState'),
+          seniorZip:         get('seniorZip'),
           notes:             get('notes'),
           photoURL:          get('photoURL'),
           emailOptIn:        data.fields?.emailOptIn?.booleanValue,
@@ -977,9 +1012,15 @@ function escapeHtml(str) {
         f('profile-email-field',    clientProfile.email || user.email);
         f('profile-phone-field',    clientProfile.phone);
         f('profile-address',        clientProfile.address);
+        f('profile-city',           clientProfile.city);
+        f('profile-state',          clientProfile.state);
+        f('profile-zip',            clientProfile.zip);
         f('profile-senior-name',    clientProfile.seniorName);
         f('profile-senior-age',     clientProfile.seniorAge);
-        f('profile-senior-address', clientProfile.address);
+        f('profile-senior-address', clientProfile.seniorAddress);
+        f('profile-senior-city',    clientProfile.seniorCity);
+        f('profile-senior-state',   clientProfile.seniorState);
+        f('profile-senior-zip',     clientProfile.seniorZip);
         f('profile-health-notes',   clientProfile.notes);
 
         // Update profile photo section and sidebar to reflect the senior
@@ -1610,11 +1651,17 @@ function escapeHtml(str) {
     const last    = document.getElementById('profile-last')?.value.trim()         || '';
     const phone   = document.getElementById('profile-phone-field')?.value.trim()  || '';
     const address = document.getElementById('profile-address')?.value.trim()      || '';
+    const city    = document.getElementById('profile-city')?.value.trim()         || '';
+    const state   = document.getElementById('profile-state')?.value.trim()        || '';
+    const zip     = document.getElementById('profile-zip')?.value.trim()          || '';
     try {
       await setDoc(doc(db, 'clients', currentUser.uid), {
         displayName: [first, last].filter(Boolean).join(' ') || currentUser.displayName || '',
         phone,
         address,
+        city,
+        state,
+        zip,
       }, { merge: true });
       showToast('✓ Contact info saved!');
     } catch (err) {
@@ -1629,12 +1676,18 @@ function escapeHtml(str) {
     const seniorName    = document.getElementById('profile-senior-name')?.value.trim()    || '';
     const seniorAge     = document.getElementById('profile-senior-age')?.value.trim()     || '';
     const seniorAddress = document.getElementById('profile-senior-address')?.value.trim() || '';
+    const seniorCity    = document.getElementById('profile-senior-city')?.value.trim()    || '';
+    const seniorState   = document.getElementById('profile-senior-state')?.value.trim()   || '';
+    const seniorZip     = document.getElementById('profile-senior-zip')?.value.trim()     || '';
     const notes         = document.getElementById('profile-health-notes')?.value.trim()   || '';
     try {
       await setDoc(doc(db, 'clients', currentUser.uid), {
         seniorName,
-        seniorAge:  seniorAge ? parseInt(seniorAge) : '',
-        address:    seniorAddress,
+        seniorAge:    seniorAge ? parseInt(seniorAge) : '',
+        seniorAddress,
+        seniorCity,
+        seniorState,
+        seniorZip,
         notes,
       }, { merge: true });
       showToast('✓ Senior info saved!');
