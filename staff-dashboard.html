@@ -248,6 +248,9 @@ textarea.fi{resize:vertical;min-height:80px;line-height:1.5;}
         <div style="font-size:14px;color:var(--mid)" id="client-count">No clients yet</div>
         <button class="btn btn-p" onclick="openModal('client-modal')">+ Add Client</button>
       </div>
+      <div style="margin-bottom:16px">
+        <input type="text" id="client-search" class="fi" placeholder="🔍 Search by name, senior name, email or phone…" oninput="window._filterClients(this.value)" style="width:100%;max-width:420px">
+      </div>
       <div class="client-grid" id="client-grid">
         <div style="grid-column:1/-1;background:#fff;border-radius:14px;padding:40px;border:1px solid rgba(0,0,0,0.05)">
           <div class="es"><div class="es-icon">👥</div><div class="es-title">No clients yet</div><div class="es-body">Clients who sign up on the website appear here automatically. You can also add them manually.</div></div>
@@ -665,35 +668,55 @@ function downloadCSV(type){
       if(clientCount)clientCount.textContent=`${count} client${count!==1?'s':''}`;
       document.getElementById('dash-clients').textContent=count;
       const colors=['#7a9e7e','#c4845a','#c9a84c','#5b9dab','#9b7ec8','#c87e9b'];
+      // Cache all client docs for search filtering
+      window._allClientDocs = snap.docs.map((d,i)=>({id:d.id,data:d.data(),colorIdx:i}));
 
       // Build client map for lookups
       snap.docs.forEach(d=>{
         const c=d.data();
-        clientMap[d.id]={name:c.displayName||c.email||'Client',email:c.email||'',phone:c.phone||''};
+        clientMap[d.id]={
+          name:c.displayName||c.email||'Client',
+          email:c.email||'',
+          phone:c.phone||'',
+          seniorName:c.seniorName||'',
+          lastClientMessageAt:c.lastClientMessageAt||null,
+        };
       });
       // Expose globally so submitReport() can access client details
       window._clientMap = clientMap;
 
-      threadList.innerHTML=snap.docs.map(d=>{
-        const c=d.data();
-        const name=c.displayName||c.email||'Client';
-        const ini=name.split(' ').map(w=>w[0]).slice(0,2).join('').toUpperCase();
-        return `<div class="thr" data-uid="${d.id}" onclick="window._openClientThread('${d.id}','${name.replace(/'/g,"\\'")}')">
-          <div class="thr-av" style="background:var(--forest)">${ini}</div>
-          <div style="flex:1;min-width:0"><div style="display:flex;justify-content:space-between"><div class="thr-name">${name}</div></div>
-          <div class="thr-prev" id="prev-${d.id}">Click to load messages</div></div></div>`;
-      }).join('');
+      // Only show clients who have sent at least one message, sorted newest first
+      const threaded = snap.docs
+        .filter(d => d.data().lastClientMessageAt)
+        .sort((a,b)=>{
+          const ta=a.data().lastClientMessageAt?.toMillis?.()|| 0;
+          const tb=b.data().lastClientMessageAt?.toMillis?.()|| 0;
+          return tb-ta;
+        });
 
-      if(clientGrid){
-        clientGrid.innerHTML=snap.docs.map((d,i)=>{
+      if(threaded.length===0){
+        threadList.innerHTML='<div style="padding:24px 16px;font-size:13px;color:var(--mid);text-align:center">No messages yet.<br>Clients who message you will appear here.</div>';
+      } else {
+        threadList.innerHTML=threaded.map(d=>{
           const c=d.data();
           const name=c.displayName||c.email||'Client';
           const ini=name.split(' ').map(w=>w[0]).slice(0,2).join('').toUpperCase();
-          return `<div class="cc"><div class="cc-hdr"><div class="cav" style="background:${colors[i%colors.length]}">${ini}</div>
-            <div><div class="cc-name">${name}</div><div class="cc-age">Client · Active</div></div></div>
-            <div class="cc-foot">📧 ${c.email||'—'}${c.phone?' · '+c.phone:''}</div></div>`;
+          const ts=c.lastClientMessageAt?.toDate?.();
+          const timeLabel=ts?ts.toLocaleDateString('en-US',{month:'short',day:'numeric'}):'';
+          return `<div class="thr" data-uid="${d.id}" onclick="window._openClientThread('${d.id}','${name.replace(/'/g,"\\'")}')">
+            <div class="thr-av" style="background:var(--forest)">${ini}</div>
+            <div style="flex:1;min-width:0">
+              <div style="display:flex;justify-content:space-between;align-items:baseline">
+                <div class="thr-name">${name}</div>
+                <div style="font-size:10px;color:var(--mid);flex-shrink:0;margin-left:6px">${timeLabel}</div>
+              </div>
+              <div class="thr-prev" id="prev-${d.id}">Click to load messages</div>
+            </div>
+          </div>`;
         }).join('');
       }
+
+      renderClientGrid(window._allClientDocs);
 
       const opts=snap.docs.map(d=>`<option value="${d.id}">${clientMap[d.id].name}</option>`).join('');
       if(bm)bm.innerHTML='<option value="">Select client…</option>'+opts;
@@ -702,6 +725,38 @@ function downloadCSV(type){
       console.error('loadClientList ERROR:', err.code, err.message, err);
     }
   }
+
+  function renderClientGrid(docs){
+    const clientGrid=document.getElementById('client-grid');
+    if(!clientGrid)return;
+    const colors=['#7a9e7e','#c4845a','#c9a84c','#5b9dab','#9b7ec8','#c87e9b'];
+    if(docs.length===0){
+      clientGrid.innerHTML='<div style="grid-column:1/-1;background:#fff;border-radius:14px;padding:40px;border:1px solid rgba(0,0,0,0.05);text-align:center;color:var(--mid);font-size:13px">No clients match your search.</div>';
+      return;
+    }
+    clientGrid.innerHTML=docs.map(({id,data:c,colorIdx})=>{
+      const name=c.displayName||c.email||'Client';
+      const ini=name.split(' ').map(w=>w[0]).slice(0,2).join('').toUpperCase();
+      const sub=c.seniorName?`Senior: ${c.seniorName}`:'Client · Active';
+      return `<div class="cc"><div class="cc-hdr"><div class="cav" style="background:${colors[colorIdx%colors.length]}">${ini}</div>
+        <div><div class="cc-name">${name}</div><div class="cc-age">${sub}</div></div></div>
+        <div class="cc-foot">📧 ${c.email||'—'}${c.phone?' · 📞 '+c.phone:''}</div></div>`;
+    }).join('');
+  }
+
+  window._filterClients = function(query){
+    const all=window._allClientDocs||[];
+    const q=query.trim().toLowerCase();
+    if(!q){ renderClientGrid(all); return; }
+    const filtered=all.filter(({data:c})=>{
+      const name=(c.displayName||'').toLowerCase();
+      const email=(c.email||'').toLowerCase();
+      const phone=(c.phone||'').toLowerCase();
+      const senior=(c.seniorName||'').toLowerCase();
+      return name.includes(q)||email.includes(q)||phone.includes(q)||senior.includes(q);
+    });
+    renderClientGrid(filtered);
+  };
 
   // ── CALENDAR STATE ────────────────────────────────────────
   let _calYear  = new Date().getFullYear();
