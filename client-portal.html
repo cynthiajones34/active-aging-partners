@@ -1113,9 +1113,9 @@ function escapeHtml(str) {
     try {
       const snap = await getDocs(query(
         collection(db, 'clients', currentUser.uid, 'messages'),
-        where('type', '==', 'report'),
-        orderBy('createdAt', 'desc')
+        where('type', '==', 'report')
       ));
+      snap.docs.sort((a, b) => (b.data().createdAt?.toMillis?.() || 0) - (a.data().createdAt?.toMillis?.() || 0));
       if (snap.empty) {
         listEl.innerHTML = `
           <div style="text-align:center;padding:48px 20px;background:#fff;border-radius:16px;border:1px solid rgba(0,0,0,0.06)">
