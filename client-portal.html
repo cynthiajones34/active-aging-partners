@@ -836,7 +836,12 @@ function previewPhoto(input) {
   if (window._uploadClientPhoto) {
     window._uploadClientPhoto(file)
       .then(() => showToast('✓ Photo saved!'))
-      .catch(() => showToast('⚠️ Photo upload failed. Please try again.'));
+      .catch((err) => {
+        console.error('[previewPhoto] Upload failed:', err);
+        showToast('⚠️ Photo upload failed: ' + (err.code || err.message || 'unknown error'));
+      });
+  } else {
+    console.warn('[previewPhoto] _uploadClientPhoto not ready yet');
   }
 }
 
@@ -1325,10 +1330,19 @@ function escapeHtml(str) {
   // ── PHOTO UPLOAD ──────────────────────────────────────────
   window._uploadClientPhoto = async function(file) {
     if (!currentUser || !file) return;
-    const sRef = storageRef(storage, `client-photos/${currentUser.uid}`);
-    await uploadBytes(sRef, file);
-    const url = await getDownloadURL(sRef);
-    await setDoc(doc(db, 'clients', currentUser.uid), { photoURL: url }, { merge: true });
+    console.log('[Photo] Starting upload for', currentUser.uid, file.name, file.size);
+    try {
+      const sRef = storageRef(storage, `client-photos/${currentUser.uid}`);
+      const snapshot = await uploadBytes(sRef, file);
+      console.log('[Photo] Upload complete:', snapshot);
+      const url = await getDownloadURL(sRef);
+      console.log('[Photo] Download URL:', url);
+      await setDoc(doc(db, 'clients', currentUser.uid), { photoURL: url }, { merge: true });
+      console.log('[Photo] Firestore updated with photoURL');
+    } catch (err) {
+      console.error('[Photo] Upload error — code:', err.code, '| message:', err.message, '| full:', err);
+      throw err;
+    }
   };
 
   // ── LOGOUT ────────────────────────────────────────────────
