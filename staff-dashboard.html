@@ -1424,7 +1424,7 @@ function downloadCSV(type){
 
       // Notify client in their message thread
       await addDoc(collection(db,'clients',s.clientUid,'messages'),{
-        text:`Hi ${s.clientName?.split(' ')[0]||'there'}, unfortunately we're not able to accommodate your ${s.service} request for ${s.date}. Please reach out or use the booking tab to choose a different time — we'd love to find a time that works!`,
+        text:(()=>{const [y,m,d]=s.date.split('-');return `Hi ${s.clientName?.split(' ')[0]||'there'}, unfortunately we're not able to accommodate your ${s.service} request for ${m}-${d}-${y}. Use the booking tab to choose a different time — we'd love to find a time that works!`;})(),
         senderUid:currentUser?.uid||'staff',
         senderName:currentUser?.displayName||'Staff',
         senderRole:'staff',type:'chat',createdAt:serverTimestamp(),
@@ -1437,7 +1437,7 @@ function downloadCSV(type){
           toName:s.clientName,
           subject:'Booking Request Update — Active Aging Partners',
           type:'booking_declined',
-          bodyText:`Hi ${s.clientName?.split(' ')[0]||'there'},\n\nUnfortunately we're not able to accommodate your ${s.service} request for ${s.date}. Please reach out or use the booking tab to choose a different time — we'd love to find a time that works!\n\n— The Active Aging Partners Team`,
+          bodyText:(()=>{const [y,m,d]=s.date.split('-');const fmtDate=`${m}-${d}-${y}`;return `Unfortunately we're not able to accommodate your ${s.service} request for ${fmtDate}. We'd love to find a time that works — please book another session at your convenience:\n\nhttps://www.activeagingpartners.com/client-portal.html\n\n— The Active Aging Partners Team`;})(),
           clientName:s.clientName,
         }).catch(e=>console.warn('Decline email failed:',e));
       }
