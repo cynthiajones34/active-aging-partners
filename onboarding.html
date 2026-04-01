@@ -426,11 +426,18 @@ textarea.form-input { resize: vertical; min-height: 90px; line-height: 1.6; }
 
     // ── WAIVER SAVE (REST API PATCH — avoids WebSocket/CORS issues on GitHub Pages) ──
     window._saveWaiver = async function(sigName) {
+      const signedAt  = new Date();
+      const signedFmt = signedAt.toLocaleString('en-US', {
+        weekday: 'long', year: 'numeric', month: 'long', day: 'numeric',
+        hour: 'numeric', minute: '2-digit', timeZoneName: 'short',
+      });
+
+      // 1. Save to Firestore — separate try so email still fires even if this fails
       try {
         const idToken = await user.getIdToken();
         const fields  = {
           waiverSigned:      { booleanValue: true },
-          waiverSignedAt:    { stringValue: new Date().toISOString() },
+          waiverSignedAt:    { stringValue: signedAt.toISOString() },
           waiverSignedName:  { stringValue: sigName },
           waiverSignedEmail: { stringValue: user.email },
         };
@@ -443,25 +450,25 @@ textarea.form-input { resize: vertical; min-height: 90px; line-height: 1.6; }
             body:    JSON.stringify({ fields }),
           }
         );
-        console.log('Waiver saved');
-
-        // Send waiver confirmation email to client
-        const signedAt   = new Date();
-        const signedFmt  = signedAt.toLocaleString('en-US', {
-          weekday: 'long', year: 'numeric', month: 'long', day: 'numeric',
-          hour: 'numeric', minute: '2-digit', timeZoneName: 'short',
-        });
-        httpsCallable(functions, 'sendEmailNotification')({
-          to:       user.email,
-          toName:   sigName,
-          subject:  'Your Signed Agreement — Active Aging Partners',
-          type:     'waiver_confirmation',
-          bodyText: `Thank you for completing your Client Service Agreement with Active Aging Partners.\n\nHere is a record of your electronic signature for your files:\n\n  Signed Name: ${sigName}\n  Date & Time: ${signedFmt}\n  Email: ${user.email}\n\nThis signature constitutes a legally binding electronic agreement under the Georgia Electronic Records and Signatures Act (O.C.G.A. § 10-12-1 et seq.).\n\nYou can review the full agreement at any time by visiting www.activeagingpartners.com. If you have any questions, reply to this email or reach out through your client portal.\n\n— The Active Aging Partners Team`,
-          clientName: sigName,
-        }).catch(e => console.warn('Waiver email failed (non-fatal):', e));
-
+        console.log('Waiver saved to Firestore');
       } catch (err) {
-        console.warn('Waiver save failed (non-fatal):', err.message);
+        console.warn('Waiver Firestore save failed (non-fatal):', err.message);
+      }
+
+      // 2. Send confirmation email — separate try so one failure doesn't block the other
+      try {
+        const sendEmail = httpsCallable(functions, 'sendEmailNotification');
+        await sendEmail({
+          to:         user.email,
+          toName:     sigName,
+          subject:    'Your Signed Agreement — Active Aging Partners',
+          type:       'booking_confirmed',
+          bodyText:   `Thank you for completing your Client Service Agreement with Active Aging Partners.\n\nHere is a record of your electronic signature for your files:\n\n  Signed Name: ${sigName}\n  Date & Time: ${signedFmt}\n  Email: ${user.email}\n\nThis signature constitutes a legally binding electronic agreement under the Georgia Electronic Records and Signatures Act (O.C.G.A. § 10-12-1 et seq.).\n\nYou can review the full agreement at any time by visiting www.activeagingpartners.com. If you have any questions, reply to this email or reach out through your client portal.\n\n— The Active Aging Partners Team`,
+          clientName: sigName,
+        });
+        console.log('Waiver confirmation email sent');
+      } catch (err) {
+        console.warn('Waiver email failed:', err.code, err.message);
       }
     };
 
