@@ -1179,6 +1179,9 @@ function downloadCSV(type){
       const isToday   = dateStr === todayStr;
       const isPast    = dateStr && dateStr < todayStr;
       const sessions  = dateStr ? (byDate[dateStr] || []) : [];
+      const isBlocked = dateStr && window._blockedDates && window._blockedDates[dateStr];
+      const dow       = inMonth ? new Date(_calYear, _calMonth, dayNum).getDay() : -1;
+      const isWeekend = dow === 0 || dow === 6;
 
       const borderBottom = i < totalCells - 7 ? '1px solid rgba(0,0,0,0.05)' : 'none';
       const borderRight  = (i + 1) % 7 !== 0  ? '1px solid rgba(0,0,0,0.05)' : 'none';
@@ -1207,12 +1210,24 @@ function downloadCSV(type){
         " onmouseover="this.style.opacity='0.8'" onmouseout="this.style.opacity='1'">${time?time+' ':''}${first}</div>`;
       }).join('');
 
+      const blockedBadge = (isBlocked && inMonth)
+        ? `<div style="background:rgba(196,132,90,0.15);color:var(--clay);border-radius:4px;padding:2px 5px;font-size:10px;font-weight:600;margin-bottom:2px;">🚫 Blocked</div>`
+        : (isWeekend && inMonth && !isPast)
+        ? `<div style="color:rgba(0,0,0,0.2);font-size:9px;font-weight:500;margin-top:2px;">Weekend</div>`
+        : '';
+
+      const cellBg = isBlocked && inMonth
+        ? 'rgba(196,132,90,0.04)'
+        : isToday
+        ? 'rgba(45,74,50,0.03)'
+        : 'transparent';
+
       cells += `<div style="
         min-height:90px;padding:8px 6px;
         border-right:${borderRight};border-bottom:${borderBottom};
-        background:${isToday?'rgba(45,74,50,0.03)':'transparent'};
+        background:${cellBg};
         vertical-align:top;
-      ">${dayNumHtml}${sessionPills}</div>`;
+      ">${dayNumHtml}${blockedBadge}${sessionPills}</div>`;
     }
 
     grid.innerHTML = cells;
@@ -1272,6 +1287,13 @@ function downloadCSV(type){
       const today=new Date();
       today.setHours(0,0,0,0);
       const todayStr=today.toISOString().split('T')[0];
+
+      // Load blocked dates so they show on the schedule calendar
+      try{
+        const bdSnap=await getDocs(collection(db,'blockedDates'));
+        window._blockedDates={};
+        bdSnap.forEach(d=>{window._blockedDates[d.id]=d.data();});
+      }catch(e){console.warn('Could not load blocked dates for schedule',e);}
 
       const snap=await getDocs(query(collection(db,'sessions'),orderBy('date','asc')));
 
