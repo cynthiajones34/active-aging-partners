@@ -717,24 +717,6 @@ body { font-family:'Jost',sans-serif; background:var(--cream); color:var(--charc
         </div>
       </div>
 
-      <!-- Waiver view modal (client portal) -->
-      <div class="modal-overlay" id="waiver-view-modal" style="align-items:flex-start;padding:40px 20px;overflow-y:auto">
-        <div class="modal" style="max-width:680px;width:100%">
-          <div class="modal-header" style="display:flex;align-items:center;justify-content:space-between;padding:20px 24px 0">
-            <div style="font-family:'Cormorant Garamond',serif;font-size:20px;font-weight:600">Client Service Agreement</div>
-            <button class="btn btn-ghost btn-sm" onclick="closeModal('waiver-view-modal')">✕ Close</button>
-          </div>
-          <div style="padding:20px 24px;max-height:70vh;overflow-y:auto;font-size:13px;line-height:1.75;color:var(--charcoal)" id="waiver-modal-body"></div>
-          <div style="padding:16px 24px;border-top:1px solid rgba(0,0,0,0.07);background:var(--warm);border-radius:0 0 20px 20px">
-            <div style="font-size:11px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:var(--mid);margin-bottom:8px">Electronic Signature on File</div>
-            <div style="display:flex;gap:32px;flex-wrap:wrap">
-              <div><div style="font-size:11px;color:var(--mid);margin-bottom:2px">Signed Name</div><div style="font-family:'Cormorant Garamond',serif;font-size:17px;font-style:italic" id="waiver-modal-sig-name">—</div></div>
-              <div><div style="font-size:11px;color:var(--mid);margin-bottom:2px">Date &amp; Time</div><div style="font-size:13px" id="waiver-modal-sig-date">—</div></div>
-              <div><div style="font-size:11px;color:var(--mid);margin-bottom:2px">Email</div><div style="font-size:13px" id="waiver-modal-sig-email">—</div></div>
-            </div>
-          </div>
-        </div>
-      </div>
 
       <!-- NOTIFICATIONS -->
       <div class="view" id="view-notifications">
@@ -777,6 +759,25 @@ body { font-family:'Jost',sans-serif; background:var(--cream); color:var(--charc
         </div>
       </div>
 
+    </div>
+  </div>
+</div>
+
+<!-- Waiver view modal -->
+<div class="modal-overlay" id="waiver-view-modal">
+  <div class="modal" style="max-width:680px;width:100%;max-height:88vh;display:flex;flex-direction:column">
+    <div class="modal-header">
+      <div class="modal-title">Client Service Agreement</div>
+      <button class="modal-close" onclick="closeModal('waiver-view-modal')">✕</button>
+    </div>
+    <div class="modal-body" style="overflow-y:auto;flex:1;font-size:13px;line-height:1.75" id="waiver-modal-body"></div>
+    <div style="padding:16px 24px;border-top:1px solid rgba(0,0,0,0.06);background:var(--warm);border-radius:0 0 20px 20px;flex-shrink:0">
+      <div style="font-size:11px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:var(--mid);margin-bottom:8px">Electronic Signature on File</div>
+      <div style="display:flex;gap:32px;flex-wrap:wrap">
+        <div><div style="font-size:11px;color:var(--mid);margin-bottom:2px">Signed Name</div><div style="font-family:'Cormorant Garamond',serif;font-size:17px;font-style:italic" id="waiver-modal-sig-name">—</div></div>
+        <div><div style="font-size:11px;color:var(--mid);margin-bottom:2px">Date &amp; Time</div><div style="font-size:13px" id="waiver-modal-sig-date">—</div></div>
+        <div><div style="font-size:11px;color:var(--mid);margin-bottom:2px">Email</div><div style="font-size:13px" id="waiver-modal-sig-email">—</div></div>
+      </div>
     </div>
   </div>
 </div>
@@ -1188,8 +1189,14 @@ function escapeHtml(str) {
         f('profile-senior-zip',     clientProfile.seniorZip);
         f('profile-health-notes',   clientProfile.notes);
 
+        // Waiver gate — redirect to onboarding if waiver not signed
+        if (clientProfile.waiverSigned !== true) {
+          window.location.href = 'onboarding.html';
+          return;
+        }
+
         // Waiver status
-        const waiverSigned = clientProfile.waiverSigned === true;
+        const waiverSigned = true; // already confirmed above
         const notSignedEl  = document.getElementById('waiver-not-signed');
         const signedEl     = document.getElementById('waiver-signed-block');
         if (notSignedEl) notSignedEl.style.display = waiverSigned ? 'none' : 'block';
