@@ -153,6 +153,30 @@ footer { background: var(--charcoal); padding: 60px 80px 30px; }
 
 @keyframes fadeUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
 
+/* ===== OUR APPROACH ===== */
+.approach-section { padding: 100px 80px; max-width: 1300px; margin: 0 auto; }
+.approach-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: center; }
+.approach-steps { display: flex; flex-direction: column; gap: 0; }
+.approach-step { display: flex; gap: 24px; padding: 28px 0; border-bottom: 1px solid rgba(0,0,0,0.07); opacity: 0; transform: translateX(-20px); transition: opacity 0.6s ease, transform 0.6s ease; }
+.approach-step.visible { opacity: 1; transform: translateX(0); }
+.approach-step:last-child { border-bottom: none; }
+.as-num { width: 44px; height: 44px; border-radius: 50%; background: var(--forest); color: #fff; font-family: 'Cormorant Garamond', serif; font-size: 20px; font-weight: 700; display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 2px; }
+.as-title { font-size: 16px; font-weight: 600; color: var(--charcoal); margin-bottom: 6px; }
+.as-body { font-size: 14px; line-height: 1.7; color: var(--mid); }
+.approach-aside { opacity: 0; transform: translateY(20px); transition: opacity 0.7s ease, transform 0.7s ease; }
+.approach-aside.visible { opacity: 1; transform: translateY(0); }
+.approach-card { background: var(--forest); border-radius: 24px; padding: 44px; color: #fff; position: relative; overflow: hidden; margin-bottom: 20px; }
+.approach-card::before { content: ''; position: absolute; inset: 0; background: radial-gradient(ellipse at 20% 80%, rgba(122,158,126,0.2) 0%, transparent 55%); }
+.approach-card-title { font-family: 'Cormorant Garamond', serif; font-size: 28px; font-weight: 600; color: #fff; margin-bottom: 16px; position: relative; z-index: 2; }
+.approach-card-title em { font-style: italic; color: var(--sage-light); }
+.approach-promise { position: relative; z-index: 2; display: flex; flex-direction: column; gap: 14px; }
+.ap-item { display: flex; align-items: flex-start; gap: 12px; }
+.ap-check { width: 22px; height: 22px; border-radius: 50%; background: rgba(255,255,255,0.12); border: 1px solid rgba(255,255,255,0.2); display: flex; align-items: center; justify-content: center; font-size: 11px; color: var(--sage-light); flex-shrink: 0; margin-top: 1px; }
+.ap-text { font-size: 14px; line-height: 1.6; color: rgba(255,255,255,0.7); }
+.ap-text strong { color: #fff; }
+.diff-chips { display: flex; flex-wrap: wrap; gap: 10px; }
+.diff-chip { background: rgba(45,74,50,0.07); border: 1px solid rgba(45,74,50,0.15); border-radius: 50px; padding: 8px 16px; font-size: 13px; font-weight: 500; color: var(--forest); }
+
 .toast { position: fixed; bottom: 30px; right: 30px; background: var(--forest); color: #fff; padding: 14px 22px; border-radius: 14px; font-size: 14px; font-weight: 500; box-shadow: 0 8px 30px rgba(0,0,0,0.2); z-index: 1000; transform: translateY(80px); opacity: 0; transition: all 0.4s; }
 .toast.show { transform: translateY(0); opacity: 1; }
 .toast.error { background: #b03030; }
@@ -199,6 +223,9 @@ footer { background: var(--charcoal); padding: 60px 80px 30px; }
   .how-step::after { display:none; }
 
   /* Signup */
+  .approach-section { padding:60px 24px; }
+  .approach-grid { grid-template-columns:1fr; gap:40px; }
+  .approach-card { padding:28px 24px; }
   .signup-section { grid-template-columns:1fr; padding:60px 24px; gap:40px; }
   .signup-form-card { padding:28px 20px; }
   .form-row { grid-template-columns:1fr; }
@@ -371,6 +398,69 @@ footer { background: var(--charcoal); padding: 60px 80px 30px; }
       <div class="how-step"><div class="how-num">2</div><div class="how-title">Book a Session</div><div class="how-desc">Browse available times and book the service you need directly from your client portal.</div></div>
       <div class="how-step"><div class="how-num">3</div><div class="how-title">We Show Up</div><div class="how-desc">Your companion arrives on time. You'll get SMS and email reminders before every session.</div></div>
       <div class="how-step"><div class="how-num">4</div><div class="how-title">Receive a Report</div><div class="how-desc">After every session, a detailed report is sent to your inbox and saved in your portal.</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- OUR APPROACH -->
+<section class="approach-section">
+  <div class="approach-grid">
+    <div>
+      <div class="section-eyebrow">How We're Different</div>
+      <h2 class="section-title" style="margin-bottom:36px">Our approach to <em>every client</em></h2>
+      <div class="approach-steps">
+        <div class="approach-step">
+          <div class="as-num">1</div>
+          <div>
+            <div class="as-title">We start with a conversation</div>
+            <p class="as-body">Before we begin each session, we take time to understand your loved one — their preferences, routines, mobility, and what makes them comfortable. Every client is different and we treat them that way.</p>
+          </div>
+        </div>
+        <div class="approach-step">
+          <div class="as-num">2</div>
+          <div>
+            <div class="as-title">We handle the details families worry about</div>
+            <p class="as-body">Grocery shopping exactly as requested — no substitutions unless asked. Companionship visits tailored to what the senior enjoys. Walks at a pace that feels good, not rushed. We pay attention to the details that make a real difference.</p>
+          </div>
+        </div>
+        <div class="approach-step">
+          <div class="as-num">3</div>
+          <div>
+            <div class="as-title">We keep families informed</div>
+            <p class="as-body">Session reports are sent after every visit — mood, activities, anything notable. Family members who live far away can stay closely connected without being physically present.</p>
+          </div>
+        </div>
+        <div class="approach-step">
+          <div class="as-num">4</div>
+          <div>
+            <div class="as-title">We make it easy to manage everything</div>
+            <p class="as-body">Book sessions, read reports, send messages, and pay invoices — all from your client portal. Designed for busy families who need simplicity and reliability.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="approach-aside">
+      <div class="approach-card">
+        <div class="approach-card-title">What families can <em>count on</em></div>
+        <div class="approach-promise">
+          <div class="ap-item"><div class="ap-check">✓</div><div class="ap-text"><strong>Punctual arrivals</strong> — we respect your loved one's time and schedule</div></div>
+          <div class="ap-item"><div class="ap-check">✓</div><div class="ap-text"><strong>Attentive companions</strong> — present, engaged, and genuinely interested</div></div>
+          <div class="ap-item"><div class="ap-check">✓</div><div class="ap-text"><strong>Post-visit reports</strong> — detailed notes sent to family after every session</div></div>
+          <div class="ap-item"><div class="ap-check">✓</div><div class="ap-text"><strong>Transparent invoicing</strong> — clear, itemized billing through Stripe</div></div>
+          <div class="ap-item"><div class="ap-check">✓</div><div class="ap-text"><strong>Direct communication</strong> — message us anytime through the client portal</div></div>
+          <div class="ap-item"><div class="ap-check">✓</div><div class="ap-text"><strong>Background checked staff</strong> — every team member, no exceptions</div></div>
+        </div>
+      </div>
+      <div style="background:#fff;border-radius:16px;padding:22px 24px;border:1px solid rgba(0,0,0,0.06);box-shadow:0 4px 16px rgba(0,0,0,0.05)">
+        <div style="font-size:12px;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;color:var(--mid);margin-bottom:14px">What makes us different</div>
+        <div class="diff-chips">
+          <div class="diff-chip">Personal, not transactional</div>
+          <div class="diff-chip">Detailed post-visit reports</div>
+          <div class="diff-chip">Intentionally local</div>
+          <div class="diff-chip">Family-founded</div>
+          <div class="diff-chip">Real-time messaging</div>
+        </div>
+      </div>
     </div>
   </div>
 </section>
@@ -756,6 +846,15 @@ footer { background: var(--charcoal); padding: 60px 80px 30px; }
     document.getElementById('mob-nav').classList.remove('open');
     document.body.style.overflow = '';
   }
+
+  // Approach section scroll animations
+  const approachObserver = new IntersectionObserver((entries) => {
+    entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+  }, { threshold: 0.12 });
+  document.querySelectorAll('.approach-step, .approach-aside').forEach((el, i) => {
+    el.style.transitionDelay = (i * 0.1) + 's';
+    approachObserver.observe(el);
+  });
 
   // Navbar scroll
   window.addEventListener('scroll', () => {
