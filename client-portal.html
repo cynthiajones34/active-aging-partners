@@ -686,6 +686,53 @@ body { font-family:'Jost',sans-serif; background:var(--cream); color:var(--charc
             <div class="settings-title">Billing</div>
             <p style="font-size:13px;color:var(--mid)">Invoices are emailed after each session and paid securely via Stripe. Contact <a href="mailto:cynthia@activeagingpartners.com" style="color:var(--forest)">cynthia@activeagingpartners.com</a> with any billing questions.</p>
           </div>
+
+          <div class="settings-card" style="grid-column:1/-1">
+            <div class="settings-title">Client Service Agreement</div>
+            <div id="waiver-status-block">
+              <div id="waiver-not-signed" style="display:none">
+                <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px">
+                  <span style="background:rgba(196,132,90,0.12);color:var(--clay);border:1px solid rgba(196,132,90,0.3);border-radius:20px;padding:3px 12px;font-size:12px;font-weight:600">⚠ Not yet signed</span>
+                </div>
+                <p style="font-size:13px;color:var(--mid)">You haven't signed the Client Service Agreement yet. Please complete onboarding to sign.</p>
+              </div>
+              <div id="waiver-signed-block" style="display:none">
+                <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px">
+                  <span style="background:rgba(45,74,50,0.08);color:var(--forest);border:1px solid rgba(45,74,50,0.2);border-radius:20px;padding:3px 12px;font-size:12px;font-weight:600">✓ Signed</span>
+                </div>
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px">
+                  <div>
+                    <div style="font-size:11px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:var(--mid);margin-bottom:4px">Electronic Signature</div>
+                    <div style="font-family:'Cormorant Garamond',serif;font-size:18px;font-style:italic;color:var(--charcoal)" id="profile-waiver-name">—</div>
+                  </div>
+                  <div>
+                    <div style="font-size:11px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:var(--mid);margin-bottom:4px">Date &amp; Time Signed</div>
+                    <div style="font-size:13px;color:var(--charcoal)" id="profile-waiver-date">—</div>
+                  </div>
+                </div>
+                <button class="btn btn-ghost btn-sm" onclick="openModal('waiver-view-modal')">📋 View Full Agreement</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Waiver view modal (client portal) -->
+      <div class="modal-overlay" id="waiver-view-modal" style="align-items:flex-start;padding:40px 20px;overflow-y:auto">
+        <div class="modal" style="max-width:680px;width:100%">
+          <div class="modal-header" style="display:flex;align-items:center;justify-content:space-between;padding:20px 24px 0">
+            <div style="font-family:'Cormorant Garamond',serif;font-size:20px;font-weight:600">Client Service Agreement</div>
+            <button class="btn btn-ghost btn-sm" onclick="closeModal('waiver-view-modal')">✕ Close</button>
+          </div>
+          <div style="padding:20px 24px;max-height:70vh;overflow-y:auto;font-size:13px;line-height:1.75;color:var(--charcoal)" id="waiver-modal-body"></div>
+          <div style="padding:16px 24px;border-top:1px solid rgba(0,0,0,0.07);background:var(--warm);border-radius:0 0 20px 20px">
+            <div style="font-size:11px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:var(--mid);margin-bottom:8px">Electronic Signature on File</div>
+            <div style="display:flex;gap:32px;flex-wrap:wrap">
+              <div><div style="font-size:11px;color:var(--mid);margin-bottom:2px">Signed Name</div><div style="font-family:'Cormorant Garamond',serif;font-size:17px;font-style:italic" id="waiver-modal-sig-name">—</div></div>
+              <div><div style="font-size:11px;color:var(--mid);margin-bottom:2px">Date &amp; Time</div><div style="font-size:13px" id="waiver-modal-sig-date">—</div></div>
+              <div><div style="font-size:11px;color:var(--mid);margin-bottom:2px">Email</div><div style="font-size:13px" id="waiver-modal-sig-email">—</div></div>
+            </div>
+          </div>
         </div>
       </div>
 
@@ -759,6 +806,37 @@ body { font-family:'Jost',sans-serif; background:var(--cream); color:var(--charc
 <div class="toast" id="toast"></div>
 
 <script>
+// Waiver HTML — shared by profile card and waiver view modal
+window._waiverHtmlContent = `
+<p style="font-style:italic;color:var(--mid);margin-bottom:16px">Please read carefully. This is a legally binding document.</p>
+<h3 style="font-size:11px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--forest);margin:16px 0 6px">1. Parties</h3>
+<p style="margin-bottom:10px;color:var(--mid)">This Client Service Agreement and Liability Waiver ("Agreement") is entered into between Active Aging Partners, LLC ("Company"), a companion wellness service based in Atlanta, Georgia, operated by Cynthia Jones, and the Client or Authorized Representative signing below.</p>
+<h3 style="font-size:11px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--forest);margin:16px 0 6px">2. Description of Services</h3>
+<p style="margin-bottom:8px;color:var(--mid)">Active Aging Partners provides non-medical companion wellness services including: Walking &amp; Wellness, Companionship &amp; Engagement, and Errand Support. Active Aging Partners does NOT provide medical care, nursing services, physical therapy, medication administration, personal hygiene assistance, or any service requiring a medical or healthcare license.</p>
+<h3 style="font-size:11px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--forest);margin:16px 0 6px">3. Assumption of Risk</h3>
+<p style="margin-bottom:8px;color:var(--mid)">Client acknowledges that participation involves inherent risks including physical injury, adverse health events, environmental hazards, and loss or delay related to errands. Client voluntarily assumes all such risks on behalf of themselves and the Senior Client.</p>
+<h3 style="font-size:11px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--forest);margin:16px 0 6px">4. Release and Waiver of Liability</h3>
+<p style="margin-bottom:8px;color:var(--mid)">Client releases, waives, and discharges Active Aging Partners, its owner, employees, contractors, agents, and successors from any and all liability arising out of or related to any loss, damage, injury, or death caused by negligence or otherwise while participating in services. This release does not apply to claims arising from gross negligence, willful misconduct, or intentional acts.</p>
+<h3 style="font-size:11px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--forest);margin:16px 0 6px">5. Indemnification</h3>
+<p style="margin-bottom:8px;color:var(--mid)">Client agrees to indemnify and hold harmless the Released Parties from claims arising from: (a) participation in any service; (b) breach of this Agreement; or (c) misrepresentation of the Senior Client's health status.</p>
+<h3 style="font-size:11px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--forest);margin:16px 0 6px">6. Health Disclosure and Medical Authorization</h3>
+<p style="margin-bottom:8px;color:var(--mid)">Client represents the Senior Client is capable of participating in services and agrees to disclose relevant medical conditions, limitations, and allergies. In an emergency, Client authorizes staff to call 911 and take reasonable steps to assist until emergency services arrive.</p>
+<h3 style="font-size:11px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--forest);margin:16px 0 6px">7. Errand Support — Specific Terms</h3>
+<p style="margin-bottom:8px;color:var(--mid)">Staff will use Client-provided funds only. Client is responsible for accurate instructions. Active Aging Partners is not liable for product unavailability, store errors, or third-party delays. Receipts will be provided and unused funds returned.</p>
+<h3 style="font-size:11px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--forest);margin:16px 0 6px">8. Cancellation Policy</h3>
+<p style="margin-bottom:8px;color:var(--mid)">At least 24 hours' notice is required for cancellations. Late cancellations may be subject to a fee of up to one hour of service. Active Aging Partners may cancel due to staff unavailability or inclement weather with as much advance notice as possible.</p>
+<h3 style="font-size:11px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--forest);margin:16px 0 6px">9. Payment Terms</h3>
+<p style="margin-bottom:8px;color:var(--mid)">Services are billed at $50.00 per hour. Invoices are delivered electronically and payment is due upon receipt via Stripe through the client portal.</p>
+<h3 style="font-size:11px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--forest);margin:16px 0 6px">10. Photography and Communications</h3>
+<p style="margin-bottom:8px;color:var(--mid)">Active Aging Partners will not photograph the Senior Client without express written permission. Session reports are confidential and will not be shared with third parties without Client consent, except as required by law.</p>
+<h3 style="font-size:11px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--forest);margin:16px 0 6px">11. Governing Law and Dispute Resolution</h3>
+<p style="margin-bottom:8px;color:var(--mid)">This Agreement is governed by the laws of the State of Georgia. Disputes shall first be subject to good-faith mediation; if unsuccessful, resolved in the courts of DeKalb County, Georgia. Client waives the right to a jury trial.</p>
+<h3 style="font-size:11px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--forest);margin:16px 0 6px">12. Severability and Entire Agreement</h3>
+<p style="margin-bottom:8px;color:var(--mid)">If any provision is found unenforceable, it shall be modified to the minimum extent necessary and remaining provisions continue in full force. This Agreement supersedes all prior negotiations and representations.</p>
+<h3 style="font-size:11px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--forest);margin:16px 0 6px">13. Acknowledgment</h3>
+<p style="margin-bottom:8px;color:var(--mid);text-transform:uppercase;font-weight:600;font-size:12px">By signing, Client acknowledges they have read this Agreement in its entirety, understand its contents, and agree to be bound by its terms.</p>
+<p style="margin-bottom:8px;color:var(--mid)">Electronic acceptance constitutes a valid signature under the Georgia Electronic Records and Signatures Act (O.C.G.A. § 10-12-1 et seq.).</p>`;
+
 function toggleSidebar() {
   document.body.classList.toggle('sidebar-open');
   document.querySelector('.sidebar').classList.toggle('open');
@@ -1109,6 +1187,31 @@ function escapeHtml(str) {
         f('profile-senior-state',   clientProfile.seniorState);
         f('profile-senior-zip',     clientProfile.seniorZip);
         f('profile-health-notes',   clientProfile.notes);
+
+        // Waiver status
+        const waiverSigned = clientProfile.waiverSigned === true;
+        const notSignedEl  = document.getElementById('waiver-not-signed');
+        const signedEl     = document.getElementById('waiver-signed-block');
+        if (notSignedEl) notSignedEl.style.display = waiverSigned ? 'none' : 'block';
+        if (signedEl)    signedEl.style.display    = waiverSigned ? 'block' : 'none';
+        if (waiverSigned) {
+          const signedAt  = clientProfile.waiverSignedAt ? new Date(clientProfile.waiverSignedAt) : null;
+          const signedFmt = signedAt ? signedAt.toLocaleString('en-US', { weekday:'long', year:'numeric', month:'long', day:'numeric', hour:'numeric', minute:'2-digit', timeZoneName:'short' }) : '—';
+          const nameEl = document.getElementById('profile-waiver-name');
+          const dateEl = document.getElementById('profile-waiver-date');
+          if (nameEl) nameEl.textContent = clientProfile.waiverSignedName || '—';
+          if (dateEl) dateEl.textContent = signedFmt;
+          // Pre-fill waiver modal signature block
+          const mn = document.getElementById('waiver-modal-sig-name');
+          const md = document.getElementById('waiver-modal-sig-date');
+          const me = document.getElementById('waiver-modal-sig-email');
+          if (mn) mn.textContent = clientProfile.waiverSignedName  || '—';
+          if (md) md.textContent = signedFmt;
+          if (me) me.textContent = clientProfile.waiverSignedEmail || '—';
+        }
+        // Fill waiver modal body text
+        const waiverBody = document.getElementById('waiver-modal-body');
+        if (waiverBody) waiverBody.innerHTML = window._waiverHtmlContent || '';
 
         // Update profile photo section and sidebar to reflect the senior
         const pdn = document.getElementById('profile-display-name');

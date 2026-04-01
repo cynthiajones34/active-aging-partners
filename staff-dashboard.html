@@ -632,6 +632,25 @@ textarea.fi{resize:vertical;min-height:80px;line-height:1.5;}
       </div>
     </div>
 
+    <!-- Agreement status -->
+    <div class="cp-full" style="border-top:1px solid rgba(0,0,0,0.06)">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
+        <div class="cp-label" style="margin-bottom:0">Client Service Agreement</div>
+        <button class="btn btn-g btn-sm" id="cp-waiver-view-btn" style="display:none" onclick="openModal('staff-waiver-modal')">📋 View Agreement</button>
+      </div>
+      <div id="cp-waiver-unsigned" style="display:none">
+        <span style="background:rgba(196,132,90,0.12);color:var(--clay);border:1px solid rgba(196,132,90,0.3);border-radius:20px;padding:3px 12px;font-size:12px;font-weight:600">⚠ Not yet signed</span>
+      </div>
+      <div id="cp-waiver-signed" style="display:none">
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px">
+          <span style="background:rgba(45,74,50,0.08);color:var(--forest);border:1px solid rgba(45,74,50,0.2);border-radius:20px;padding:3px 12px;font-size:12px;font-weight:600">✓ Signed</span>
+        </div>
+        <div class="cp-row"><span class="cp-row-key">Signed Name</span><span id="cp-waiver-name" style="font-family:'Cormorant Garamond',serif;font-size:16px;font-style:italic">—</span></div>
+        <div class="cp-row"><span class="cp-row-key">Date &amp; Time</span><span id="cp-waiver-date">—</span></div>
+        <div class="cp-row"><span class="cp-row-key">Email</span><span id="cp-waiver-email">—</span></div>
+      </div>
+    </div>
+
     <!-- Sessions -->
     <div class="cp-full">
       <div class="cp-label">Sessions</div>
@@ -645,6 +664,22 @@ textarea.fi{resize:vertical;min-height:80px;line-height:1.5;}
         <button class="btn btn-g btn-sm" id="cp-view-thread-btn">View full thread →</button>
       </div>
       <div id="cp-messages"><div style="color:var(--mid);font-size:13px">Loading…</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- Staff Waiver View Modal -->
+<div class="modal-overlay" id="staff-waiver-modal" style="align-items:flex-start;padding:40px 20px;overflow-y:auto">
+  <div class="modal-wide" style="max-width:680px">
+    <div class="mhdr"><div class="mtitle">Client Service Agreement</div><button class="mclose" onclick="closeModal('staff-waiver-modal')">✕</button></div>
+    <div style="padding:4px 24px 20px;max-height:55vh;overflow-y:auto;font-size:13px;line-height:1.75;color:var(--charcoal)" id="staff-waiver-body"></div>
+    <div style="padding:16px 24px;border-top:1px solid rgba(0,0,0,0.07);background:var(--warm);border-radius:0 0 20px 20px">
+      <div style="font-size:11px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:var(--mid);margin-bottom:10px">Electronic Signature on File</div>
+      <div style="display:flex;gap:32px;flex-wrap:wrap">
+        <div><div style="font-size:11px;color:var(--mid);margin-bottom:2px">Signed Name</div><div style="font-family:'Cormorant Garamond',serif;font-size:17px;font-style:italic" id="staff-waiver-sig-name">—</div></div>
+        <div><div style="font-size:11px;color:var(--mid);margin-bottom:2px">Date &amp; Time</div><div style="font-size:13px" id="staff-waiver-sig-date">—</div></div>
+        <div><div style="font-size:11px;color:var(--mid);margin-bottom:2px">Email</div><div style="font-size:13px" id="staff-waiver-sig-email">—</div></div>
+      </div>
     </div>
   </div>
 </div>
@@ -691,6 +726,36 @@ textarea.fi{resize:vertical;min-height:80px;line-height:1.5;}
 <div class="toast" id="toast"></div>
 
 <script>
+window._staffWaiverHtml = `
+<p style="font-style:italic;color:var(--mid);margin-bottom:16px">Active Aging Partners — Client Service Agreement &amp; Liability Waiver</p>
+<h3 style="font-size:11px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--forest);margin:16px 0 6px">1. Parties</h3>
+<p style="margin-bottom:10px;color:var(--mid)">This Agreement is entered into between Active Aging Partners, LLC ("Company"), a companion wellness service based in Atlanta, Georgia, operated by Cynthia Jones, and the Client or Authorized Representative signing below.</p>
+<h3 style="font-size:11px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--forest);margin:16px 0 6px">2. Description of Services</h3>
+<p style="margin-bottom:8px;color:var(--mid)">Services include Walking &amp; Wellness, Companionship &amp; Engagement, and Errand Support. Active Aging Partners does NOT provide medical care, nursing services, physical therapy, medication administration, personal hygiene assistance, or any service requiring a medical or healthcare license.</p>
+<h3 style="font-size:11px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--forest);margin:16px 0 6px">3. Assumption of Risk</h3>
+<p style="margin-bottom:8px;color:var(--mid)">Client acknowledges inherent risks including physical injury, adverse health events, environmental hazards, and loss or delay related to errands. Client voluntarily assumes all such risks on behalf of themselves and the Senior Client.</p>
+<h3 style="font-size:11px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--forest);margin:16px 0 6px">4. Release and Waiver of Liability</h3>
+<p style="margin-bottom:8px;color:var(--mid)">Client releases Active Aging Partners, its owner, employees, contractors, agents, and successors from any and all liability arising out of services. This release does not apply to gross negligence, willful misconduct, or intentional acts.</p>
+<h3 style="font-size:11px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--forest);margin:16px 0 6px">5. Indemnification</h3>
+<p style="margin-bottom:8px;color:var(--mid)">Client agrees to indemnify and hold harmless the Released Parties from claims arising from participation in services, breach of this Agreement, or misrepresentation of the Senior Client's health status.</p>
+<h3 style="font-size:11px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--forest);margin:16px 0 6px">6. Health Disclosure and Medical Authorization</h3>
+<p style="margin-bottom:8px;color:var(--mid)">Client agrees to disclose relevant medical conditions, limitations, and allergies. In an emergency, Client authorizes staff to call 911 and take reasonable steps to assist until emergency services arrive.</p>
+<h3 style="font-size:11px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--forest);margin:16px 0 6px">7. Errand Support — Specific Terms</h3>
+<p style="margin-bottom:8px;color:var(--mid)">Staff will use Client-provided funds only. Client is responsible for accurate instructions. Active Aging Partners is not liable for product unavailability, store errors, or third-party delays. Receipts provided; unused funds returned.</p>
+<h3 style="font-size:11px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--forest);margin:16px 0 6px">8. Cancellation Policy</h3>
+<p style="margin-bottom:8px;color:var(--mid)">At least 24 hours' notice required for cancellations. Late cancellations may incur a fee of up to one hour of service. Active Aging Partners may cancel due to staff unavailability or inclement weather.</p>
+<h3 style="font-size:11px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--forest);margin:16px 0 6px">9. Payment Terms</h3>
+<p style="margin-bottom:8px;color:var(--mid)">Services billed at $50.00/hour. Invoices delivered electronically and due upon receipt via Stripe.</p>
+<h3 style="font-size:11px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--forest);margin:16px 0 6px">10. Photography and Communications</h3>
+<p style="margin-bottom:8px;color:var(--mid)">Active Aging Partners will not photograph the Senior Client without express written permission. Session reports are confidential and will not be shared without Client consent except as required by law.</p>
+<h3 style="font-size:11px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--forest);margin:16px 0 6px">11. Governing Law and Dispute Resolution</h3>
+<p style="margin-bottom:8px;color:var(--mid)">Governed by the laws of the State of Georgia. Disputes subject to good-faith mediation; if unsuccessful, resolved in the courts of DeKalb County, Georgia. Client waives the right to a jury trial.</p>
+<h3 style="font-size:11px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--forest);margin:16px 0 6px">12. Severability and Entire Agreement</h3>
+<p style="margin-bottom:8px;color:var(--mid)">If any provision is found unenforceable, it shall be modified to the minimum extent necessary. This Agreement supersedes all prior negotiations and representations.</p>
+<h3 style="font-size:11px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--forest);margin:16px 0 6px">13. Acknowledgment</h3>
+<p style="color:var(--charcoal);font-weight:600;font-size:12px;text-transform:uppercase;margin-bottom:6px">By signing, Client acknowledges they have read this Agreement in its entirety and agree to be bound by its terms.</p>
+<p style="margin-bottom:8px;color:var(--mid)">Electronic acceptance constitutes a valid signature under the Georgia Electronic Records and Signatures Act (O.C.G.A. § 10-12-1 et seq.).</p>`;
+
 function toggleSidebar(){
   document.body.classList.toggle('sidebar-open');
   document.querySelector('.sidebar').classList.toggle('open');
@@ -1050,6 +1115,27 @@ function downloadCSV(type){
     document.getElementById('cp-senior-name').textContent = c.seniorName || '—';
     document.getElementById('cp-senior-age').textContent  = c.seniorAge  || '—';
     document.getElementById('cp-notes').textContent       = c.notes      || '—';
+
+    // Waiver status
+    const wSigned   = c.waiverSigned === true;
+    const wUnsigned = document.getElementById('cp-waiver-unsigned');
+    const wSignedEl = document.getElementById('cp-waiver-signed');
+    const wViewBtn  = document.getElementById('cp-waiver-view-btn');
+    if (wUnsigned) wUnsigned.style.display = wSigned ? 'none' : 'block';
+    if (wSignedEl) wSignedEl.style.display  = wSigned ? 'block' : 'none';
+    if (wViewBtn)  wViewBtn.style.display   = wSigned ? 'inline-flex' : 'none';
+    if (wSigned) {
+      const wAt  = c.waiverSignedAt ? new Date(c.waiverSignedAt) : null;
+      const wFmt = wAt ? wAt.toLocaleString('en-US',{weekday:'long',year:'numeric',month:'long',day:'numeric',hour:'numeric',minute:'2-digit',timeZoneName:'short'}) : '—';
+      document.getElementById('cp-waiver-name').textContent  = c.waiverSignedName  || '—';
+      document.getElementById('cp-waiver-date').textContent  = wFmt;
+      document.getElementById('cp-waiver-email').textContent = c.waiverSignedEmail || '—';
+      // Pre-fill the staff waiver view modal
+      document.getElementById('staff-waiver-sig-name').textContent  = c.waiverSignedName  || '—';
+      document.getElementById('staff-waiver-sig-date').textContent  = wFmt;
+      document.getElementById('staff-waiver-sig-email').textContent = c.waiverSignedEmail || '—';
+      document.getElementById('staff-waiver-body').innerHTML = window._staffWaiverHtml || '';
+    }
 
     // Message button → opens thread in Messages tab
     document.getElementById('cp-msg-btn').onclick = () => {
