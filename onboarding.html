@@ -386,6 +386,8 @@ textarea.form-input { resize: vertical; min-height: 90px; line-height: 1.6; }
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
   import { getAuth, onAuthStateChanged }
     from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+  import { getFunctions, httpsCallable }
+    from "https://www.gstatic.com/firebasejs/10.12.0/firebase-functions.js";
 
   const firebaseConfig = {
     apiKey: "AIzaSyAuXMMnVjij0x1X5sQ5Jm1NuJUvquwDb0k",
@@ -396,8 +398,9 @@ textarea.form-input { resize: vertical; min-height: 90px; line-height: 1.6; }
     appId: "1:239822066888:web:8599d14fce0388d510c1fd"
   };
 
-  const app = initializeApp(firebaseConfig);
-  const auth = getAuth(app);
+  const app       = initializeApp(firebaseConfig);
+  const auth      = getAuth(app);
+  const functions = getFunctions(app);
 
   onAuthStateChanged(auth, async (user) => {
     if (!user) { window.location.href = 'index.html'; return; }
@@ -441,6 +444,22 @@ textarea.form-input { resize: vertical; min-height: 90px; line-height: 1.6; }
           }
         );
         console.log('Waiver saved');
+
+        // Send waiver confirmation email to client
+        const signedAt   = new Date();
+        const signedFmt  = signedAt.toLocaleString('en-US', {
+          weekday: 'long', year: 'numeric', month: 'long', day: 'numeric',
+          hour: 'numeric', minute: '2-digit', timeZoneName: 'short',
+        });
+        httpsCallable(functions, 'sendEmailNotification')({
+          to:       user.email,
+          toName:   sigName,
+          subject:  'Your Signed Agreement — Active Aging Partners',
+          type:     'waiver_confirmation',
+          bodyText: `Thank you for completing your Client Service Agreement with Active Aging Partners.\n\nHere is a record of your electronic signature for your files:\n\n  Signed Name: ${sigName}\n  Date & Time: ${signedFmt}\n  Email: ${user.email}\n\nThis signature constitutes a legally binding electronic agreement under the Georgia Electronic Records and Signatures Act (O.C.G.A. § 10-12-1 et seq.).\n\nYou can review the full agreement at any time by visiting www.activeagingpartners.com. If you have any questions, reply to this email or reach out through your client portal.\n\n— The Active Aging Partners Team`,
+          clientName: sigName,
+        }).catch(e => console.warn('Waiver email failed (non-fatal):', e));
+
       } catch (err) {
         console.warn('Waiver save failed (non-fatal):', err.message);
       }
