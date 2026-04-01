@@ -582,6 +582,10 @@ footer { background: var(--charcoal); padding: 40px 80px; }
       btn.innerHTML = '<span class="spinner"></span> Sending…';
       btn.disabled = true;
     } else {
-      btn.innerHTML = btn.dataset.original || 'Send M
+      btn.innerHTML = btn.dataset.original || 'Send Message →';
+      btn.disabled = false;
+    }
+  }
+</script>
 </body>
 </html>
