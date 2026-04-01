@@ -113,6 +113,25 @@ textarea.form-input { resize: vertical; min-height: 90px; line-height: 1.6; }
 .skip-link { display: block; text-align: center; font-size: 13px; color: var(--mid); margin-top: 16px; cursor: pointer; }
 .skip-link:hover { color: var(--forest); }
 
+/* Waiver */
+.waiver-box { background: #fff; border: 1.5px solid rgba(0,0,0,0.1); border-radius: 14px; max-height: 340px; overflow-y: auto; padding: 24px 28px; text-align: left; font-size: 13px; line-height: 1.75; color: var(--charcoal); margin-bottom: 20px; scroll-behavior: smooth; }
+.waiver-box h3 { font-family: 'Jost', sans-serif; font-size: 11px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--forest); margin: 20px 0 6px; }
+.waiver-box h3:first-child { margin-top: 0; }
+.waiver-box p { margin-bottom: 10px; color: var(--mid); }
+.waiver-box ul { padding-left: 18px; margin-bottom: 10px; color: var(--mid); }
+.waiver-box ul li { margin-bottom: 4px; }
+.waiver-box .waiver-header { font-size: 11px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--clay); text-align: center; margin-bottom: 16px; }
+.scroll-notice { font-size: 12px; color: var(--mid); text-align: center; margin-bottom: 14px; transition: opacity 0.4s; }
+.waiver-sig-card { background: #fff; border-radius: 16px; padding: 24px; text-align: left; box-shadow: 0 4px 20px rgba(0,0,0,0.06); border: 1px solid rgba(0,0,0,0.07); margin-bottom: 24px; }
+.waiver-sig-card .form-label { font-size: 11px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--mid); display: block; margin-bottom: 8px; }
+.sig-input { width: 100%; padding: 12px 16px; border-radius: 10px; border: 1.5px solid rgba(0,0,0,0.12); font-family: 'Cormorant Garamond', serif; font-size: 18px; font-style: italic; background: var(--warm); outline: none; transition: border-color 0.2s, box-shadow 0.2s; }
+.sig-input:focus { border-color: var(--forest); box-shadow: 0 0 0 3px rgba(45,74,50,0.12); background: #fff; }
+.agree-row { display: flex; align-items: flex-start; gap: 12px; margin-top: 16px; padding-top: 16px; border-top: 1px solid rgba(0,0,0,0.07); }
+.agree-row input[type=checkbox] { width: 18px; height: 18px; flex-shrink: 0; margin-top: 2px; accent-color: var(--forest); cursor: pointer; }
+.agree-row input[type=checkbox]:disabled { cursor: not-allowed; opacity: 0.4; }
+.agree-label { font-size: 13px; line-height: 1.55; color: var(--charcoal); cursor: pointer; }
+.agree-label strong { color: var(--forest); }
+
 @media (max-width: 768px) {
   .topbar { padding: 14px 20px; }
   .page { padding: 80px 20px 40px; }
@@ -133,7 +152,7 @@ textarea.form-input { resize: vertical; min-height: 90px; line-height: 1.6; }
     <div class="logo-leaf">🌿</div>
     <div class="logo-text">Active Aging Partners</div>
   </a>
-  <div class="step-indicator" id="step-label">Step 1 of 4</div>
+  <div class="step-indicator" id="step-label">Step 1 of 5</div>
 </div>
 
 <div class="page">
@@ -153,7 +172,7 @@ textarea.form-input { resize: vertical; min-height: 90px; line-height: 1.6; }
   <!-- SCREEN 2: ABOUT YOUR LOVED ONE -->
   <div class="screen" id="screen-2">
     <span class="screen-icon">👤</span>
-    <div class="screen-eyebrow">Step 2 of 4</div>
+    <div class="screen-eyebrow">Step 2 of 5</div>
     <h2 class="screen-title">Tell us about <em>your loved one</em></h2>
     <p class="screen-body">This helps us personalize every session and make sure we're prepared from day one.</p>
     <div class="form-card">
@@ -190,10 +209,105 @@ textarea.form-input { resize: vertical; min-height: 90px; line-height: 1.6; }
     <div class="skip-link" onclick="nextScreen()">Skip this step</div>
   </div>
 
-  <!-- SCREEN 3: NOTIFICATIONS -->
+  <!-- SCREEN 3: LIABILITY WAIVER -->
   <div class="screen" id="screen-3">
+    <span class="screen-icon">📋</span>
+    <div class="screen-eyebrow">Step 3 of 5</div>
+    <h2 class="screen-title">Client Service <em>Agreement</em></h2>
+    <p class="screen-body">Please read the full agreement below, then sign electronically to continue. This is required before your first session.</p>
+
+    <div class="waiver-box" id="waiver-scroll-box">
+      <div class="waiver-header">Active Aging Partners — Client Service Agreement & Liability Waiver</div>
+      <p><em>Please read carefully before signing. This is a legally binding document.</em></p>
+
+      <h3>1. Parties</h3>
+      <p>This Client Service Agreement and Liability Waiver ("Agreement") is entered into between:</p>
+      <p><strong>Service Provider:</strong> Active Aging Partners, LLC ("Company"), a companion wellness service based in Atlanta, Georgia, operated by Cynthia Jones.</p>
+      <p><strong>Client / Authorized Representative ("Client"):</strong> The individual signing below, either on their own behalf or as a legally authorized representative (parent, guardian, or authorized agent) of the senior receiving services ("Senior Client").</p>
+
+      <h3>2. Description of Services</h3>
+      <p>Active Aging Partners provides non-medical companion wellness services to senior adults. Services covered under this Agreement include:</p>
+      <ul>
+        <li><strong>Walking &amp; Wellness</strong> — Accompanied walking sessions in parks, neighborhoods, trails, and other community settings to support physical activity and social engagement.</li>
+        <li><strong>Companionship &amp; Engagement</strong> — In-home or community-based visits including conversation, games, reading, light technology assistance, meal companionship, and plant or pet check-ins.</li>
+        <li><strong>Errand Support</strong> — Company staff runs errands on behalf of the Senior Client (including grocery shopping, pharmacy pickups, and similar tasks). This service does not include transportation of the Senior Client.</li>
+      </ul>
+      <p>Active Aging Partners does NOT provide medical care, nursing services, physical therapy, medication administration, personal hygiene assistance, or any service that requires a medical or healthcare license. If the Senior Client requires medical supervision or licensed care, Client acknowledges that Active Aging Partners is not the appropriate provider for those needs.</p>
+
+      <h3>3. Assumption of Risk</h3>
+      <p>Client acknowledges and understands that participation in the services described above involves inherent risks, including but not limited to:</p>
+      <ul>
+        <li>Physical injury, including falls, strains, sprains, or other injuries that may occur during walking or outdoor activities.</li>
+        <li>Adverse reactions or health events related to the Senior Client's pre-existing medical conditions.</li>
+        <li>Incidents arising from environmental hazards including uneven terrain, inclement weather, traffic, or other outdoor conditions.</li>
+        <li>Emotional distress or behavioral episodes that may occur during companionship visits.</li>
+        <li>Loss, damage, or delay related to errands performed on the Senior Client's behalf.</li>
+      </ul>
+      <p>Client voluntarily assumes all such risks on behalf of themselves and the Senior Client, and agrees that Active Aging Partners staff will exercise reasonable care and professional judgment in delivering all services.</p>
+
+      <h3>4. Release and Waiver of Liability</h3>
+      <p>In consideration of Active Aging Partners agreeing to provide services, Client, on behalf of themselves, the Senior Client, and their respective heirs, executors, administrators, legal representatives, and assigns, hereby releases, waives, discharges, and covenants not to sue Active Aging Partners, its owner, employees, contractors, agents, and successors ("Released Parties") from any and all liability, claims, demands, actions, or causes of action arising out of or related to any loss, damage, injury, or death caused by negligence or otherwise while participating in the services described in this Agreement.</p>
+      <p>This release includes claims arising from the ordinary negligence of the Released Parties. This release does not apply to claims arising from gross negligence, willful misconduct, or intentional acts.</p>
+
+      <h3>5. Indemnification</h3>
+      <p>Client agrees to indemnify, defend, and hold harmless the Released Parties from and against any claims, liabilities, damages, costs, and expenses (including reasonable attorney's fees) arising from: (a) Client's or Senior Client's participation in any service; (b) any breach of this Agreement by Client; or (c) any misrepresentation made by Client regarding the Senior Client's health status or needs.</p>
+
+      <h3>6. Health Disclosure and Medical Authorization</h3>
+      <p>Client represents that, to the best of their knowledge, the Senior Client is physically and mentally capable of participating in the services selected. Client agrees to disclose to Active Aging Partners any known medical conditions, physical limitations, allergies, behavioral considerations, or other relevant health information that may affect the delivery of services or the safety of the Senior Client.</p>
+      <p>In the event of a medical emergency during a service session, Client authorizes Active Aging Partners staff to call 911 and take reasonable steps to assist the Senior Client until emergency services arrive. Active Aging Partners staff are not trained first responders and will not administer medical treatment.</p>
+
+      <h3>7. Errand Support — Specific Terms</h3>
+      <p>For Errand Support services, Client acknowledges the following additional terms:</p>
+      <ul>
+        <li>Active Aging Partners staff will complete errands using Client-provided funds, gift cards, or a pre-authorized payment method. Staff will not use personal funds on behalf of the Client.</li>
+        <li>Client is responsible for providing accurate, complete instructions for all errands. Active Aging Partners is not liable for errors resulting from incomplete or unclear instructions.</li>
+        <li>Active Aging Partners is not liable for product unavailability, store errors, third-party delays, or perishable goods that are affected by transit time.</li>
+        <li>Receipts will be provided for all purchases. Any unused funds will be returned to the Client at the conclusion of the session.</li>
+      </ul>
+
+      <h3>8. Cancellation Policy</h3>
+      <p>Client agrees to provide at least 24 hours' notice for session cancellations. Cancellations made with less than 24 hours' notice may be subject to a cancellation fee of up to one hour of service at the applicable rate. Active Aging Partners reserves the right to cancel or reschedule sessions due to staff unavailability, inclement weather, or other circumstances beyond our control, with as much advance notice as possible.</p>
+
+      <h3>9. Payment Terms</h3>
+      <p>Services are billed at a flat rate of $50.00 per hour. Invoices are generated after each session and delivered electronically via the Active Aging Partners client portal and/or email. Payment is due upon receipt. Active Aging Partners accepts payment via Stripe through the client portal. Continued use of services constitutes acceptance of these payment terms.</p>
+
+      <h3>10. Photography and Communications</h3>
+      <p>Active Aging Partners may document sessions with written notes and session reports shared with the Client via the client portal. Active Aging Partners will not photograph the Senior Client without express written permission from the Client. Session reports and communications are confidential and will not be shared with third parties without Client consent, except as required by law.</p>
+
+      <h3>11. Governing Law and Dispute Resolution</h3>
+      <p>This Agreement shall be governed by and construed in accordance with the laws of the State of Georgia. Any dispute arising from this Agreement shall first be subject to good-faith mediation between the parties. If mediation is unsuccessful, disputes shall be resolved in the courts of DeKalb County, Georgia. Client waives the right to a jury trial in connection with any dispute arising from this Agreement.</p>
+
+      <h3>12. Severability and Entire Agreement</h3>
+      <p>If any provision of this Agreement is found to be unenforceable or invalid under applicable law, that provision shall be modified to the minimum extent necessary to make it enforceable, and the remaining provisions shall continue in full force and effect. This Agreement constitutes the entire agreement between the parties with respect to its subject matter and supersedes all prior negotiations, representations, or agreements.</p>
+
+      <h3>13. Acknowledgment</h3>
+      <p style="text-transform:uppercase;font-weight:600;font-size:12px;color:var(--charcoal)">By signing below, client acknowledges that they have read this agreement in its entirety, understand its contents, and agree to be bound by its terms. If signing on behalf of a senior client, client represents that they have legal authority to do so.</p>
+      <p>By checking the agreement box and typing your full name, you confirm you have read, understood, and agreed to all terms. Your full name, email address, and the date and time of electronic acceptance constitute a valid electronic signature under the Georgia Electronic Records and Signatures Act (O.C.G.A. § 10-12-1 et seq.).</p>
+    </div>
+
+    <div class="scroll-notice" id="scroll-notice">↓ Scroll to the bottom to enable the agreement checkbox</div>
+
+    <div class="waiver-sig-card">
+      <label class="form-label">Electronic Signature — Type your full legal name</label>
+      <input type="text" class="sig-input" id="waiver-sig-name" placeholder="Your full name" autocomplete="name">
+      <div class="agree-row">
+        <input type="checkbox" id="waiver-agree" disabled>
+        <label class="agree-label" for="waiver-agree">I have read this Agreement in its entirety and agree to be bound by its terms. I understand this constitutes a legally binding electronic signature under Georgia law. <strong>— Active Aging Partners</strong></label>
+      </div>
+    </div>
+
+    <div id="waiver-error" style="color:#b03030;font-size:13px;text-align:center;margin-bottom:12px;display:none">Please scroll through the full agreement, check the box, and type your full name to continue.</div>
+
+    <div class="btn-row">
+      <button class="btn btn-ghost" onclick="prevScreen()">← Back</button>
+      <button class="btn btn-solid btn-lg" id="waiver-continue-btn" onclick="submitWaiver()">I Agree &amp; Continue →</button>
+    </div>
+  </div>
+
+  <!-- SCREEN 4: NOTIFICATIONS -->
+  <div class="screen" id="screen-4">
     <span class="screen-icon">🔔</span>
-    <div class="screen-eyebrow">Step 3 of 4</div>
+    <div class="screen-eyebrow">Step 4 of 5</div>
     <h2 class="screen-title">Stay <em>in the loop</em></h2>
     <p class="screen-body">Choose how you want to hear from us. You can change these anytime in your portal settings.</p>
     <div class="form-card">
@@ -233,8 +347,8 @@ textarea.form-input { resize: vertical; min-height: 90px; line-height: 1.6; }
     <div class="skip-link" onclick="nextScreen()">Skip this step</div>
   </div>
 
-  <!-- SCREEN 4: ALL SET -->
-  <div class="screen" id="screen-4">
+  <!-- SCREEN 5: ALL SET -->
+  <div class="screen" id="screen-5">
     <span class="screen-icon">🌿</span>
     <div class="screen-eyebrow">You're all set</div>
     <h2 class="screen-title">Your portal is <em>ready</em></h2>
@@ -307,6 +421,31 @@ textarea.form-input { resize: vertical; min-height: 90px; line-height: 1.6; }
       console.warn('Baseline profile write failed:', err.code, err.message);
     }
 
+    // ── WAIVER SAVE (REST API PATCH — avoids WebSocket/CORS issues on GitHub Pages) ──
+    window._saveWaiver = async function(sigName) {
+      try {
+        const idToken = await user.getIdToken();
+        const fields  = {
+          waiverSigned:      { booleanValue: true },
+          waiverSignedAt:    { stringValue: new Date().toISOString() },
+          waiverSignedName:  { stringValue: sigName },
+          waiverSignedEmail: { stringValue: user.email },
+        };
+        const updateMask = Object.keys(fields).map(f => `updateMask.fieldPaths=${f}`).join('&');
+        await fetch(
+          `https://firestore.googleapis.com/v1/projects/active-aging-partners/databases/(default)/documents/clients/${user.uid}?${updateMask}`,
+          {
+            method:  'PATCH',
+            headers: { 'Authorization': `Bearer ${idToken}`, 'Content-Type': 'application/json' },
+            body:    JSON.stringify({ fields }),
+          }
+        );
+        console.log('Waiver saved');
+      } catch (err) {
+        console.warn('Waiver save failed (non-fatal):', err.message);
+      }
+    };
+
     // Wire up goToPortal to save data first
     window.goToPortal = async function() {
       const btn = document.getElementById('portal-btn');
@@ -328,8 +467,6 @@ textarea.form-input { resize: vertical; min-height: 90px; line-height: 1.6; }
           await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js');
         const db = getFirestore(app);
 
-        // setDoc with merge:true creates the document if it doesn't exist yet
-        // (covers the case where the signup-time write failed due to unverified email)
         await setDoc(doc(db, 'clients', user.uid), {
           uid:               user.uid,
           email:             user.email,
@@ -343,6 +480,11 @@ textarea.form-input { resize: vertical; min-height: 90px; line-height: 1.6; }
           reportEmailOptIn:  emailReport,
           invoiceEmailOptIn: emailInv,
           onboardingComplete: true,
+          // Include waiver fields in final save as a backup
+          waiverSigned:      window._waiverName ? true : false,
+          waiverSignedAt:    window._waiverAt   || '',
+          waiverSignedName:  window._waiverName || '',
+          waiverSignedEmail: user.email,
         }, { merge: true });
         console.log('Onboarding data saved');
       } catch (err) {
@@ -356,9 +498,9 @@ textarea.form-input { resize: vertical; min-height: 90px; line-height: 1.6; }
 
 <script>
   let currentScreen = 1;
-  const totalScreens = 4;
-  const progressSteps = [25, 50, 75, 100];
-  const stepLabels = ['Welcome', 'Step 2 of 4', 'Step 3 of 4', 'All set!'];
+  const totalScreens = 5;
+  const progressSteps = [20, 40, 60, 80, 100];
+  const stepLabels = ['Welcome', 'Step 2 of 5', 'Step 3 of 5', 'Step 4 of 5', 'All set!'];
 
   // Launch confetti on screen 1
   window.addEventListener('DOMContentLoaded', () => {
@@ -387,6 +529,7 @@ textarea.form-input { resize: vertical; min-height: 90px; line-height: 1.6; }
     setTimeout(() => { wrap.innerHTML = ''; }, 4000);
   }
 
+  // Wire waiver scroll detection each time screen 3 becomes active
   function showScreen(num) {
     document.querySelectorAll('.screen').forEach((s, i) => {
       s.classList.toggle('active', i + 1 === num);
@@ -395,7 +538,41 @@ textarea.form-input { resize: vertical; min-height: 90px; line-height: 1.6; }
     document.getElementById('progress').style.width = progressSteps[num - 1] + '%';
     document.getElementById('step-label').textContent = stepLabels[num - 1];
     window.scrollTo({ top: 0, behavior: 'smooth' });
+    if (num === 3) initWaiverScroll();
   }
+
+  function initWaiverScroll() {
+    const box = document.getElementById('waiver-scroll-box');
+    const cb  = document.getElementById('waiver-agree');
+    const notice = document.getElementById('scroll-notice');
+    if (!box) return;
+    function checkScroll() {
+      if (box.scrollTop + box.clientHeight >= box.scrollHeight - 8) {
+        cb.disabled = false;
+        if (notice) notice.style.opacity = '0';
+      }
+    }
+    box.addEventListener('scroll', checkScroll);
+    checkScroll(); // already at bottom if content is short
+  }
+
+  window.submitWaiver = function() {
+    const name  = document.getElementById('waiver-sig-name')?.value.trim();
+    const agree = document.getElementById('waiver-agree')?.checked;
+    const errEl = document.getElementById('waiver-error');
+    if (!agree || !name) {
+      if (errEl) errEl.style.display = 'block';
+      return;
+    }
+    if (errEl) errEl.style.display = 'none';
+    // Store for module script to pick up
+    window._waiverName = name;
+    window._waiverAt   = new Date().toISOString();
+    // Save to Firestore via REST API (handled in module script)
+    if (typeof window._saveWaiver === 'function') window._saveWaiver(name);
+    currentScreen++;
+    showScreen(currentScreen);
+  };
 
   window.nextScreen = function() {
     if (currentScreen < totalScreens) {
