@@ -109,6 +109,45 @@ textarea.fi{resize:vertical;min-height:80px;line-height:1.5;}
 .tog.on .tok{left:21px;}
 .export-section{background:var(--warm);border-radius:14px;border:1px solid rgba(0,0,0,0.05);padding:24px;margin-bottom:16px;}
 .export-options{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;}
+/* ---- AVAILABILITY ---- */
+.avail-layout{display:grid;grid-template-columns:1fr 320px;gap:20px;align-items:start;}
+.avail-cal-wrap{background:var(--warm);border:1px solid rgba(0,0,0,0.07);border-radius:14px;padding:24px;}
+.avail-cal-hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;}
+.avail-cal-title{font-family:'Cormorant Garamond',serif;font-size:17px;font-weight:600;}
+.avail-cal-nav{display:flex;gap:6px;}
+.avail-cal-nav button{background:none;border:1.5px solid rgba(0,0,0,0.12);border-radius:8px;width:30px;height:30px;cursor:pointer;font-size:14px;display:flex;align-items:center;justify-content:center;transition:all 0.2s;}
+.avail-cal-nav button:hover{border-color:var(--forest);background:var(--forest);color:#fff;}
+.avail-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;}
+.avail-cell{aspect-ratio:1;display:flex;align-items:center;justify-content:center;border-radius:8px;font-size:12px;font-weight:500;cursor:pointer;border:1.5px solid transparent;transition:all 0.18s;user-select:none;}
+.avail-cell.hdr{cursor:default;font-size:10px;font-weight:600;color:var(--mid);letter-spacing:0.05em;text-transform:uppercase;}
+.avail-cell.empty{cursor:default;}
+.avail-cell.past{opacity:0.3;cursor:default;}
+.avail-cell.weekend{background:rgba(0,0,0,0.03);color:var(--mid);cursor:default;}
+.avail-cell.avail:hover{border-color:var(--sage);background:rgba(122,158,126,0.1);}
+.avail-cell.blocked{background:rgba(196,132,90,0.15);border-color:var(--clay);color:var(--clay);font-weight:700;}
+.avail-cell.blocked:hover{background:rgba(196,132,90,0.25);}
+.avail-cell.today-marker{border-color:var(--sage);font-weight:700;}
+.avail-legend{display:flex;gap:16px;margin-top:12px;flex-wrap:wrap;}
+.avail-legend-item{display:flex;align-items:center;gap:6px;font-size:11px;color:var(--mid);}
+.avail-legend-dot{width:12px;height:12px;border-radius:3px;flex-shrink:0;}
+.avail-panel{display:flex;flex-direction:column;gap:14px;}
+.avail-info-card{background:var(--warm);border:1px solid rgba(0,0,0,0.07);border-radius:14px;padding:20px;}
+.avail-info-title{font-family:'Cormorant Garamond',serif;font-size:15px;font-weight:600;margin-bottom:4px;}
+.avail-info-sub{font-size:12px;color:var(--mid);margin-bottom:14px;line-height:1.5;}
+.blocked-list{display:flex;flex-direction:column;gap:8px;max-height:320px;overflow-y:auto;}
+.blocked-item{background:#fff;border:1px solid rgba(0,0,0,0.07);border-radius:10px;padding:10px 12px;display:flex;align-items:flex-start;justify-content:space-between;gap:10px;}
+.blocked-item-date{font-size:13px;font-weight:600;color:var(--charcoal);}
+.blocked-item-times{font-size:11px;color:var(--mid);margin-top:2px;}
+.blocked-item-remove{background:none;border:none;font-size:16px;cursor:pointer;color:var(--mid);flex-shrink:0;padding:2px 4px;border-radius:4px;transition:all 0.15s;line-height:1;}
+.blocked-item-remove:hover{color:#b03030;background:rgba(176,48,48,0.08);}
+.avail-empty{font-size:12px;color:var(--mid);text-align:center;padding:20px 0;font-style:italic;}
+.block-times-wrap{margin-top:12px;border-top:1px solid rgba(0,0,0,0.07);padding-top:12px;}
+.block-times-label{font-size:12px;font-weight:600;color:var(--charcoal);margin-bottom:8px;}
+.block-time-chips{display:flex;flex-wrap:wrap;gap:6px;}
+.btc{padding:5px 10px;border:1.5px solid rgba(0,0,0,0.12);border-radius:20px;font-size:11px;cursor:pointer;background:#fff;transition:all 0.18s;font-family:'Jost',sans-serif;}
+.btc:hover{border-color:var(--clay);}
+.btc.blocked-t{background:rgba(196,132,90,0.12);border-color:var(--clay);color:var(--clay);font-weight:600;}
+@media(max-width:900px){.avail-layout{grid-template-columns:1fr;}.avail-panel{order:-1;}}
 .eo{background:#fff;border:1.5px solid rgba(0,0,0,0.08);border-radius:12px;padding:18px;text-align:center;cursor:pointer;transition:all 0.2s;}
 .eo:hover{border-color:var(--sage);}
 .eo .icon{font-size:28px;margin-bottom:8px;}
@@ -198,6 +237,7 @@ textarea.fi{resize:vertical;min-height:80px;line-height:1.5;}
     <div class="nl">Business</div>
     <div class="ni" onclick="nav('reports',this); window.loadStaffReports && window.loadStaffReports()"><span class="ni-icon">📋</span> Session Reports</div>
     <div class="ni" onclick="nav('payments',this)"><span class="ni-icon">💳</span> Payments</div>
+    <div class="ni" onclick="nav('availability',this);window.loadAvailability&&window.loadAvailability()"><span class="ni-icon">🚫</span> Availability</div>
     <div class="nl">Settings</div>
     <div class="ni" onclick="nav('profile',this)"><span class="ni-icon">👤</span> My Profile</div>
     <div class="ni" onclick="nav('notifications',this)"><span class="ni-icon">🔔</span> Notifications</div>
@@ -446,6 +486,40 @@ textarea.fi{resize:vertical;min-height:80px;line-height:1.5;}
           <div class="eo" onclick="downloadCSV('reports')"><div class="icon">📋</div><div class="name">Session Reports</div><div class="desc">All written session notes</div></div>
           <div class="eo" onclick="downloadCSV('contacts')"><div class="icon">📞</div><div class="name">Family Contacts</div><div class="desc">Emergency and billing contacts</div></div>
           <div class="eo" onclick="downloadCSV('all')"><div class="icon">📦</div><div class="name">Full Export</div><div class="desc">All data in one file</div></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="view" id="view-availability">
+      <div style="font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:600;margin-bottom:4px">Availability</div>
+      <div style="font-size:13px;color:var(--mid);margin-bottom:20px">Click any upcoming date to block or unblock it. Clients cannot book on weekends (shown in gray) or on blocked dates.</div>
+      <div class="avail-layout">
+        <div class="avail-cal-wrap">
+          <div class="avail-cal-hdr">
+            <div class="avail-cal-title" id="avail-month-label">March 2026</div>
+            <div class="avail-cal-nav">
+              <button onclick="changeAvailMonth(-1)">&#8592;</button>
+              <button onclick="changeAvailMonth(1)">&#8594;</button>
+            </div>
+          </div>
+          <div class="avail-grid" id="avail-grid"></div>
+          <div class="avail-legend">
+            <div class="avail-legend-item"><div class="avail-legend-dot" style="background:rgba(196,132,90,0.15);border:1.5px solid var(--clay)"></div>Blocked (full day)</div>
+            <div class="avail-legend-item"><div class="avail-legend-dot" style="background:rgba(0,0,0,0.03)"></div>Weekend (always blocked)</div>
+            <div class="avail-legend-item"><div class="avail-legend-dot" style="border:1.5px solid var(--sage)"></div>Today</div>
+          </div>
+        </div>
+        <div class="avail-panel">
+          <div class="avail-info-card">
+            <div class="avail-info-title">Blocked Dates</div>
+            <div class="avail-info-sub">Tap a date in the calendar to block it. Click again to unblock.</div>
+            <div class="blocked-list" id="blocked-list"><div class="avail-empty">No dates blocked yet.</div></div>
+          </div>
+          <div class="avail-info-card" id="avail-time-panel" style="display:none">
+            <div class="avail-info-title" id="avail-time-title">Block specific times</div>
+            <div class="avail-info-sub">Optionally block individual time slots for this date. Leave all unselected to block the whole day.</div>
+            <div class="block-time-chips" id="avail-time-chips"></div>
+          </div>
         </div>
       </div>
     </div>
@@ -745,7 +819,7 @@ function downloadCSV(type){
                               from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
   import {
     getFirestore, initializeFirestore, collection, addDoc, query,
-    orderBy, getDocs, serverTimestamp, doc, getDoc, where, updateDoc
+    orderBy, getDocs, serverTimestamp, doc, getDoc, where, updateDoc, setDoc, deleteDoc
   }                           from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
   import { getFunctions, httpsCallable }
                               from "https://www.gstatic.com/firebasejs/10.12.0/firebase-functions.js";
@@ -1810,6 +1884,162 @@ function downloadCSV(type){
       btn.textContent = 'Update Password';
       btn.disabled = false;
     }
+  };
+
+  // ── AVAILABILITY MANAGEMENT ───────────────────────────────────
+  // _blockedDates: { 'YYYY-MM-DD': { allDay: bool, times: string[] } }
+  window._blockedDates = {};
+  let availYear, availMonth;
+
+  function _availDateStr(y, m, d) {
+    return `${y}-${String(m+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+  }
+
+  window.loadAvailability = async function() {
+    try {
+      const snap = await getDocs(collection(db, 'blockedDates'));
+      window._blockedDates = {};
+      snap.forEach(d => { window._blockedDates[d.id] = d.data(); });
+    } catch(e) { console.error('loadAvailability', e); }
+    const now = new Date();
+    availYear  = now.getFullYear();
+    availMonth = now.getMonth();
+    renderAvailCalendar();
+    renderBlockedList();
+  };
+
+  window.changeAvailMonth = function(dir) {
+    availMonth += dir;
+    if(availMonth > 11){ availMonth = 0; availYear++; }
+    if(availMonth < 0) { availMonth = 11; availYear--; }
+    renderAvailCalendar();
+  };
+
+  function renderAvailCalendar() {
+    const monthNames = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+    const label = document.getElementById('avail-month-label');
+    const grid  = document.getElementById('avail-grid');
+    if(!label || !grid) return;
+    label.textContent = `${monthNames[availMonth]} ${availYear}`;
+    const firstDay = new Date(availYear, availMonth, 1).getDay();
+    const daysIn   = new Date(availYear, availMonth + 1, 0).getDate();
+    const today    = new Date();
+    const headers  = ['Su','Mo','Tu','We','Th','Fr','Sa'];
+    let html = headers.map(h=>`<div class="avail-cell hdr">${h}</div>`).join('');
+    for(let i = 0; i < firstDay; i++) html += '<div class="avail-cell empty"></div>';
+    for(let d = 1; d <= daysIn; d++) {
+      const date    = new Date(availYear, availMonth, d);
+      const dow     = date.getDay();
+      const dateStr = _availDateStr(availYear, availMonth, d);
+      const isPast  = date < new Date(today.getFullYear(), today.getMonth(), today.getDate());
+      const isToday = date.toDateString() === today.toDateString();
+      const isWknd  = dow === 0 || dow === 6;
+      const isBlocked = !!window._blockedDates[dateStr];
+      if(isPast) {
+        html += `<div class="avail-cell past">${d}</div>`;
+      } else if(isWknd) {
+        html += `<div class="avail-cell weekend" title="Weekends are always unavailable">${d}</div>`;
+      } else if(isBlocked) {
+        html += `<div class="avail-cell blocked${isToday?' today-marker':''}" onclick="toggleBlockDate(${availYear},${availMonth},${d})" title="Click to unblock">${d}</div>`;
+      } else {
+        html += `<div class="avail-cell avail${isToday?' today-marker':''}" onclick="toggleBlockDate(${availYear},${availMonth},${d})" title="Click to block">${d}</div>`;
+      }
+    }
+    grid.innerHTML = html;
+  }
+
+  window.toggleBlockDate = async function(y, m, d) {
+    const dateStr = _availDateStr(y, m, d);
+    if(window._blockedDates[dateStr]) {
+      // Unblock — remove document
+      try {
+        await deleteDoc(doc(db, 'blockedDates', dateStr));
+        delete window._blockedDates[dateStr];
+        document.getElementById('avail-time-panel').style.display = 'none';
+      } catch(e) { console.error('unblock', e); showToast('Could not unblock date. Try again.'); return; }
+    } else {
+      // Block entire day
+      try {
+        await setDoc(doc(db, 'blockedDates', dateStr), { allDay: true, times: [] });
+        window._blockedDates[dateStr] = { allDay: true, times: [] };
+        showAvailTimePanel(dateStr);
+      } catch(e) { console.error('block', e); showToast('Could not block date. Try again.'); return; }
+    }
+    renderAvailCalendar();
+    renderBlockedList();
+  };
+
+  function showAvailTimePanel(dateStr) {
+    const panel = document.getElementById('avail-time-panel');
+    const title = document.getElementById('avail-time-title');
+    const chips = document.getElementById('avail-time-chips');
+    panel.style.display = 'block';
+    const [y,m,d] = dateStr.split('-');
+    const dateObj = new Date(parseInt(y), parseInt(m)-1, parseInt(d));
+    const formatted = dateObj.toLocaleDateString('en-US',{weekday:'long',month:'long',day:'numeric'});
+    title.textContent = `Time slots — ${formatted}`;
+    const allTimes = ['9:00 AM','10:00 AM','11:00 AM','1:00 PM','2:00 PM','3:00 PM','4:00 PM'];
+    const blockedTimes = (window._blockedDates[dateStr]?.times) || [];
+    chips.innerHTML = allTimes.map(t => {
+      const isB = blockedTimes.includes(t);
+      return `<div class="btc${isB?' blocked-t':''}" onclick="toggleBlockTime('${dateStr}','${t}')">${t}</div>`;
+    }).join('');
+  }
+
+  window.toggleBlockTime = async function(dateStr, time) {
+    const existing = window._blockedDates[dateStr] || { allDay: true, times: [] };
+    let times = [...(existing.times || [])];
+    if(times.includes(time)) {
+      times = times.filter(t => t !== time);
+    } else {
+      times.push(time);
+    }
+    const allTimes = ['9:00 AM','10:00 AM','11:00 AM','1:00 PM','2:00 PM','3:00 PM','4:00 PM'];
+    const allDay = times.length === 0 || times.length === allTimes.length;
+    try {
+      await setDoc(doc(db, 'blockedDates', dateStr), { allDay, times }, { merge: false });
+      window._blockedDates[dateStr] = { allDay, times };
+      showAvailTimePanel(dateStr);
+      renderBlockedList();
+    } catch(e) { console.error('toggleBlockTime', e); showToast('Could not update time. Try again.'); }
+  };
+
+  function renderBlockedList() {
+    const list = document.getElementById('blocked-list');
+    if(!list) return;
+    const keys = Object.keys(window._blockedDates).sort();
+    if(keys.length === 0) {
+      list.innerHTML = '<div class="avail-empty">No dates blocked yet.</div>';
+      return;
+    }
+    list.innerHTML = keys.map(dateStr => {
+      const data = window._blockedDates[dateStr];
+      const [y,m,d] = dateStr.split('-');
+      const dateObj = new Date(parseInt(y), parseInt(m)-1, parseInt(d));
+      const formatted = dateObj.toLocaleDateString('en-US',{weekday:'short',month:'short',day:'numeric',year:'numeric'});
+      const timesText = (!data.times || data.times.length === 0 || data.allDay)
+        ? 'All day'
+        : data.times.join(', ');
+      return `<div class="blocked-item">
+        <div>
+          <div class="blocked-item-date">${formatted}</div>
+          <div class="blocked-item-times">${timesText}</div>
+        </div>
+        <button class="blocked-item-remove" onclick="removeBlockedDate('${dateStr}')" title="Remove block">✕</button>
+      </div>`;
+    }).join('');
+  }
+
+  window.removeBlockedDate = async function(dateStr) {
+    try {
+      await deleteDoc(doc(db, 'blockedDates', dateStr));
+      delete window._blockedDates[dateStr];
+      renderAvailCalendar();
+      renderBlockedList();
+      if(document.getElementById('avail-time-title')?.textContent.includes(dateStr.slice(5))) {
+        document.getElementById('avail-time-panel').style.display = 'none';
+      }
+    } catch(e) { console.error('removeBlockedDate', e); showToast('Could not remove block. Try again.'); }
   };
 </script>
 </body>

@@ -196,6 +196,8 @@ body { font-family:'Jost',sans-serif; background:var(--cream); color:var(--charc
 .day-cell.selected { background:var(--forest); color:#fff; border-color:var(--forest); }
 .day-cell.booked { background:rgba(0,0,0,0.04); color:var(--mid); cursor:not-allowed; text-decoration:line-through; }
 .day-cell.today { border-color:var(--sage); font-weight:700; }
+.day-cell.weekend { background:rgba(0,0,0,0.03); color:var(--mid); cursor:not-allowed; opacity:0.5; }
+.day-cell.blocked-day { background:rgba(196,132,90,0.08); color:var(--mid); cursor:not-allowed; opacity:0.5; text-decoration:line-through; }
 .day-header { aspect-ratio:auto; font-size:10px; text-transform:uppercase; letter-spacing:0.08em; color:var(--mid); text-align:center; padding:4px; cursor:default; border:none; background:transparent; }
 
 .time-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:8px; margin:14px 0; }
@@ -797,18 +799,19 @@ function selectDay(el) {
   document.querySelectorAll('.day-cell:not(.day-header):not(.past):not(.today-past)').forEach(d=>d.classList.remove('selected'));
   el.classList.add('selected');
   // Update times label with selected date
-  const day   = el.textContent.trim();
-  const label = document.getElementById('times-label');
-  const grid  = document.getElementById('times-grid');
+  const day     = el.textContent.trim();
+  const dateStr = el.dataset.date || '';
+  const label   = document.getElementById('times-label');
+  const grid    = document.getElementById('times-grid');
   if(label) label.textContent = `Available Times — ${document.getElementById('cal-month-label').textContent.split(' — ')[0]} ${day}`;
-  if(grid) grid.innerHTML = `
-    <div class="time-chip" onclick="selectTime(this)">9:00 AM</div>
-    <div class="time-chip" onclick="selectTime(this)">10:00 AM</div>
-    <div class="time-chip" onclick="selectTime(this)">11:00 AM</div>
-    <div class="time-chip" onclick="selectTime(this)">1:00 PM</div>
-    <div class="time-chip" onclick="selectTime(this)">2:00 PM</div>
-    <div class="time-chip" onclick="selectTime(this)">3:00 PM</div>
-    <div class="time-chip" onclick="selectTime(this)">4:00 PM</div>`;
+  const allTimes = ['9:00 AM','10:00 AM','11:00 AM','1:00 PM','2:00 PM','3:00 PM','4:00 PM'];
+  const blockedEntry = window._clientBlockedDates && window._clientBlockedDates[dateStr];
+  const blockedTimes = (blockedEntry && !blockedEntry.allDay && blockedEntry.times) ? blockedEntry.times : [];
+  if(grid) grid.innerHTML = allTimes.map(t => {
+    if(blockedTimes.includes(t))
+      return `<div class="time-chip unavail" title="Not available on this date">${t}</div>`;
+    return `<div class="time-chip" onclick="selectTime(this)">${t}</div>`;
+  }).join('');
 }
 
 function selectTime(el) {
@@ -822,7 +825,12 @@ function initCalendar() {
   const now = new Date();
   calYear  = now.getFullYear();
   calMonth = now.getMonth();
-  renderCalendar();
+  // Refresh blocked dates then render
+  if(window.loadClientBlockedDates) {
+    window.loadClientBlockedDates().then(() => renderCalendar());
+  } else {
+    renderCalendar();
+  }
 }
 function changeCalMonth(dir) {
   calMonth += dir;
@@ -844,12 +852,20 @@ function renderCalendar() {
   // Empty cells before first day
   for(let i = 0; i < firstDay; i++) html += '<div class="day-cell"></div>';
   for(let d = 1; d <= daysIn; d++) {
-    const date = new Date(calYear, calMonth, d);
-    const isPast = date < new Date(today.getFullYear(), today.getMonth(), today.getDate());
+    const date    = new Date(calYear, calMonth, d);
+    const dow     = date.getDay();
+    const dateStr = `${calYear}-${String(calMonth+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+    const isPast  = date < new Date(today.getFullYear(), today.getMonth(), today.getDate());
+    const isWknd  = dow === 0 || dow === 6;
+    const isBlocked = window._clientBlockedDates && window._clientBlockedDates[dateStr]?.allDay;
     if(isPast) {
       html += `<div class="day-cell past" style="opacity:0.3;cursor:default">${d}</div>`;
+    } else if(isWknd) {
+      html += `<div class="day-cell weekend" title="Not available on weekends">${d}</div>`;
+    } else if(isBlocked) {
+      html += `<div class="day-cell blocked-day" title="Not available on this date">${d}</div>`;
     } else {
-      html += `<div class="day-cell" onclick="selectDay(this)">${d}</div>`;
+      html += `<div class="day-cell" onclick="selectDay(this)" data-date="${dateStr}">${d}</div>`;
     }
   }
   grid.innerHTML = html;
@@ -993,12 +1009,23 @@ function escapeHtml(str) {
   let currentUser    = null;
   let clientProfile  = {};  // stores emailOptIn and other prefs
 
+  // ── LOAD BLOCKED DATES (for booking calendar) ────────────
+  window._clientBlockedDates = {};
+  window.loadClientBlockedDates = async function() {
+    try {
+      const snap = await getDocs(collection(db, 'blockedDates'));
+      window._clientBlockedDates = {};
+      snap.forEach(d => { window._clientBlockedDates[d.id] = d.data(); });
+    } catch(e) { console.warn('Could not load blocked dates', e); }
+  };
+
   // ── AUTH GUARD ────────────────────────────────────────────
   onAuthStateChanged(auth, async (user) => {
     if (!user) { window.location.href = 'index.html'; return; }
     if (!user.emailVerified) { window.location.href = 'verify-email.html'; return; }
 
     currentUser = user;
+    window.loadClientBlockedDates && window.loadClientBlockedDates(); // pre-load so calendar has fresh data
 
     // Populate sidebar name & initials (temporary until Firestore loads senior info)
     const displayName = user.displayName || user.email;
