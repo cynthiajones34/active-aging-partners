@@ -149,6 +149,11 @@ body::before {
 /* Countdown */
 .countdown { font-size: 13px; color: rgba(255,255,255,0.3); }
 .countdown span { color: rgba(255,255,255,0.55); font-weight: 600; }
+
+@media (max-width: 480px) {
+  .helpful-grid { grid-template-columns: 1fr; }
+  .quick-links { flex-direction: column; align-items: center; }
+}
 </style>
 </head>
 <body>

@@ -112,6 +112,15 @@ textarea.form-input { resize: vertical; min-height: 90px; line-height: 1.6; }
 /* Skip link */
 .skip-link { display: block; text-align: center; font-size: 13px; color: var(--mid); margin-top: 16px; cursor: pointer; }
 .skip-link:hover { color: var(--forest); }
+
+@media (max-width: 768px) {
+  .topbar { padding: 14px 20px; }
+  .page { padding: 80px 20px 40px; }
+  .features-grid { grid-template-columns: 1fr; }
+  .form-row { grid-template-columns: 1fr; }
+  .btn-row { flex-direction: column; width: 100%; }
+  .btn-row .btn { width: 100%; justify-content: center; }
+}
 </style>
 </head>
 <body>

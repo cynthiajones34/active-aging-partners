@@ -143,6 +143,41 @@ textarea.fi{resize:vertical;min-height:80px;line-height:1.5;}
 .bar-val{font-size:12px;font-weight:600;color:var(--mid);width:36px;text-align:right;}
 .toast{position:fixed;bottom:24px;right:24px;background:var(--forest);color:#fff;padding:12px 20px;border-radius:12px;font-size:13px;font-weight:500;box-shadow:0 8px 24px rgba(0,0,0,0.2);z-index:1000;transform:translateY(60px);opacity:0;transition:all 0.3s;}
 .toast.show{transform:translateY(0);opacity:1;}
+
+/* ===== MOBILE ===== */
+.mob-hamburger{display:none;flex-direction:column;gap:4px;background:none;border:none;cursor:pointer;padding:6px;margin-right:4px;}
+.mob-hamburger span{display:block;width:20px;height:2px;background:var(--charcoal);border-radius:2px;transition:all 0.3s;}
+.sidebar-backdrop{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.45);z-index:99;}
+
+@media(max-width:900px){
+  body{overflow:auto;}
+  .app{overflow:auto;height:auto;min-height:100vh;}
+  .sidebar{transform:translateX(-250px);transition:transform 0.3s ease;z-index:200;}
+  body.sidebar-open .sidebar{transform:translateX(0);}
+  body.sidebar-open .sidebar-backdrop{display:block;}
+  .main{margin-left:0;}
+  .mob-hamburger{display:flex;}
+  .topbar{padding:12px 16px;}
+  .tr{gap:6px;}
+  .tr .btn{font-size:11px;padding:7px 10px;}
+  .content{padding:16px;}
+  .stats{grid-template-columns:1fr 1fr;gap:10px;}
+  .dash-grid{grid-template-columns:1fr;}
+  .client-grid{grid-template-columns:1fr;}
+  .msg-layout{grid-template-columns:1fr;height:auto;}
+  .msg-list{border-right:none;border-bottom:1px solid rgba(0,0,0,0.06);max-height:200px;}
+  .settings-grid{grid-template-columns:1fr;}
+  .export-options{grid-template-columns:1fr 1fr;}
+  .cp-grid{grid-template-columns:1fr;}
+  .modal-wide{width:calc(100vw - 24px)!important;max-height:90vh;overflow-y:auto;}
+  .modal{width:calc(100vw - 24px)!important;}
+}
+
+@media(max-width:480px){
+  .stats{grid-template-columns:1fr;}
+  .export-options{grid-template-columns:1fr;}
+  .toast{right:12px;left:12px;bottom:16px;}
+}
 </style>
 </head>
 <body>
@@ -179,9 +214,16 @@ textarea.fi{resize:vertical;min-height:80px;line-height:1.5;}
   </div>
 </nav>
 
+<div class="sidebar-backdrop" onclick="closeSidebar()"></div>
+
 <div class="main">
   <div class="topbar">
-    <div><div class="pt" id="ptitle">Dashboard</div><div class="ps" id="psub">Welcome back</div></div>
+    <div style="display:flex;align-items:center;gap:8px">
+      <button class="mob-hamburger" onclick="toggleSidebar()" aria-label="Menu">
+        <span></span><span></span><span></span>
+      </button>
+      <div><div class="pt" id="ptitle">Dashboard</div><div class="ps" id="psub">Welcome back</div></div>
+    </div>
     <div class="tr">
       <button class="btn btn-g" onclick="openModal('booking-modal')">📅 Book Session</button>
       <button class="btn btn-p" onclick="openModal('report-modal')">✏️ New Report</button>
@@ -575,6 +617,15 @@ textarea.fi{resize:vertical;min-height:80px;line-height:1.5;}
 <div class="toast" id="toast"></div>
 
 <script>
+function toggleSidebar(){
+  document.body.classList.toggle('sidebar-open');
+  document.querySelector('.sidebar').classList.toggle('open');
+}
+function closeSidebar(){
+  document.body.classList.remove('sidebar-open');
+  document.querySelector('.sidebar').classList.remove('open');
+}
+
 const pages = {
   dashboard:{title:'Dashboard',sub:'Overview of your business'},
   schedule:{title:'Schedule',sub:'All upcoming sessions'},
@@ -593,6 +644,7 @@ function nav(view,el){
   if(el)el.classList.add('active');
   document.getElementById('ptitle').textContent=pages[view].title;
   document.getElementById('psub').textContent=pages[view].sub;
+  closeSidebar();
 }
 function openModal(id){document.getElementById(id).classList.add('open');}
 function closeModal(id){document.getElementById(id).classList.remove('open');}

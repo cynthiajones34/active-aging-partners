@@ -100,6 +100,33 @@ footer { background: var(--charcoal); padding: 40px 80px; }
 .footer-links-row a:hover { color: var(--sage-light); }
 
 @keyframes fadeUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+
+/* ===== HAMBURGER / MOBILE NAV ===== */
+.hamburger { display:none; flex-direction:column; gap:5px; background:none; border:none; cursor:pointer; padding:4px; z-index:200; }
+.hamburger span { display:block; width:22px; height:2px; background:var(--forest); border-radius:2px; transition:all 0.3s; }
+.hamburger.open span:nth-child(1) { transform:translateY(7px) rotate(45deg); }
+.hamburger.open span:nth-child(2) { opacity:0; }
+.hamburger.open span:nth-child(3) { transform:translateY(-7px) rotate(-45deg); }
+.mob-nav { display:none; position:fixed; inset:0; background:var(--warm); z-index:150; flex-direction:column; align-items:center; justify-content:center; gap:4px; padding:40px 24px; }
+.mob-nav.open { display:flex; }
+.mob-nav ul { list-style:none; text-align:center; margin-bottom:28px; }
+.mob-nav ul li a { font-family:'Cormorant Garamond',serif; font-size:32px; font-weight:600; color:var(--forest); text-decoration:none; display:block; padding:10px 24px; opacity:0.85; }
+.mob-nav-actions { display:flex; flex-direction:column; gap:12px; width:100%; max-width:280px; }
+.mob-nav-actions .btn { justify-content:center; border-radius:12px; padding:14px; font-size:15px; width:100%; }
+
+@media (max-width: 768px) {
+  .hamburger { display:flex; }
+  .nav-links, .nav-actions { display:none; }
+  nav { padding:14px 20px; }
+
+  .page-hero { padding:90px 24px 60px; }
+  .doc-layout { grid-template-columns:1fr; padding:32px 24px; gap:0; }
+  .toc { display:none; }
+
+  footer { padding:32px 24px; }
+  .footer-bottom { flex-direction:column; gap:8px; text-align:center; }
+  .footer-links-row { flex-wrap:wrap; justify-content:center; gap:16px; }
+}
 </style>
 </head>
 <body>
@@ -120,7 +147,22 @@ footer { background: var(--charcoal); padding: 40px 80px; }
     <a href="index.html" class="btn btn-outline">Log In</a>
     <a href="index.html#signup" class="btn btn-clay">Sign Up Free</a>
   </div>
+  <button class="hamburger" id="hamburger" aria-label="Menu" onclick="toggleMobileNav()">
+    <span></span><span></span><span></span>
+  </button>
 </nav>
+
+<div class="mob-nav" id="mob-nav">
+  <ul>
+    <li><a href="services.html" onclick="closeMobileNav()">Services</a></li>
+    <li><a href="about.html" onclick="closeMobileNav()">About</a></li>
+    <li><a href="contact.html" onclick="closeMobileNav()">Contact</a></li>
+  </ul>
+  <div class="mob-nav-actions">
+    <a href="index.html" class="btn btn-outline">Log In</a>
+    <a href="index.html#signup" class="btn btn-clay">Sign Up Free</a>
+  </div>
+</div>
 
 <section class="page-hero">
   <div class="hero-inner">
@@ -332,6 +374,17 @@ footer { background: var(--charcoal); padding: 40px 80px; }
 </footer>
 
 <script>
+  function toggleMobileNav() {
+    document.getElementById('hamburger').classList.toggle('open');
+    document.getElementById('mob-nav').classList.toggle('open');
+    document.body.style.overflow = document.getElementById('mob-nav').classList.contains('open') ? 'hidden' : '';
+  }
+  function closeMobileNav() {
+    document.getElementById('hamburger').classList.remove('open');
+    document.getElementById('mob-nav').classList.remove('open');
+    document.body.style.overflow = '';
+  }
+
   const observer = new IntersectionObserver((entries) => {
     entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
   }, { threshold: 0.1 });

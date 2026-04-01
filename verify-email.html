@@ -109,6 +109,11 @@ body::before {
 
 .toast { position: fixed; bottom: 30px; right: 30px; background: var(--forest); color: #fff; padding: 14px 22px; border-radius: 14px; font-size: 14px; font-weight: 500; box-shadow: 0 8px 30px rgba(0,0,0,0.3); z-index: 1000; transform: translateY(80px); opacity: 0; transition: all 0.4s; }
 .toast.show { transform: translateY(0); opacity: 1; }
+
+@media (max-width: 540px) {
+  body { padding: 24px 16px; align-items: stretch; }
+  .card { width: 100%; padding: 36px 24px; border-radius: 20px; }
+}
 </style>
 </head>
 <body>
