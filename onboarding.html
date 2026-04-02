@@ -178,12 +178,12 @@ textarea.form-input { resize: vertical; min-height: 90px; line-height: 1.6; }
     <div class="form-card">
       <div class="form-card-title">👴 Senior Client Information</div>
       <div class="form-row">
-        <div><label class="form-label">First Name</label><input type="text" class="form-input" id="ob-senior-first" placeholder="First"></div>
-        <div><label class="form-label">Last Name</label><input type="text" class="form-input" id="ob-senior-last" placeholder="Last"></div>
+        <div><label class="form-label" for="ob-senior-first">First Name</label><input type="text" class="form-input" id="ob-senior-first" placeholder="First"></div>
+        <div><label class="form-label" for="ob-senior-last">Last Name</label><input type="text" class="form-input" id="ob-senior-last" placeholder="Last"></div>
       </div>
       <div class="form-row">
-        <div><label class="form-label">Age</label><input type="number" class="form-input" id="ob-senior-age" placeholder="e.g. 78" min="50" max="110"></div>
-        <div><label class="form-label">Mobility Level</label>
+        <div><label class="form-label" for="ob-senior-age">Age</label><input type="number" class="form-input" id="ob-senior-age" placeholder="e.g. 78" min="50" max="110"></div>
+        <div><label class="form-label" for="ob-mobility">Mobility Level</label>
           <select class="form-select" id="ob-mobility">
             <option>Fully independent</option>
             <option>Uses a cane</option>
@@ -194,11 +194,11 @@ textarea.form-input { resize: vertical; min-height: 90px; line-height: 1.6; }
         </div>
       </div>
       <div class="form-group">
-        <label class="form-label">Home Address (for pickup)</label>
+        <label class="form-label" for="ob-address">Home Address (for pickup)</label>
         <input type="text" class="form-input" id="ob-address" placeholder="Street address, city, zip">
       </div>
       <div class="form-group" style="margin-bottom:0">
-        <label class="form-label">Any notes we should know (optional)</label>
+        <label class="form-label" for="ob-notes">Any notes we should know (optional)</label>
         <textarea class="form-input" id="ob-notes" placeholder="Health conditions, preferences, things to avoid, favorite topics of conversation…"></textarea>
       </div>
     </div>
@@ -288,7 +288,7 @@ textarea.form-input { resize: vertical; min-height: 90px; line-height: 1.6; }
     <div class="scroll-notice" id="scroll-notice">↓ Scroll to the bottom to enable the agreement checkbox</div>
 
     <div class="waiver-sig-card">
-      <label class="form-label">Electronic Signature — Type your full legal name</label>
+      <label class="form-label" for="waiver-sig-name">Electronic Signature — Type your full legal name</label>
       <input type="text" class="sig-input" id="waiver-sig-name" placeholder="Your full name" autocomplete="name">
       <div class="agree-row">
         <input type="checkbox" id="waiver-agree" disabled>

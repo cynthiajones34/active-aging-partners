@@ -1155,6 +1155,10 @@ function escapeHtml(str) {
           emailOptIn:        data.fields?.emailOptIn?.booleanValue,
           reportEmailOptIn:  data.fields?.reportEmailOptIn?.booleanValue,
           invoiceEmailOptIn: data.fields?.invoiceEmailOptIn?.booleanValue,
+          waiverSigned:      data.fields?.waiverSigned?.booleanValue ?? false,
+          waiverSignedAt:    get('waiverSignedAt'),
+          waiverSignedName:  get('waiverSignedName'),
+          waiverSignedEmail: get('waiverSignedEmail'),
         };
 
         // Show stored photo if one exists
