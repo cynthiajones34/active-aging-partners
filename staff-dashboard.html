@@ -1657,7 +1657,7 @@ function downloadCSV(type){
           toName:     s.clientName,
           subject:    `Session Cancelled — ${readableDate}`,
           type:       'booking_confirmed',
-          bodyText:   `Hi ${firstName},\n\nYour ${s.service || 'session'} scheduled for ${fmtDate}${readableTime ? ' at ' + readableTime : ''} has been cancelled by our team.${reason ? '\n\nReason: ' + reason : ''}\n\nWe apologize for any inconvenience. Please visit your client portal to book a new session at your convenience:\n\nhttps://www.activeagingpartners.com/client-portal.html\n\nThank you for your understanding.\n\n— The Active Aging Partners Team`,
+          bodyText:   `Your ${s.service || 'session'} scheduled for ${fmtDate}${readableTime ? ' at ' + readableTime : ''} has been cancelled by our team.${reason ? '\n\nReason: ' + reason : ''}\n\nWe apologize for any inconvenience. Please visit your client portal to book a new session at your convenience:\n\nhttps://www.activeagingpartners.com/client-portal.html\n\nThank you for your understanding.\n\n— The Active Aging Partners Team`,
           clientName: s.clientName,
         }).catch(e => console.warn('Staff cancel email failed:', e));
       }
