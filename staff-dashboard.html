@@ -720,6 +720,36 @@ textarea.fi{resize:vertical;min-height:80px;line-height:1.5;}
         <div class="cp-row"><span class="cp-row-key">Notes</span><span id="sd-senior-notes" style="color:var(--mid);font-style:italic">—</span></div>
       </div>
     </div>
+    <div class="mfoot" style="justify-content:space-between">
+      <button class="btn btn-sm" id="sd-cancel-session-btn" onclick="window.staffOpenCancelModal()"
+        style="background:rgba(176,48,48,0.08);color:#b03030;border:1px solid rgba(176,48,48,0.2);font-size:12px;padding:7px 14px;border-radius:8px;cursor:pointer;font-family:'Jost',sans-serif;font-weight:600">
+        🚫 Cancel Session
+      </button>
+      <button class="btn btn-ghost" onclick="closeModal('session-detail-modal')">Close</button>
+    </div>
+  </div>
+</div>
+
+<!-- Staff Session Cancel Modal -->
+<div class="modal-overlay" id="staff-session-cancel-modal">
+  <div class="modal">
+    <div class="mhdr">
+      <div class="mtitle">Cancel Session</div>
+      <button class="mclose" onclick="closeModal('staff-session-cancel-modal')">✕</button>
+    </div>
+    <div class="mbody">
+      <div style="font-size:13px;color:var(--mid);margin-bottom:16px;line-height:1.6">This will cancel the session and send an email notification to the client. This action cannot be undone.</div>
+      <div class="fg">
+        <label class="fl" for="staff-cancel-reason">Reason for cancellation (optional)</label>
+        <textarea class="fi" id="staff-cancel-reason" rows="3" placeholder="e.g. Staff unavailable, scheduling conflict, inclement weather…"></textarea>
+      </div>
+      <div id="staff-cancel-error" style="display:none;color:#b03030;font-size:13px;margin-top:8px"></div>
+    </div>
+    <div class="mfoot">
+      <button class="btn btn-ghost" onclick="closeModal('staff-session-cancel-modal')">Keep Session</button>
+      <button class="btn" id="staff-cancel-confirm-btn" onclick="window.staffConfirmCancelSession()"
+        style="background:#b03030;color:#fff;box-shadow:0 4px 12px rgba(176,48,48,0.3)">Cancel Session</button>
+    </div>
   </div>
 </div>
 
@@ -1323,6 +1353,7 @@ function downloadCSV(type){
   window.openSessionDetail = function(sessionId) {
     const s = _confirmedSessions.find(s => s.id === sessionId);
     if (!s) return;
+    window._staffOpenSessionId = sessionId;
 
     const client = _allClientDocs?.find(d => d.id === s.clientUid)?.data || clientMap[s.clientUid] || {};
     const readableDate = new Date(s.date + 'T12:00:00').toLocaleDateString('en-US', {weekday:'long', month:'long', day:'numeric', year:'numeric'});
@@ -1555,6 +1586,93 @@ function downloadCSV(type){
     }catch(err){
       console.error('declineSession error:',err);
       showToast('⚠️ Could not decline session. Try again.');
+    }
+  };
+
+  // ── STAFF CANCEL CONFIRMED SESSION ───────────────────────────
+  window.staffOpenCancelModal = function() {
+    const sessionId = window._staffOpenSessionId;
+    if (!sessionId) { showToast('⚠️ No session selected.'); return; }
+    const errEl = document.getElementById('staff-cancel-error');
+    const reasonEl = document.getElementById('staff-cancel-reason');
+    const btn = document.getElementById('staff-cancel-confirm-btn');
+    if (errEl)    { errEl.style.display = 'none'; errEl.textContent = ''; }
+    if (reasonEl) reasonEl.value = '';
+    if (btn)      { btn.textContent = 'Cancel Session'; btn.disabled = false; }
+    openModal('staff-session-cancel-modal');
+  };
+
+  window.staffConfirmCancelSession = async function() {
+    const sessionId = window._staffOpenSessionId;
+    const reason    = document.getElementById('staff-cancel-reason')?.value.trim() || '';
+    const errEl     = document.getElementById('staff-cancel-error');
+    const btn       = document.getElementById('staff-cancel-confirm-btn');
+
+    if (!sessionId) { errEl.textContent = 'Session not found.'; errEl.style.display = 'block'; return; }
+
+    btn.textContent = 'Cancelling…'; btn.disabled = true; errEl.style.display = 'none';
+
+    try {
+      const s = _confirmedSessions.find(s => s.id === sessionId);
+      if (!s) throw new Error('Session data not found in cache.');
+
+      // 1. Mark cancelled in Firestore
+      await updateDoc(doc(db, 'sessions', sessionId), {
+        status:          'cancelled',
+        cancelledBy:     currentUser?.uid || 'staff',
+        cancelledByRole: 'staff',
+        cancelledAt:     serverTimestamp(),
+        cancelReason:    reason,
+      });
+
+      // 2. Format date/time for messages
+      const [y, mo, d] = (s.date || '').split('-');
+      const fmtDate     = s.date ? `${mo}-${d}-${y}` : 'your scheduled date';
+      const readableDate = s.date
+        ? new Date(s.date + 'T12:00:00').toLocaleDateString('en-US', {weekday:'long', month:'long', day:'numeric', year:'numeric'})
+        : 'your scheduled date';
+      const readableTime = s.time
+        ? new Date(`2000-01-01T${s.time}`).toLocaleTimeString('en-US', {hour:'numeric', minute:'2-digit'})
+        : '';
+      const firstName = s.clientName?.split(' ')[0] || 'there';
+
+      // 3. Post cancellation message to client thread
+      if (s.clientUid) {
+        const cancelMsg = `Hi ${firstName}, we're writing to let you know that your ${s.service || 'session'} scheduled for ${fmtDate}${readableTime ? ' at ' + readableTime : ''} has been cancelled by our team.${reason ? ' Reason: ' + reason : ''} We apologize for any inconvenience — please use the booking tab to schedule a new session whenever you're ready.`;
+        await addDoc(collection(db, 'clients', s.clientUid, 'messages'), {
+          text:       cancelMsg,
+          senderUid:  currentUser?.uid || 'staff',
+          senderName: currentUser?.displayName || 'Active Aging Partners',
+          senderRole: 'staff',
+          type:       'cancellation',
+          sessionId,
+          createdAt:  serverTimestamp(),
+        });
+      }
+
+      // 4. Send email notification to client
+      if (s.clientEmail) {
+        _sendEmailNotification({
+          to:         s.clientEmail,
+          toName:     s.clientName,
+          subject:    `Session Cancelled — ${readableDate}`,
+          type:       'booking_confirmed',
+          bodyText:   `Hi ${firstName},\n\nYour ${s.service || 'session'} scheduled for ${fmtDate}${readableTime ? ' at ' + readableTime : ''} has been cancelled by our team.${reason ? '\n\nReason: ' + reason : ''}\n\nWe apologize for any inconvenience. Please visit your client portal to book a new session at your convenience:\n\nhttps://www.activeagingpartners.com/client-portal.html\n\nThank you for your understanding.\n\n— The Active Aging Partners Team`,
+          clientName: s.clientName,
+        }).catch(e => console.warn('Staff cancel email failed:', e));
+      }
+
+      closeModal('staff-session-cancel-modal');
+      closeModal('session-detail-modal');
+      showToast('✓ Session cancelled. Client has been notified.');
+      await loadSchedule();
+
+    } catch (err) {
+      console.error('staffConfirmCancelSession error:', err);
+      errEl.textContent = `Could not cancel session. Please try again. (${err.message || err.code || 'unknown'})`;
+      errEl.style.display = 'block';
+      btn.textContent = 'Cancel Session';
+      btn.disabled = false;
     }
   };
 

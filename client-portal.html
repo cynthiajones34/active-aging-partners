@@ -951,16 +951,18 @@ function renderCalendar() {
 }
 // confirmBooking is defined in the Firebase module below
 
-function showCancel(sessionId, name, date, service) {
+function showCancel(sessionId, name, date, service, rawDate, rawTime) {
   document.getElementById('cancel-session-name').textContent = `${service || 'Session'} on ${date}`;
   document.getElementById('cancel-reason').value = '';
   document.getElementById('cancel-error').style.display = 'none';
   document.getElementById('cancel-confirm-btn').textContent = 'Cancel Session';
   document.getElementById('cancel-confirm-btn').disabled = false;
-  window._cancelSessionId = sessionId;
+  window._cancelSessionId   = sessionId;
   window._cancelSessionName = name;
-  window._cancelService = service;
-  window._cancelDate = date;
+  window._cancelService     = service;
+  window._cancelDate        = date;
+  window._cancelRawDate     = rawDate || '';
+  window._cancelRawTime     = rawTime || '';
   openModal('cancel-modal');
 }
 
@@ -1319,9 +1321,17 @@ function escapeHtml(str) {
           : `<span class="session-type-badge" style="background:rgba(45,74,50,0.1);color:var(--forest)">✓ Confirmed</span>`;
 
         const clientName = currentUser.displayName || currentUser.email;
-        const cancelBtn = `<button onclick="showCancel('${s.id}','${escapeHtml(clientName).replace(/'/g,"\\'")}','${readableDate}','${escapeHtml(s.service||'Session').replace(/'/g,"\\'")}');event.stopPropagation()"
-          style="margin-top:10px;font-size:11px;color:var(--mid);background:none;border:none;cursor:pointer;padding:0;text-decoration:underline;text-underline-offset:2px">
-          Cancel session</button>`;
+
+        // 24-hour cancellation window check
+        const sessionDateTime = s.date && s.time ? new Date(`${s.date}T${s.time}:00`) : null;
+        const hoursUntil = sessionDateTime ? (sessionDateTime.getTime() - Date.now()) / (1000 * 60 * 60) : Infinity;
+        const withinCancelWindow = hoursUntil >= 0 && hoursUntil < 24;
+
+        const cancelBtn = withinCancelWindow
+          ? `<div style="margin-top:10px;font-size:11px;color:#b03030;font-style:italic">Within 24 hours — to cancel, contact us: <a href="mailto:cynthia@activeagingpartners.com" style="color:#b03030">cynthia@activeagingpartners.com</a></div>`
+          : `<button onclick="showCancel('${s.id}','${escapeHtml(clientName).replace(/'/g,"\\'")}','${readableDate}','${escapeHtml(s.service||'Session').replace(/'/g,"\\'")}','${s.date}','${s.time||''}');event.stopPropagation()"
+            style="margin-top:10px;font-size:11px;color:var(--mid);background:none;border:none;cursor:pointer;padding:0;text-decoration:underline;text-underline-offset:2px">
+            Cancel session</button>`;
 
         return `
           <div class="session-card" style="opacity:${isPending ? '0.85' : '1'}">
@@ -1476,6 +1486,17 @@ function escapeHtml(str) {
 
     if (!sessionId) { errEl.textContent = 'Session not found. Please refresh and try again.'; errEl.style.display = 'block'; return; }
     if (!currentUser) { errEl.textContent = 'Not signed in. Please refresh.'; errEl.style.display = 'block'; return; }
+
+    // Server-side 24-hour check (backup to the UI-level check)
+    if (window._cancelRawDate && window._cancelRawTime) {
+      const sessionDT  = new Date(`${window._cancelRawDate}T${window._cancelRawTime}:00`);
+      const hoursUntil = (sessionDT.getTime() - Date.now()) / (1000 * 60 * 60);
+      if (hoursUntil >= 0 && hoursUntil < 24) {
+        errEl.textContent = 'Sessions cannot be cancelled within 24 hours of the scheduled time. Please contact us directly at cynthia@activeagingpartners.com.';
+        errEl.style.display = 'block';
+        return;
+      }
+    }
 
     btn.textContent = 'Cancelling…';
     btn.disabled = true;
