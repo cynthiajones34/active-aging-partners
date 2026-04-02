@@ -582,7 +582,7 @@ textarea.form-input { resize: vertical; min-height: 90px; line-height: 1.6; }
     checkScroll(); // already at bottom if content is short
   }
 
-  window.submitWaiver = function() {
+  window.submitWaiver = async function() {
     const name  = document.getElementById('waiver-sig-name')?.value.trim();
     const agree = document.getElementById('waiver-agree')?.checked;
     const errEl = document.getElementById('waiver-error');
@@ -591,11 +591,18 @@ textarea.form-input { resize: vertical; min-height: 90px; line-height: 1.6; }
       return;
     }
     if (errEl) errEl.style.display = 'none';
-    // Store for module script to pick up
+
+    // Disable button and show saving state while Firestore PATCH completes
+    const btn = document.getElementById('waiver-continue-btn');
+    if (btn) { btn.disabled = true; btn.innerHTML = '<span style="display:inline-block;width:14px;height:14px;border:2px solid rgba(255,255,255,0.4);border-top-color:#fff;border-radius:50%;animation:spin 0.7s linear infinite;margin-right:8px;vertical-align:middle"></span>Saving…'; }
+
     window._waiverName = name;
     window._waiverAt   = new Date().toISOString();
-    // Save to Firestore via REST API (handled in module script)
-    if (typeof window._saveWaiver === 'function') window._saveWaiver(name);
+
+    // Await the save so waiverSigned is in Firestore before user can reach the portal
+    if (typeof window._saveWaiver === 'function') await window._saveWaiver(name);
+
+    if (btn) { btn.disabled = false; btn.textContent = 'I Agree & Continue →'; }
     currentScreen++;
     showScreen(currentScreen);
   };
