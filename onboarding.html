@@ -407,6 +407,9 @@ textarea.form-input { resize: vertical; min-height: 90px; line-height: 1.6; }
     // Guard: must have verified email to reach onboarding
     if (!user.emailVerified) { window.location.href = 'verify-email.html'; return; }
 
+    // Expose client display name so submitWaiver can validate the signature name
+    window._clientDisplayName = user.displayName || '';
+
     // Ensure a client document exists regardless of which exit path the user takes.
     // Uses merge:true so it won't overwrite any data written by doSignup if that succeeded.
     try {
@@ -587,9 +590,23 @@ textarea.form-input { resize: vertical; min-height: 90px; line-height: 1.6; }
     const agree = document.getElementById('waiver-agree')?.checked;
     const errEl = document.getElementById('waiver-error');
     if (!agree || !name) {
-      if (errEl) errEl.style.display = 'block';
+      if (errEl) { errEl.textContent = 'Please scroll through the full agreement, check the box, and type your full name to continue.'; errEl.style.display = 'block'; }
       return;
     }
+
+    // Validate that the typed name matches either the client account name or the senior client name
+    const normalize  = s => s.toLowerCase().replace(/\s+/g, ' ').trim();
+    const entered    = normalize(name);
+    const clientName = normalize(window._clientDisplayName || '');
+    const seniorFirst = document.getElementById('ob-senior-first')?.value.trim() || '';
+    const seniorLast  = document.getElementById('ob-senior-last')?.value.trim()  || '';
+    const seniorName  = normalize([seniorFirst, seniorLast].filter(Boolean).join(' '));
+    const validNames  = [clientName, seniorName].filter(Boolean);
+    if (validNames.length > 0 && !validNames.includes(entered)) {
+      if (errEl) { errEl.textContent = 'The name entered does not match the client or senior client name on the account. Please use the full legal name as registered.'; errEl.style.display = 'block'; }
+      return;
+    }
+
     if (errEl) errEl.style.display = 'none';
 
     // Disable button and show saving state while Firestore PATCH completes
