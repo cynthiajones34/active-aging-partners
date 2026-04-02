@@ -274,7 +274,7 @@ body::before {
         if (user) {
           // User is logged in — reload and go to onboarding
           reload(user).then(() => {
-            setTimeout(() => { window.location.href = 'onboarding.html'; }, 1500);
+            setTimeout(() => { window.location.replace('onboarding.html'); }, 1500);
           });
         } else {
           // User is not logged in — show success and redirect to login
@@ -307,7 +307,7 @@ body::before {
 
       // Already verified — skip straight to onboarding
       if (user.emailVerified && !oobCode) {
-        window.location.href = 'onboarding.html';
+        window.location.replace('onboarding.html');
         return;
       }
 

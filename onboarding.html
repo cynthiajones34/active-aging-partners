@@ -166,7 +166,6 @@ textarea.form-input { resize: vertical; min-height: 90px; line-height: 1.6; }
     <div class="btn-row">
       <button class="btn btn-solid btn-lg" onclick="nextScreen()">Let's get started →</button>
     </div>
-    <div class="skip-link" onclick="skipToPortal()">Skip setup — take me to my portal</div>
   </div>
 
   <!-- SCREEN 2: ABOUT YOUR LOVED ONE -->
@@ -194,19 +193,50 @@ textarea.form-input { resize: vertical; min-height: 90px; line-height: 1.6; }
         </div>
       </div>
       <div class="form-group">
-        <label class="form-label" for="ob-address">Home Address (for pickup)</label>
-        <input type="text" class="form-input" id="ob-address" placeholder="Street address, city, zip">
+        <label class="form-label" for="ob-address">Street Address (for pickup)</label>
+        <input type="text" class="form-input" id="ob-address" placeholder="Street address">
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 70px 100px;gap:14px;margin-bottom:14px">
+        <div>
+          <label class="form-label" for="ob-city">City</label>
+          <input type="text" class="form-input" id="ob-city" placeholder="Atlanta">
+        </div>
+        <div>
+          <label class="form-label" for="ob-state">State</label>
+          <input type="text" class="form-input" id="ob-state" placeholder="GA" maxlength="2">
+        </div>
+        <div>
+          <label class="form-label" for="ob-zip">ZIP</label>
+          <input type="text" class="form-input" id="ob-zip" placeholder="30301" maxlength="10">
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label" for="ob-senior-phone">Senior Client Phone <span style="font-weight:400;text-transform:none;color:var(--mid)">(optional)</span></label>
+        <input type="tel" class="form-input" id="ob-senior-phone" placeholder="(404) 555-0000">
       </div>
       <div class="form-group" style="margin-bottom:0">
         <label class="form-label" for="ob-notes">Any notes we should know (optional)</label>
         <textarea class="form-input" id="ob-notes" placeholder="Health conditions, preferences, things to avoid, favorite topics of conversation…"></textarea>
       </div>
     </div>
+
+    <div class="form-card">
+      <div class="form-card-title">📸 Senior Client Photo <span style="font-weight:400;color:var(--mid);font-size:12px">(optional — you can add this later)</span></div>
+      <p style="font-size:13px;color:var(--mid);margin-bottom:16px;line-height:1.6">A photo helps our staff recognize your loved one and creates a personalized experience. JPG or PNG, max 5MB.</p>
+      <div style="display:flex;align-items:center;gap:20px">
+        <div id="ob-photo-circle" style="width:72px;height:72px;background:var(--sage-light);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:30px;flex-shrink:0;overflow:hidden;border:2px solid rgba(0,0,0,0.08)">👴</div>
+        <div>
+          <button type="button" class="btn btn-ghost" style="padding:9px 18px;font-size:13px;border:1.5px solid rgba(0,0,0,0.12);border-radius:10px" onclick="document.getElementById('ob-photo-input').click()">Choose Photo</button>
+          <input type="file" id="ob-photo-input" accept="image/jpeg,image/png,image/webp" style="display:none" onchange="window.previewSeniorPhoto && window.previewSeniorPhoto(this)">
+          <p style="font-size:12px;color:var(--mid);margin-top:6px" id="ob-photo-status">No photo selected</p>
+        </div>
+      </div>
+    </div>
+
     <div class="btn-row">
       <button class="btn btn-ghost" onclick="prevScreen()">← Back</button>
       <button class="btn btn-solid btn-lg" onclick="nextScreen()">Continue →</button>
     </div>
-    <div class="skip-link" onclick="nextScreen()">Skip this step</div>
   </div>
 
   <!-- SCREEN 3: LIABILITY WAIVER -->
@@ -351,8 +381,8 @@ textarea.form-input { resize: vertical; min-height: 90px; line-height: 1.6; }
   <div class="screen" id="screen-5">
     <span class="screen-icon">🌿</span>
     <div class="screen-eyebrow">You're all set</div>
-    <h2 class="screen-title">Your portal is <em>ready</em></h2>
-    <p class="screen-body">Here's everything waiting for you inside. Take a look around, book your first session whenever you're ready, and don't hesitate to reach out if you need anything.</p>
+    <h2 class="screen-title">Here is everything waiting for you <em>inside the Client Portal</em></h2>
+    <p class="screen-body">Take a look around, book your first session whenever you're ready, and don't hesitate to reach out if you need anything.</p>
     <div class="features-grid">
       <div class="feature-item">
         <span class="feature-icon">📅</span>
@@ -388,6 +418,8 @@ textarea.form-input { resize: vertical; min-height: 90px; line-height: 1.6; }
     from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
   import { getFunctions, httpsCallable }
     from "https://www.gstatic.com/firebasejs/10.12.0/firebase-functions.js";
+  import { getStorage, ref as storageRef, uploadBytes, getDownloadURL }
+    from "https://www.gstatic.com/firebasejs/10.12.0/firebase-storage.js";
 
   const firebaseConfig = {
     apiKey: "AIzaSyAuXMMnVjij0x1X5sQ5Jm1NuJUvquwDb0k",
@@ -401,11 +433,27 @@ textarea.form-input { resize: vertical; min-height: 90px; line-height: 1.6; }
   const app       = initializeApp(firebaseConfig);
   const auth      = getAuth(app);
   const functions = getFunctions(app, 'us-east1');
+  const storage   = getStorage(app);
+
+  // Preview senior photo before upload
+  window.previewSeniorPhoto = function(input) {
+    const file = input.files[0];
+    if (!file) return;
+    const circle = document.getElementById('ob-photo-circle');
+    const status = document.getElementById('ob-photo-status');
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      if (circle) circle.innerHTML = `<img src="${e.target.result}" style="width:100%;height:100%;object-fit:cover;border-radius:50%">`;
+      if (status) status.textContent = '✓ Photo ready';
+      window._seniorPhotoFile = file;
+    };
+    reader.readAsDataURL(file);
+  };
 
   onAuthStateChanged(auth, async (user) => {
-    if (!user) { window.location.href = 'index.html'; return; }
+    if (!user) { window.location.replace('index.html'); return; }
     // Guard: must have verified email to reach onboarding
-    if (!user.emailVerified) { window.location.href = 'verify-email.html'; return; }
+    if (!user.emailVerified) { window.location.replace('verify-email.html'); return; }
 
     // Expose client display name so submitWaiver can validate the signature name
     window._clientDisplayName = user.displayName || '';
@@ -481,29 +529,49 @@ textarea.form-input { resize: vertical; min-height: 90px; line-height: 1.6; }
       if (btn) { btn.textContent = 'Saving…'; btn.disabled = true; }
 
       try {
-        const seniorFirst = document.getElementById('ob-senior-first')?.value.trim() || '';
-        const seniorLast  = document.getElementById('ob-senior-last')?.value.trim()  || '';
-        const seniorAge   = document.getElementById('ob-senior-age')?.value.trim()   || '';
-        const seniorName  = [seniorFirst, seniorLast].filter(Boolean).join(' ');
-        const mobility    = document.getElementById('ob-mobility')?.value            || '';
-        const address     = document.getElementById('ob-address')?.value.trim()      || '';
-        const notes       = document.getElementById('ob-notes')?.value.trim()        || '';
-        const emailMsg    = document.getElementById('tog-email-message')?.classList.contains('on') ?? true;
-        const emailReport = document.getElementById('tog-email-report')?.classList.contains('on')  ?? true;
-        const emailInv    = document.getElementById('tog-email-invoice')?.classList.contains('on') ?? true;
+        const seniorFirst  = document.getElementById('ob-senior-first')?.value.trim()  || '';
+        const seniorLast   = document.getElementById('ob-senior-last')?.value.trim()   || '';
+        const seniorAge    = document.getElementById('ob-senior-age')?.value.trim()    || '';
+        const seniorPhone  = document.getElementById('ob-senior-phone')?.value.trim()  || '';
+        const seniorName   = [seniorFirst, seniorLast].filter(Boolean).join(' ');
+        const mobility     = document.getElementById('ob-mobility')?.value             || '';
+        const address      = document.getElementById('ob-address')?.value.trim()       || '';
+        const city         = document.getElementById('ob-city')?.value.trim()          || '';
+        const state        = document.getElementById('ob-state')?.value.trim()         || '';
+        const zip          = document.getElementById('ob-zip')?.value.trim()           || '';
+        const notes        = document.getElementById('ob-notes')?.value.trim()         || '';
+        const emailMsg     = document.getElementById('tog-email-message')?.classList.contains('on') ?? true;
+        const emailReport  = document.getElementById('tog-email-report')?.classList.contains('on')  ?? true;
+        const emailInv     = document.getElementById('tog-email-invoice')?.classList.contains('on') ?? true;
+
+        // Upload senior photo if provided
+        let seniorPhotoUrl = '';
+        if (window._seniorPhotoFile) {
+          try {
+            const photoRef = storageRef(storage, `clients/${user.uid}/senior-photo`);
+            await uploadBytes(photoRef, window._seniorPhotoFile);
+            seniorPhotoUrl = await getDownloadURL(photoRef);
+          } catch (e) {
+            console.warn('Senior photo upload failed (non-fatal):', e.message);
+          }
+        }
 
         const { getFirestore, doc, setDoc } =
           await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js');
         const db = getFirestore(app);
 
-        await setDoc(doc(db, 'clients', user.uid), {
+        const profileData = {
           uid:               user.uid,
           email:             user.email,
           displayName:       user.displayName || '',
           seniorName,
           seniorAge:         seniorAge ? parseInt(seniorAge) : '',
+          seniorPhone,
           mobility,
           address,
+          city,
+          state,
+          zip,
           notes,
           emailOptIn:        emailMsg,
           reportEmailOptIn:  emailReport,
@@ -514,13 +582,33 @@ textarea.form-input { resize: vertical; min-height: 90px; line-height: 1.6; }
           waiverSignedAt:    window._waiverAt   || '',
           waiverSignedName:  window._waiverName || '',
           waiverSignedEmail: user.email,
-        }, { merge: true });
+        };
+        if (seniorPhotoUrl) profileData.photoURL = seniorPhotoUrl;
+
+        await setDoc(doc(db, 'clients', user.uid), profileData, { merge: true });
         console.log('Onboarding data saved');
+
+        // Send photo reminder email if no photo was uploaded
+        if (!seniorPhotoUrl) {
+          try {
+            const sendEmail = httpsCallable(functions, 'sendEmailNotification');
+            sendEmail({
+              to:         user.email,
+              toName:     user.displayName || '',
+              subject:    'Reminder: Add a Senior Client Photo to Your Profile',
+              type:       'booking_confirmed',
+              bodyText:   `Thank you for completing your onboarding with Active Aging Partners!\n\nWe noticed you haven't added a photo of your Senior Client yet. Adding a photo helps our staff recognize your loved one and creates a more personalized experience.\n\nPlease visit your Client Portal and update the My Profile tab to:\n  • Add a photo of your Senior Client\n  • Add the Senior Client's phone number\n\nhttps://www.activeagingpartners.com/client-portal.html\n\n— The Active Aging Partners Team`,
+              clientName: user.displayName || '',
+            }).catch(e => console.warn('Photo reminder email failed:', e));
+          } catch (e) {
+            console.warn('Photo reminder setup failed:', e);
+          }
+        }
       } catch (err) {
         console.warn('Onboarding save failed (non-fatal):', err.code, err.message);
       }
 
-      window.location.href = 'client-portal.html';
+      window.location.replace('client-portal.html');
     };
   });
 </script>
@@ -638,8 +726,7 @@ textarea.form-input { resize: vertical; min-height: 90px; line-height: 1.6; }
     }
   };
 
-  window.skipToPortal = function() { window.location.href = 'client-portal.html'; };
-  window.goToPortal  = function() { window.location.href = 'client-portal.html'; };
+  window.goToPortal  = function() { window.location.replace('client-portal.html'); };
 
   window.toggleTog = function(el) { el.classList.toggle('on'); };
 </script>

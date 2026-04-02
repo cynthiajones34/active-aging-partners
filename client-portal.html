@@ -397,7 +397,7 @@ body { font-family:'Jost',sans-serif; background:var(--cream); color:var(--charc
       <div class="nav-item" onclick="nav('book',this)"><span class="nav-icon">➕</span> Book a Service</div>
 
       <div class="nav-label">Communication</div>
-      <div class="nav-item" onclick="nav('messages',this); window._clearClientBadge && window._clearClientBadge('messages')"><span class="nav-icon">💬</span> Messages <span class="nav-badge" id="client-messages-badge" style="display:none">0</span></div>
+      <div class="nav-item" onclick="nav('messages',this); window._clearClientBadge && window._clearClientBadge('messages'); window._msgCol && window._loadMessages && window._loadMessages(window._msgUid, window._msgCol)"><span class="nav-icon">💬</span> Messages <span class="nav-badge" id="client-messages-badge" style="display:none">0</span></div>
       <div class="nav-item" onclick="nav('reports',this); window._clearClientBadge && window._clearClientBadge('reports'); window.loadClientReports && window.loadClientReports()"><span class="nav-icon">📋</span> My Reports <span class="nav-badge" id="client-reports-badge" style="display:none">0</span></div>
 
       <div class="nav-label">Account</div>
@@ -518,7 +518,7 @@ body { font-family:'Jost',sans-serif; background:var(--cream); color:var(--charc
             </div>
           </div>
 
-          <button class="btn btn-primary" style="padding:13px 32px;font-size:14px" onclick="confirmBooking()">✓ Send Booking Request — $50</button>
+          <button class="btn btn-primary" style="padding:13px 32px;font-size:14px" onclick="confirmBooking()">✓ Send Booking Request</button>
           <div style="margin-top:12px;font-size:13px;color:var(--mid);text-align:center">We'll review your request and confirm via email within 24 hours.</div>
         </div>
       </div>
@@ -1157,10 +1157,11 @@ function escapeHtml(str) {
           emailOptIn:        data.fields?.emailOptIn?.booleanValue,
           reportEmailOptIn:  data.fields?.reportEmailOptIn?.booleanValue,
           invoiceEmailOptIn: data.fields?.invoiceEmailOptIn?.booleanValue,
-          waiverSigned:      data.fields?.waiverSigned?.booleanValue ?? false,
-          waiverSignedAt:    get('waiverSignedAt'),
-          waiverSignedName:  get('waiverSignedName'),
-          waiverSignedEmail: get('waiverSignedEmail'),
+          waiverSigned:       data.fields?.waiverSigned?.booleanValue === true,
+          waiverSignedAt:     get('waiverSignedAt'),
+          waiverSignedName:   get('waiverSignedName'),
+          waiverSignedEmail:  get('waiverSignedEmail'),
+          onboardingComplete: data.fields?.onboardingComplete?.booleanValue === true,
         };
 
         // Show stored photo if one exists
@@ -1195,9 +1196,9 @@ function escapeHtml(str) {
         f('profile-senior-zip',     clientProfile.seniorZip);
         f('profile-health-notes',   clientProfile.notes);
 
-        // Waiver gate — redirect to onboarding if waiver not signed
-        if (clientProfile.waiverSigned !== true) {
-          window.location.href = 'onboarding.html';
+        // Waiver gate — redirect to onboarding only if neither waiver nor onboarding is complete
+        if (!clientProfile.waiverSigned && !clientProfile.onboardingComplete) {
+          window.location.replace('onboarding.html');
           return;
         }
 
@@ -1445,7 +1446,8 @@ function escapeHtml(str) {
       msgSnap.docs.forEach(d => {
         const m = d.data();
         const ts = m.createdAt?.toDate?.() || new Date(0);
-        if (m.senderRole === 'staff' && m.type === 'chat' && ts > lastMsgDate) unreadMessages++;
+        // Count any staff message (chat, booking, cancellation, reminder, invoice) as unread
+        if (m.senderRole === 'staff' && m.type !== 'report' && ts > lastMsgDate) unreadMessages++;
         if (m.type === 'report' && ts > lastRptDate) unreadReports++;
       });
 
@@ -1614,7 +1616,7 @@ function escapeHtml(str) {
       console.error('Booking request error:', err);
       showToast('⚠️ Could not send request. Please try again.');
     } finally {
-      if (btn) { btn.textContent = '✓ Send Booking Request — $50'; btn.disabled = false; }
+      if (btn) { btn.textContent = '✓ Send Booking Request'; btn.disabled = false; }
     }
   };
 

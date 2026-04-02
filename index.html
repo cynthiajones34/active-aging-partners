@@ -337,9 +337,19 @@ footer { background: var(--charcoal); padding: 60px 80px 30px; }
         <div class="card-title">Join today 🌿</div>
         <div class="card-sub">Create your free account</div>
         <div id="hero-signup-error" class="auth-error"></div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+          <div class="form-group">
+            <label class="form-label" for="hero-signup-first">First Name</label>
+            <input type="text" class="form-input" id="hero-signup-first" placeholder="First name">
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="hero-signup-last">Last Name</label>
+            <input type="text" class="form-input" id="hero-signup-last" placeholder="Last name">
+          </div>
+        </div>
         <div class="form-group">
-          <label class="form-label">Full Name</label>
-          <input type="text" class="form-input" id="hero-signup-name" placeholder="Your name">
+          <label class="form-label" for="hero-signup-middle">Middle Initial <span style="font-weight:400;color:var(--mid)">(optional)</span></label>
+          <input type="text" class="form-input" id="hero-signup-middle" placeholder="M" maxlength="2" style="max-width:80px">
         </div>
         <div class="form-group">
           <label class="form-label">Email</label>
@@ -701,13 +711,16 @@ footer { background: var(--charcoal); padding: 60px 80px 30px; }
 
   // ---- HERO QUICK SIGNUP ----
   window.heroSignup = async function() {
-    const name     = document.getElementById('hero-signup-name').value.trim();
+    const first    = document.getElementById('hero-signup-first')?.value.trim()  || '';
+    const middle   = document.getElementById('hero-signup-middle')?.value.trim() || '';
+    const last     = document.getElementById('hero-signup-last')?.value.trim()   || '';
+    const name     = [first, middle, last].filter(Boolean).join(' ');
     const email    = document.getElementById('hero-signup-email').value.trim();
     const password = document.getElementById('hero-signup-password').value;
     const errorEl  = document.getElementById('hero-signup-error');
     const btn      = document.getElementById('hero-signup-btn');
 
-    if (!name || !email || !password) { showError(errorEl, 'Please fill in all fields.'); return; }
+    if (!first || !last || !email || !password) { showError(errorEl, 'Please fill in your first name, last name, email, and password.'); return; }
     if (password.length < 6) { showError(errorEl, 'Password must be at least 6 characters.'); return; }
 
     setLoading(btn, true);
