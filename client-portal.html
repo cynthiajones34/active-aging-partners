@@ -2034,6 +2034,34 @@ function escapeHtml(str) {
     try {
       const snap = await getDocs(collection(db, 'clients', currentUser.uid, 'seniors'));
       window._clientSeniors = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+
+      // Auto-migrate root-level senior data for accounts created before subcollection support
+      if (window._clientSeniors.length === 0 && clientProfile.seniorName) {
+        try {
+          const seniorDoc = {
+            name:        clientProfile.seniorName,
+            age:         clientProfile.seniorAge  || '',
+            phone:       clientProfile.seniorPhone || '',
+            address:     clientProfile.address     || '',
+            city:        clientProfile.city         || '',
+            state:       clientProfile.state        || '',
+            zip:         clientProfile.zip          || '',
+            healthNotes: clientProfile.notes        || '',
+            photoURL:    clientProfile.photoURL     || '',
+            waiverSigned:      clientProfile.waiverSigned      || false,
+            waiverSignedAt:    clientProfile.waiverSignedAt    || '',
+            waiverSignedName:  clientProfile.waiverSignedName  || '',
+            waiverSignedEmail: clientProfile.waiverSignedEmail || '',
+            createdAt:   new Date().toISOString(),
+          };
+          const ref = await addDoc(collection(db, 'clients', currentUser.uid, 'seniors'), seniorDoc);
+          window._clientSeniors = [{ id: ref.id, ...seniorDoc }];
+          console.log('Migrated root-level senior to subcollection:', ref.id);
+        } catch(me) {
+          console.warn('Senior migration failed (non-fatal):', me.message);
+        }
+      }
+
       if (window._clientSeniors.length > 0 && !window._activeSeniorId) {
         window._activeSeniorId = window._clientSeniors[0].id;
       }
