@@ -424,18 +424,8 @@ body { font-family:'Jost',sans-serif; background:var(--cream); color:var(--charc
       <div class="nav-item" onclick="nav('notifications',this)"><span class="nav-icon">🔔</span> Notifications</div>
     </div>
     <div class="sidebar-footer">
-      <!-- Senior switcher — shown when >0 seniors loaded -->
+      <!-- Senior switcher -->
       <div id="sidebar-senior-switcher" style="display:none;margin-bottom:6px;border-bottom:1px solid rgba(255,255,255,0.07);padding-bottom:8px"></div>
-      <div class="user-pill" onclick="nav('profile',null)">
-        <div class="user-avatar" id="sidebar-avatar">
-          <span id="sidebar-initials">…</span>
-          <img id="sidebar-photo" src="" style="display:none">
-        </div>
-        <div>
-          <div class="user-name" id="sidebar-name">Loading…</div>
-          <div class="user-role" id="sidebar-role">Loading…</div>
-        </div>
-      </div>
       <div onclick="doLogout()" style="display:flex;align-items:center;gap:8px;padding:9px 10px;margin-top:6px;border-radius:10px;cursor:pointer;color:rgba(255,255,255,0.4);font-size:12px;transition:all 0.2s" onmouseover="this.style.background='rgba(255,255,255,0.07)';this.style.color='rgba(255,255,255,0.8)'" onmouseout="this.style.background='transparent';this.style.color='rgba(255,255,255,0.4)'">
         <span style="font-size:14px">🚪</span> Sign Out
       </div>
@@ -600,24 +590,6 @@ body { font-family:'Jost',sans-serif; background:var(--cream); color:var(--charc
       <!-- PROFILE -->
       <div class="view" id="view-profile">
         <div class="settings-grid">
-          <div class="settings-card" style="grid-column:1/-1">
-            <div class="settings-title">Senior's Photo</div>
-            <div class="photo-upload-area">
-              <div class="photo-circle" onclick="document.getElementById('photo-input').click()">
-                <span id="photo-initials"></span>
-                <img id="photo-preview" src="" style="display:none">
-                <div class="photo-overlay">📷</div>
-              </div>
-              <input type="file" id="photo-input" class="photo-upload-input" accept="image/*" onchange="previewPhoto(this)">
-              <div>
-                <div style="font-weight:600;font-size:15px" id="profile-display-name"></div>
-                <div style="font-size:12px;color:var(--mid);margin:4px 0 12px" id="profile-role-label"></div>
-                <button class="btn btn-ghost btn-sm" onclick="document.getElementById('photo-input').click()">📷 Upload Photo</button>
-              </div>
-            </div>
-            <p style="font-size:12px;color:var(--mid)">The senior's photo appears on their profile and in messages. Accepted: JPG, PNG (max 5MB)</p>
-          </div>
-
           <div class="settings-card">
             <div class="settings-title">Contact Information</div>
             <div class="form-group">
@@ -808,6 +780,19 @@ body { font-family:'Jost',sans-serif; background:var(--cream); color:var(--charc
       <button class="modal-close" onclick="closeModal('add-senior-modal')">✕</button>
     </div>
     <div class="modal-body">
+      <div style="display:flex;align-items:center;gap:16px;margin-bottom:16px;padding-bottom:16px;border-bottom:1px solid rgba(0,0,0,0.06)">
+        <div class="photo-circle" style="width:60px;height:60px;font-size:22px;flex-shrink:0" onclick="document.getElementById('add-senior-photo-input').click()">
+          <span id="add-senior-photo-initials">+</span>
+          <img id="add-senior-photo-preview" src="" style="display:none;width:100%;height:100%;object-fit:cover;border-radius:50%">
+          <div class="photo-overlay">📷</div>
+        </div>
+        <input type="file" id="add-senior-photo-input" class="photo-upload-input" accept="image/*" onchange="window._previewSeniorModalPhoto(this,'add')">
+        <div>
+          <div style="font-size:13px;font-weight:500">Senior Photo</div>
+          <div style="font-size:12px;color:var(--mid);margin-top:3px">Optional · JPG, PNG (max 5MB)</div>
+          <button class="btn btn-ghost btn-sm" style="margin-top:6px" type="button" onclick="document.getElementById('add-senior-photo-input').click()">📷 Upload Photo</button>
+        </div>
+      </div>
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
         <div class="form-group">
           <label class="form-label">First Name</label>
@@ -867,6 +852,19 @@ body { font-family:'Jost',sans-serif; background:var(--cream); color:var(--charc
       <button class="modal-close" onclick="closeModal('edit-senior-modal')">✕</button>
     </div>
     <div class="modal-body">
+      <div style="display:flex;align-items:center;gap:16px;margin-bottom:16px;padding-bottom:16px;border-bottom:1px solid rgba(0,0,0,0.06)">
+        <div class="photo-circle" style="width:60px;height:60px;font-size:22px;flex-shrink:0" onclick="document.getElementById('edit-senior-photo-input').click()">
+          <span id="edit-senior-photo-initials"></span>
+          <img id="edit-senior-photo-preview" src="" style="display:none;width:100%;height:100%;object-fit:cover;border-radius:50%">
+          <div class="photo-overlay">📷</div>
+        </div>
+        <input type="file" id="edit-senior-photo-input" class="photo-upload-input" accept="image/*" onchange="window._previewSeniorModalPhoto(this,'edit')">
+        <div>
+          <div style="font-size:13px;font-weight:500">Senior Photo</div>
+          <div style="font-size:12px;color:var(--mid);margin-top:3px">JPG, PNG (max 5MB)</div>
+          <button class="btn btn-ghost btn-sm" style="margin-top:6px" type="button" onclick="document.getElementById('edit-senior-photo-input').click()">📷 Change Photo</button>
+        </div>
+      </div>
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
         <div class="form-group">
           <label class="form-label">First Name</label>
@@ -2162,12 +2160,37 @@ function escapeHtml(str) {
     closeModal('senior-switch-modal');
   };
 
+  window._previewSeniorModalPhoto = function(input, mode) {
+    const file = input.files?.[0];
+    if (!file) return;
+    if (mode === 'add') window._addSeniorPhotoFile = file;
+    else                window._editSeniorPhotoFile = file;
+    const prevId = mode === 'add' ? 'add-senior-photo-preview' : 'edit-senior-photo-preview';
+    const iniId  = mode === 'add' ? 'add-senior-photo-initials' : 'edit-senior-photo-initials';
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      const prev = document.getElementById(prevId);
+      const ini  = document.getElementById(iniId);
+      if (prev) { prev.src = e.target.result; prev.style.display = 'block'; }
+      if (ini)  ini.style.display = 'none';
+    };
+    reader.readAsDataURL(file);
+  };
+
   window.openAddSeniorModal = function() {
     ['add-senior-first','add-senior-last','add-senior-age','add-senior-phone','add-senior-address',
      'add-senior-city','add-senior-state','add-senior-zip','add-senior-notes'].forEach(id => {
       const el = document.getElementById(id);
       if (el) el.value = '';
     });
+    // Reset photo
+    window._addSeniorPhotoFile = null;
+    const prev = document.getElementById('add-senior-photo-preview');
+    const ini  = document.getElementById('add-senior-photo-initials');
+    if (prev) { prev.src = ''; prev.style.display = 'none'; }
+    if (ini)  { ini.style.display = ''; ini.textContent = '+'; }
+    const photoInput = document.getElementById('add-senior-photo-input');
+    if (photoInput) photoInput.value = '';
     const errEl = document.getElementById('add-senior-error');
     if (errEl) errEl.style.display = 'none';
     openModal('add-senior-modal');
@@ -2204,7 +2227,18 @@ function escapeHtml(str) {
         healthNotes: notes,
         createdAt:   serverTimestamp(),
       });
-      window._clientSeniors.push({ id: ref.id, name, age, phone, address, city, state, zip, healthNotes: notes });
+      // Upload photo if selected
+      let photoURL = '';
+      if (window._addSeniorPhotoFile) {
+        try {
+          const sRef = storageRef(storage, `clients/${currentUser.uid}/seniors/${ref.id}`);
+          await uploadBytes(sRef, window._addSeniorPhotoFile);
+          photoURL = await getDownloadURL(sRef);
+          await setDoc(doc(db, 'clients', currentUser.uid, 'seniors', ref.id), { photoURL }, { merge: true });
+          window._addSeniorPhotoFile = null;
+        } catch(pe) { console.warn('Senior photo upload failed:', pe.message); }
+      }
+      window._clientSeniors.push({ id: ref.id, name, age, phone, address, city, state, zip, healthNotes: notes, photoURL });
       if (!window._activeSeniorId) window._activeSeniorId = ref.id;
       _renderSeniorsInProfile();
       _renderSeniorSwitcher();
@@ -2222,7 +2256,8 @@ function escapeHtml(str) {
   window.openEditSenior = function(seniorId) {
     const s = window._clientSeniors.find(x => x.id === seniorId);
     if (!s) return;
-    window._editSeniorId = seniorId;
+    window._editSeniorId    = seniorId;
+    window._editSeniorPhotoFile = null;
     const parts = (s.name || '').split(' ');
     const setV  = (id, val) => { const el = document.getElementById(id); if (el) el.value = val || ''; };
     setV('edit-senior-first',   parts[0] || '');
@@ -2234,6 +2269,18 @@ function escapeHtml(str) {
     setV('edit-senior-state',   s.state);
     setV('edit-senior-zip',     s.zip);
     setV('edit-senior-notes',   s.healthNotes);
+    // Populate photo preview
+    const prev = document.getElementById('edit-senior-photo-preview');
+    const ini  = document.getElementById('edit-senior-photo-initials');
+    const photoInput = document.getElementById('edit-senior-photo-input');
+    if (photoInput) photoInput.value = '';
+    if (s.photoURL) {
+      if (prev) { prev.src = s.photoURL; prev.style.display = 'block'; }
+      if (ini)  ini.style.display = 'none';
+    } else {
+      if (prev) { prev.src = ''; prev.style.display = 'none'; }
+      if (ini)  { ini.style.display = ''; ini.textContent = parts.map(w=>w[0]).slice(0,2).join('').toUpperCase() || '?'; }
+    }
     const errEl = document.getElementById('edit-senior-error');
     if (errEl) errEl.style.display = 'none';
     openModal('edit-senior-modal');
@@ -2259,6 +2306,16 @@ function escapeHtml(str) {
     const btn  = document.getElementById('edit-senior-btn');
     if (btn) { btn.textContent = 'Saving…'; btn.disabled = true; }
     try {
+      // Upload new photo if selected
+      let photoURL = (window._clientSeniors.find(x => x.id === window._editSeniorId) || {}).photoURL || '';
+      if (window._editSeniorPhotoFile) {
+        try {
+          const sRef = storageRef(storage, `clients/${currentUser.uid}/seniors/${window._editSeniorId}`);
+          await uploadBytes(sRef, window._editSeniorPhotoFile);
+          photoURL = await getDownloadURL(sRef);
+          window._editSeniorPhotoFile = null;
+        } catch(pe) { console.warn('Senior photo upload failed:', pe.message); }
+      }
       await setDoc(doc(db, 'clients', currentUser.uid, 'seniors', window._editSeniorId), {
         name,
         age:         age ? parseInt(age) : '',
@@ -2268,9 +2325,10 @@ function escapeHtml(str) {
         state,
         zip,
         healthNotes: notes,
+        ...(photoURL ? { photoURL } : {}),
       }, { merge: true });
       const idx = window._clientSeniors.findIndex(x => x.id === window._editSeniorId);
-      if (idx >= 0) window._clientSeniors[idx] = { ...window._clientSeniors[idx], name, age, phone, address, city, state, zip, healthNotes: notes };
+      if (idx >= 0) window._clientSeniors[idx] = { ...window._clientSeniors[idx], name, age, phone, address, city, state, zip, healthNotes: notes, photoURL };
       _renderSeniorsInProfile();
       _renderSeniorSwitcher();
       _populateBookingSeniorSelect();
