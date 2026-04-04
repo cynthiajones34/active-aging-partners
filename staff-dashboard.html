@@ -1361,7 +1361,7 @@ function downloadCSV(type){
         : '';
 
       const sessionPills = sessions.map(s => {
-        const name  = clientMap[s.clientUid]?.name || s.clientName || 'Client';
+        const name  = s.seniorName || clientMap[s.clientUid]?.name || s.clientName || 'Client';
         const first = name.split(' ')[0];
         const time  = s.time
           ? new Date(`2000-01-01T${s.time}`).toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit'})
@@ -1420,7 +1420,7 @@ function downloadCSV(type){
     document.getElementById('sd-client-name').textContent  = client.displayName || s.clientName || '—';
     document.getElementById('sd-client-email').textContent = client.email || s.clientEmail || '—';
     document.getElementById('sd-client-phone').textContent = client.phone || '—';
-    document.getElementById('sd-senior-name').textContent  = client.seniorName || '—';
+    document.getElementById('sd-senior-name').textContent  = s.seniorName || client.seniorName || '—';
     document.getElementById('sd-senior-age').textContent   = client.seniorAge  || '—';
     const seniorAddrParts = [client.seniorAddress, client.seniorCity, client.seniorState, client.seniorZip].filter(Boolean);
     document.getElementById('sd-senior-address').textContent = seniorAddrParts.length ? seniorAddrParts.join(', ') : '—';
@@ -1486,13 +1486,15 @@ function downloadCSV(type){
               <div style="font-size:11px;font-weight:700;color:#7a5800;text-transform:uppercase;letter-spacing:0.08em;margin-bottom:12px">⏳ Booking Requests — ${pending.length} pending</div>
               ${pending.map(d=>{
                 const s=d.data();
-                const clientName=clientMap[s.clientUid]?.name||s.clientName||'Client';
+                const accountName=clientMap[s.clientUid]?.name||s.clientName||'Client';
+                const displayName=s.seniorName||accountName;
                 const readableDate=new Date(s.date+'T12:00:00').toLocaleDateString('en-US',{weekday:'short',month:'short',day:'numeric'});
                 const readableTime=s.time?new Date('2000-01-01T'+s.time).toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit'}):'TBD';
                 return `<div style="background:#fff;border-radius:10px;padding:14px 16px;margin-bottom:8px;border:1px solid rgba(0,0,0,0.06)">
                   <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:12px;flex-wrap:wrap">
                     <div>
-                      <div style="font-size:14px;font-weight:600">${clientName}</div>
+                      <div style="font-size:14px;font-weight:600">${displayName}</div>
+                      ${s.seniorName&&s.seniorName!==accountName?`<div style="font-size:11px;color:var(--mid);margin-top:1px">Account: ${accountName}</div>`:''}
                       <div style="font-size:12px;color:var(--mid);margin-top:2px">${s.service||'Session'} · ${readableDate} at ${readableTime} · ${s.durationMinutes||60} min · $${s.cost||50}</div>
                       ${s.notes?`<div style="font-size:12px;color:var(--mid);margin-top:3px;font-style:italic">${s.notes}</div>`:''}
                     </div>
