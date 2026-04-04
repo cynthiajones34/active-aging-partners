@@ -293,6 +293,25 @@ body { font-family:'Jost',sans-serif; background:var(--cream); color:var(--charc
 .photo-circle:hover .photo-overlay { opacity:1; }
 .photo-upload-input { display:none; }
 
+/* ---- SENIOR CARDS ---- */
+.senior-card {
+  display:flex; align-items:center; gap:12px;
+  padding:12px 14px; border:1.5px solid rgba(0,0,0,0.07);
+  border-radius:12px; background:var(--cream); margin-bottom:10px;
+  transition:border-color 0.15s;
+}
+.senior-card:last-child { margin-bottom:0; }
+.senior-avatar {
+  width:42px; height:42px; border-radius:50%;
+  background:linear-gradient(135deg,var(--sage-light),var(--sage));
+  display:flex; align-items:center; justify-content:center;
+  font-size:14px; font-weight:700; color:#fff; flex-shrink:0; overflow:hidden;
+}
+.senior-info { flex:1; min-width:0; }
+.senior-name { font-size:14px; font-weight:600; }
+.senior-meta { font-size:12px; color:var(--mid); margin-top:2px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.senior-actions { display:flex; gap:6px; flex-shrink:0; }
+
 /* Toggle switch */
 .toggle-row {
   display:flex; align-items:center; justify-content:space-between;
@@ -405,6 +424,8 @@ body { font-family:'Jost',sans-serif; background:var(--cream); color:var(--charc
       <div class="nav-item" onclick="nav('notifications',this)"><span class="nav-icon">🔔</span> Notifications</div>
     </div>
     <div class="sidebar-footer">
+      <!-- Senior switcher — shown when >0 seniors loaded -->
+      <div id="sidebar-senior-switcher" style="display:none;margin-bottom:6px;border-bottom:1px solid rgba(255,255,255,0.07);padding-bottom:8px"></div>
       <div class="user-pill" onclick="nav('profile',null)">
         <div class="user-avatar" id="sidebar-avatar">
           <span id="sidebar-initials">…</span>
@@ -464,6 +485,13 @@ body { font-family:'Jost',sans-serif; background:var(--cream); color:var(--charc
       <!-- BOOK -->
       <div class="view" id="view-book">
         <div style="max-width:700px">
+
+          <!-- Senior selector -->
+          <div id="book-senior-wrapper" style="display:none;background:#fff;border-radius:14px;border:1px solid rgba(0,0,0,0.06);padding:18px 22px;margin-bottom:16px">
+            <div style="font-size:13px;font-weight:600;margin-bottom:8px">Who is this session for?</div>
+            <select class="form-select" id="book-senior-select"></select>
+          </div>
+
           <h3 style="font-family:'Cormorant Garamond',serif;font-size:18px;font-weight:600;margin-bottom:6px">What type of session?</h3>
           <p style="font-size:13px;color:var(--mid);margin-bottom:16px">All sessions are a flat $50/hr.</p>
 
@@ -630,38 +658,11 @@ body { font-family:'Jost',sans-serif; background:var(--cream); color:var(--charc
           </div>
 
           <div class="settings-card">
-            <div class="settings-title">Senior Client Info</div>
-            <div class="form-group">
-              <label class="form-label">Senior's Name</label>
-              <input type="text" class="form-input" id="profile-senior-name" value="">
+            <div class="settings-title">Senior Clients</div>
+            <div id="seniors-manager-list">
+              <div style="font-size:13px;color:var(--mid);padding:12px 0">Loading seniors…</div>
             </div>
-            <div class="form-group">
-              <label class="form-label">Age</label>
-              <input type="number" class="form-input" id="profile-senior-age" value="">
-            </div>
-            <div class="form-group">
-              <label class="form-label">Street Address</label>
-              <input type="text" class="form-input" id="profile-senior-address" value="">
-            </div>
-            <div style="display:grid;grid-template-columns:1fr 80px 100px;gap:10px">
-              <div class="form-group">
-                <label class="form-label">City</label>
-                <input type="text" class="form-input" id="profile-senior-city" value="">
-              </div>
-              <div class="form-group">
-                <label class="form-label">State</label>
-                <input type="text" class="form-input" id="profile-senior-state" placeholder="GA" maxlength="2" value="">
-              </div>
-              <div class="form-group">
-                <label class="form-label">Zip Code</label>
-                <input type="text" class="form-input" id="profile-senior-zip" maxlength="10" value="">
-              </div>
-            </div>
-            <div class="form-group">
-              <label class="form-label">Health Notes</label>
-              <textarea class="form-input" id="profile-health-notes" rows="3" placeholder="Any health notes, preferences, or things your companion should know…"></textarea>
-            </div>
-            <button class="btn btn-primary btn-sm" onclick="saveSeniorInfo()">Save Changes</button>
+            <button class="btn btn-primary btn-sm" style="margin-top:14px" onclick="window.openAddSeniorModal()">+ Add Senior</button>
           </div>
 
           <div class="settings-card">
@@ -800,6 +801,137 @@ body { font-family:'Jost',sans-serif; background:var(--cream); color:var(--charc
     <div class="modal-footer">
       <button class="btn btn-ghost" onclick="closeModal('cancel-modal')">Keep Session</button>
       <button class="btn btn-danger" id="cancel-confirm-btn" onclick="window.doCancelSession()">Cancel Session</button>
+    </div>
+  </div>
+</div>
+
+<!-- Add Senior Modal -->
+<div class="modal-overlay" id="add-senior-modal">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title">Add a Senior</div>
+      <button class="modal-close" onclick="closeModal('add-senior-modal')">✕</button>
+    </div>
+    <div class="modal-body">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+        <div class="form-group">
+          <label class="form-label">First Name</label>
+          <input type="text" class="form-input" id="add-senior-first" placeholder="First name">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Last Name</label>
+          <input type="text" class="form-input" id="add-senior-last" placeholder="Last name">
+        </div>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+        <div class="form-group">
+          <label class="form-label">Age</label>
+          <input type="number" class="form-input" id="add-senior-age" placeholder="e.g. 78" min="50" max="120">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Phone</label>
+          <input type="tel" class="form-input" id="add-senior-phone" placeholder="(404) 555-0100">
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Street Address</label>
+        <input type="text" class="form-input" id="add-senior-address" placeholder="123 Maple St">
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 80px 100px;gap:10px">
+        <div class="form-group">
+          <label class="form-label">City</label>
+          <input type="text" class="form-input" id="add-senior-city">
+        </div>
+        <div class="form-group">
+          <label class="form-label">State</label>
+          <input type="text" class="form-input" id="add-senior-state" placeholder="GA" maxlength="2">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Zip Code</label>
+          <input type="text" class="form-input" id="add-senior-zip" maxlength="10">
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Health Notes</label>
+        <textarea class="form-input" id="add-senior-notes" rows="3" placeholder="Any health conditions, mobility notes, or things the companion should know…"></textarea>
+      </div>
+      <div id="add-senior-error" style="display:none;color:#b03030;font-size:13px;margin-top:6px"></div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" onclick="closeModal('add-senior-modal')">Cancel</button>
+      <button class="btn btn-primary" id="add-senior-btn" onclick="window.saveNewSenior()">Add Senior</button>
+    </div>
+  </div>
+</div>
+
+<!-- Edit Senior Modal -->
+<div class="modal-overlay" id="edit-senior-modal">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title">Edit Senior</div>
+      <button class="modal-close" onclick="closeModal('edit-senior-modal')">✕</button>
+    </div>
+    <div class="modal-body">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+        <div class="form-group">
+          <label class="form-label">First Name</label>
+          <input type="text" class="form-input" id="edit-senior-first">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Last Name</label>
+          <input type="text" class="form-input" id="edit-senior-last">
+        </div>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+        <div class="form-group">
+          <label class="form-label">Age</label>
+          <input type="number" class="form-input" id="edit-senior-age" min="50" max="120">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Phone</label>
+          <input type="tel" class="form-input" id="edit-senior-phone">
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Street Address</label>
+        <input type="text" class="form-input" id="edit-senior-address">
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 80px 100px;gap:10px">
+        <div class="form-group">
+          <label class="form-label">City</label>
+          <input type="text" class="form-input" id="edit-senior-city">
+        </div>
+        <div class="form-group">
+          <label class="form-label">State</label>
+          <input type="text" class="form-input" id="edit-senior-state" placeholder="GA" maxlength="2">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Zip Code</label>
+          <input type="text" class="form-input" id="edit-senior-zip" maxlength="10">
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Health Notes</label>
+        <textarea class="form-input" id="edit-senior-notes" rows="3"></textarea>
+      </div>
+      <div id="edit-senior-error" style="display:none;color:#b03030;font-size:13px;margin-top:6px"></div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" onclick="closeModal('edit-senior-modal')">Cancel</button>
+      <button class="btn btn-primary" id="edit-senior-btn" onclick="window.saveEditSenior()">Save Changes</button>
+    </div>
+  </div>
+</div>
+
+<!-- Senior Switcher Modal -->
+<div class="modal-overlay" id="senior-switch-modal">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title">Select Active Senior</div>
+      <button class="modal-close" onclick="closeModal('senior-switch-modal')">✕</button>
+    </div>
+    <div class="modal-body">
+      <div id="senior-switch-list"></div>
     </div>
   </div>
 </div>
@@ -1188,13 +1320,6 @@ function escapeHtml(str) {
         f('profile-city',           clientProfile.city);
         f('profile-state',          clientProfile.state);
         f('profile-zip',            clientProfile.zip);
-        f('profile-senior-name',    clientProfile.seniorName);
-        f('profile-senior-age',     clientProfile.seniorAge);
-        f('profile-senior-address', clientProfile.seniorAddress);
-        f('profile-senior-city',    clientProfile.seniorCity);
-        f('profile-senior-state',   clientProfile.seniorState);
-        f('profile-senior-zip',     clientProfile.seniorZip);
-        f('profile-health-notes',   clientProfile.notes);
 
         // Waiver gate — redirect to onboarding only if neither waiver nor onboarding is complete
         if (!clientProfile.waiverSigned && !clientProfile.onboardingComplete) {
@@ -1268,6 +1393,9 @@ function escapeHtml(str) {
     // Load client's session schedule and reports
     loadClientSchedule();
     loadClientReports();
+
+    // Load seniors subcollection
+    window.loadSeniors && window.loadSeniors();
 
     // Update notification badges
     updateClientBadges();
@@ -1343,6 +1471,7 @@ function escapeHtml(str) {
             <div class="session-info">
               <div class="session-title">${escapeHtml(s.service || 'Session')}</div>
               <div class="session-meta">${readableDate}${readableTime ? ' · ' + readableTime : ''} · ${s.durationMinutes || 60} min · $${s.cost || 50}</div>
+              ${s.seniorName ? `<div style="font-size:12px;color:var(--forest);margin-top:3px;font-weight:500">For: ${escapeHtml(s.seniorName)}</div>` : ''}
               ${s.notes ? `<div style="font-size:12px;color:var(--mid);margin-top:3px;font-style:italic">${escapeHtml(s.notes)}</div>` : ''}
               ${isPending ? `<div style="font-size:12px;color:#7a5800;margin-top:4px">We'll confirm your request within 24 hours.</div>` : ''}
               ${cancelBtn}
@@ -1568,6 +1697,11 @@ function escapeHtml(str) {
     const notes        = document.getElementById('book-notes')?.value.trim() || '';
     const cost         = Math.round(durationMins / 60 * 50);
 
+    // Senior selector
+    const selectedSeniorId = document.getElementById('book-senior-select')?.value || '';
+    const selectedSenior   = (window._clientSeniors || []).find(s => s.id === selectedSeniorId);
+    const seniorName       = selectedSenior?.name || clientProfile.seniorName || '';
+
     // Build date string from calendar state
     const monthLabel = document.getElementById('cal-month-label').textContent.split(' — ')[0]; // "March 2026"
     const [monthStr, yearStr] = monthLabel.split(' ');
@@ -1588,6 +1722,8 @@ function escapeHtml(str) {
         clientUid:       currentUser.uid,
         clientName:      currentUser.displayName || currentUser.email,
         clientEmail:     currentUser.email,
+        seniorId:        selectedSeniorId || '',
+        seniorName:      seniorName,
         service,
         date:            dateStr,
         time:            timeStr,
@@ -1605,7 +1741,7 @@ function escapeHtml(str) {
         toName:     'Cynthia',
         subject:    `New Booking Request — ${currentUser.displayName || currentUser.email}`,
         type:       'booking_request',
-        bodyText:   `${currentUser.displayName || 'A client'} has requested a session:\n\nService: ${service}\nDate: ${dateStr}\nTime: ${timeText}\nDuration: ${durationMins} min\nCost: $${cost}${notes ? '\n\nNotes: ' + notes : ''}\n\nLog in to the staff dashboard to approve or decline.`,
+        bodyText:   `${currentUser.displayName || 'A client'} has requested a session:\n\nService: ${service}\nDate: ${dateStr}\nTime: ${timeText}\nDuration: ${durationMins} min\nCost: $${cost}${seniorName ? '\nSenior: ' + seniorName : ''}${notes ? '\n\nNotes: ' + notes : ''}\n\nLog in to the staff dashboard to approve or decline.`,
         clientName: currentUser.displayName || currentUser.email,
       }).catch(err => console.warn('Staff notification failed:', err));
 
@@ -1894,30 +2030,233 @@ function escapeHtml(str) {
     }
   };
 
-  // ── SAVE SENIOR CLIENT INFO ───────────────────────────────────
-  window.saveSeniorInfo = async function() {
+  // ── MULTI-SENIOR MANAGEMENT ───────────────────────────────────
+  window._clientSeniors  = [];
+  window._activeSeniorId = null;
+
+  window.loadSeniors = async function() {
     if (!currentUser) return;
-    const seniorName    = document.getElementById('profile-senior-name')?.value.trim()    || '';
-    const seniorAge     = document.getElementById('profile-senior-age')?.value.trim()     || '';
-    const seniorAddress = document.getElementById('profile-senior-address')?.value.trim() || '';
-    const seniorCity    = document.getElementById('profile-senior-city')?.value.trim()    || '';
-    const seniorState   = document.getElementById('profile-senior-state')?.value.trim()   || '';
-    const seniorZip     = document.getElementById('profile-senior-zip')?.value.trim()     || '';
-    const notes         = document.getElementById('profile-health-notes')?.value.trim()   || '';
     try {
-      await setDoc(doc(db, 'clients', currentUser.uid), {
-        seniorName,
-        seniorAge:    seniorAge ? parseInt(seniorAge) : '',
-        seniorAddress,
-        seniorCity,
-        seniorState,
-        seniorZip,
-        notes,
+      const snap = await getDocs(collection(db, 'clients', currentUser.uid, 'seniors'));
+      window._clientSeniors = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+      if (window._clientSeniors.length > 0 && !window._activeSeniorId) {
+        window._activeSeniorId = window._clientSeniors[0].id;
+      }
+      _renderSeniorsInProfile();
+      _renderSeniorSwitcher();
+      _populateBookingSeniorSelect();
+    } catch(e) {
+      console.warn('loadSeniors error:', e.message);
+    }
+  };
+
+  function _renderSeniorsInProfile() {
+    const listEl = document.getElementById('seniors-manager-list');
+    if (!listEl) return;
+    const seniors = window._clientSeniors;
+    if (seniors.length === 0) {
+      listEl.innerHTML = '<div style="font-size:13px;color:var(--mid);padding:12px 0">No seniors added yet. Click "+ Add Senior" to get started.</div>';
+      return;
+    }
+    listEl.innerHTML = seniors.map(s => {
+      const ini = (s.name || '?').split(' ').map(w => w[0]).slice(0, 2).join('').toUpperCase();
+      const age = s.age ? `Age ${s.age}` : '';
+      const notes = s.healthNotes ? (s.healthNotes.length > 50 ? s.healthNotes.substring(0, 50) + '…' : s.healthNotes) : '';
+      const meta  = [age, notes].filter(Boolean).join(' · ');
+      return `
+        <div class="senior-card">
+          <div class="senior-avatar">${s.photoURL ? `<img src="${escapeHtml(s.photoURL)}" style="width:100%;height:100%;object-fit:cover">` : ini}</div>
+          <div class="senior-info">
+            <div class="senior-name">${escapeHtml(s.name || '—')}</div>
+            ${meta ? `<div class="senior-meta">${escapeHtml(meta)}</div>` : ''}
+          </div>
+          <div class="senior-actions">
+            <button class="btn btn-ghost btn-sm" onclick="window.openEditSenior('${s.id}')">Edit</button>
+          </div>
+        </div>`;
+    }).join('');
+  }
+
+  function _renderSeniorSwitcher() {
+    const el = document.getElementById('sidebar-senior-switcher');
+    if (!el) return;
+    const seniors = window._clientSeniors;
+    if (seniors.length === 0) { el.style.display = 'none'; return; }
+    const active = seniors.find(s => s.id === window._activeSeniorId) || seniors[0];
+    const ini    = (active.name || '?').split(' ').map(w => w[0]).slice(0, 2).join('').toUpperCase();
+    el.style.display = 'block';
+    el.innerHTML = `
+      <div style="font-size:10px;letter-spacing:0.08em;text-transform:uppercase;color:rgba(255,255,255,0.35);margin-bottom:5px;padding:0 10px">Active Senior</div>
+      <div style="display:flex;align-items:center;gap:8px;padding:7px 10px;border-radius:8px;cursor:pointer;transition:background 0.15s" onclick="window.openSeniorSwitchModal()" onmouseover="this.style.background='rgba(255,255,255,0.07)'" onmouseout="this.style.background='transparent'">
+        <div style="width:28px;height:28px;border-radius:50%;background:var(--sage);display:flex;align-items:center;justify-content:center;font-size:11px;color:#fff;flex-shrink:0;overflow:hidden">
+          ${active.photoURL ? `<img src="${escapeHtml(active.photoURL)}" style="width:100%;height:100%;object-fit:cover">` : ini}
+        </div>
+        <div style="flex:1;min-width:0">
+          <div style="font-size:12px;color:#fff;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${escapeHtml(active.name || '—')}</div>
+          ${seniors.length > 1 ? `<div style="font-size:10px;color:rgba(255,255,255,0.45)">Tap to switch</div>` : ''}
+        </div>
+        ${seniors.length > 1 ? `<div style="font-size:10px;color:rgba(255,255,255,0.4)">⇅</div>` : ''}
+      </div>`;
+  }
+
+  function _populateBookingSeniorSelect() {
+    const el      = document.getElementById('book-senior-select');
+    const wrapper = document.getElementById('book-senior-wrapper');
+    if (!el || !wrapper) return;
+    const seniors = window._clientSeniors;
+    if (seniors.length === 0) { wrapper.style.display = 'none'; return; }
+    wrapper.style.display = '';
+    el.innerHTML = seniors.map(s =>
+      `<option value="${s.id}" ${s.id === window._activeSeniorId ? 'selected' : ''}>${escapeHtml(s.name || 'Senior')}</option>`
+    ).join('');
+  }
+
+  window.openSeniorSwitchModal = function() {
+    const modal  = document.getElementById('senior-switch-modal');
+    const listEl = document.getElementById('senior-switch-list');
+    if (!modal || !listEl) return;
+    listEl.innerHTML = window._clientSeniors.map(s => {
+      const ini      = (s.name || '?').split(' ').map(w => w[0]).slice(0, 2).join('').toUpperCase();
+      const isActive = s.id === window._activeSeniorId;
+      return `
+        <div class="senior-card" style="cursor:pointer;${isActive ? 'border-color:var(--forest);background:rgba(45,74,50,0.05)' : ''}" onclick="window.setActiveSenior('${s.id}')">
+          <div class="senior-avatar">${s.photoURL ? `<img src="${escapeHtml(s.photoURL)}" style="width:100%;height:100%;object-fit:cover">` : ini}</div>
+          <div class="senior-info">
+            <div class="senior-name">${escapeHtml(s.name || '—')}</div>
+            ${s.age ? `<div class="senior-meta">Age ${s.age}</div>` : ''}
+          </div>
+          ${isActive ? '<div style="color:var(--forest);font-weight:700;font-size:15px">✓</div>' : ''}
+        </div>`;
+    }).join('');
+    openModal('senior-switch-modal');
+  };
+
+  window.setActiveSenior = function(seniorId) {
+    window._activeSeniorId = seniorId;
+    _renderSeniorSwitcher();
+    _populateBookingSeniorSelect();
+    closeModal('senior-switch-modal');
+  };
+
+  window.openAddSeniorModal = function() {
+    ['add-senior-first','add-senior-last','add-senior-age','add-senior-phone','add-senior-address',
+     'add-senior-city','add-senior-state','add-senior-zip','add-senior-notes'].forEach(id => {
+      const el = document.getElementById(id);
+      if (el) el.value = '';
+    });
+    const errEl = document.getElementById('add-senior-error');
+    if (errEl) errEl.style.display = 'none';
+    openModal('add-senior-modal');
+  };
+
+  window.saveNewSenior = async function() {
+    if (!currentUser) return;
+    const first   = document.getElementById('add-senior-first')?.value.trim()   || '';
+    const last    = document.getElementById('add-senior-last')?.value.trim()    || '';
+    const age     = document.getElementById('add-senior-age')?.value.trim()     || '';
+    const phone   = document.getElementById('add-senior-phone')?.value.trim()   || '';
+    const address = document.getElementById('add-senior-address')?.value.trim() || '';
+    const city    = document.getElementById('add-senior-city')?.value.trim()    || '';
+    const state   = document.getElementById('add-senior-state')?.value.trim()   || '';
+    const zip     = document.getElementById('add-senior-zip')?.value.trim()     || '';
+    const notes   = document.getElementById('add-senior-notes')?.value.trim()   || '';
+    const errEl   = document.getElementById('add-senior-error');
+    if (!first || !last) {
+      if (errEl) { errEl.textContent = 'First and last name are required.'; errEl.style.display = 'block'; }
+      return;
+    }
+    const name = [first, last].filter(Boolean).join(' ');
+    const btn  = document.getElementById('add-senior-btn');
+    if (btn) { btn.textContent = 'Saving…'; btn.disabled = true; }
+    try {
+      const ref = await addDoc(collection(db, 'clients', currentUser.uid, 'seniors'), {
+        name,
+        age:         age ? parseInt(age) : '',
+        phone,
+        address,
+        city,
+        state,
+        zip,
+        healthNotes: notes,
+        createdAt:   serverTimestamp(),
+      });
+      window._clientSeniors.push({ id: ref.id, name, age, phone, address, city, state, zip, healthNotes: notes });
+      if (!window._activeSeniorId) window._activeSeniorId = ref.id;
+      _renderSeniorsInProfile();
+      _renderSeniorSwitcher();
+      _populateBookingSeniorSelect();
+      closeModal('add-senior-modal');
+      showToast('✓ Senior added!');
+    } catch(e) {
+      console.error('saveNewSenior error:', e);
+      if (errEl) { errEl.textContent = 'Could not save. Please try again.'; errEl.style.display = 'block'; }
+    } finally {
+      if (btn) { btn.textContent = 'Add Senior'; btn.disabled = false; }
+    }
+  };
+
+  window.openEditSenior = function(seniorId) {
+    const s = window._clientSeniors.find(x => x.id === seniorId);
+    if (!s) return;
+    window._editSeniorId = seniorId;
+    const parts = (s.name || '').split(' ');
+    const setV  = (id, val) => { const el = document.getElementById(id); if (el) el.value = val || ''; };
+    setV('edit-senior-first',   parts[0] || '');
+    setV('edit-senior-last',    parts.slice(1).join(' ') || '');
+    setV('edit-senior-age',     s.age);
+    setV('edit-senior-phone',   s.phone);
+    setV('edit-senior-address', s.address);
+    setV('edit-senior-city',    s.city);
+    setV('edit-senior-state',   s.state);
+    setV('edit-senior-zip',     s.zip);
+    setV('edit-senior-notes',   s.healthNotes);
+    const errEl = document.getElementById('edit-senior-error');
+    if (errEl) errEl.style.display = 'none';
+    openModal('edit-senior-modal');
+  };
+
+  window.saveEditSenior = async function() {
+    if (!currentUser || !window._editSeniorId) return;
+    const first   = document.getElementById('edit-senior-first')?.value.trim()   || '';
+    const last    = document.getElementById('edit-senior-last')?.value.trim()    || '';
+    const age     = document.getElementById('edit-senior-age')?.value.trim()     || '';
+    const phone   = document.getElementById('edit-senior-phone')?.value.trim()   || '';
+    const address = document.getElementById('edit-senior-address')?.value.trim() || '';
+    const city    = document.getElementById('edit-senior-city')?.value.trim()    || '';
+    const state   = document.getElementById('edit-senior-state')?.value.trim()   || '';
+    const zip     = document.getElementById('edit-senior-zip')?.value.trim()     || '';
+    const notes   = document.getElementById('edit-senior-notes')?.value.trim()   || '';
+    const errEl   = document.getElementById('edit-senior-error');
+    if (!first || !last) {
+      if (errEl) { errEl.textContent = 'First and last name are required.'; errEl.style.display = 'block'; }
+      return;
+    }
+    const name = [first, last].filter(Boolean).join(' ');
+    const btn  = document.getElementById('edit-senior-btn');
+    if (btn) { btn.textContent = 'Saving…'; btn.disabled = true; }
+    try {
+      await setDoc(doc(db, 'clients', currentUser.uid, 'seniors', window._editSeniorId), {
+        name,
+        age:         age ? parseInt(age) : '',
+        phone,
+        address,
+        city,
+        state,
+        zip,
+        healthNotes: notes,
       }, { merge: true });
-      showToast('✓ Senior info saved!');
-    } catch (err) {
-      console.error('Save senior info error:', err);
-      showToast('⚠️ Could not save. Please try again.');
+      const idx = window._clientSeniors.findIndex(x => x.id === window._editSeniorId);
+      if (idx >= 0) window._clientSeniors[idx] = { ...window._clientSeniors[idx], name, age, phone, address, city, state, zip, healthNotes: notes };
+      _renderSeniorsInProfile();
+      _renderSeniorSwitcher();
+      _populateBookingSeniorSelect();
+      closeModal('edit-senior-modal');
+      showToast('✓ Senior info updated!');
+    } catch(e) {
+      console.error('saveEditSenior error:', e);
+      if (errEl) { errEl.textContent = 'Could not save. Please try again.'; errEl.style.display = 'block'; }
+    } finally {
+      if (btn) { btn.textContent = 'Save Changes'; btn.disabled = false; }
     }
   };
 

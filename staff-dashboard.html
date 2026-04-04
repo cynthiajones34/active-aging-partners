@@ -164,6 +164,11 @@ textarea.fi{resize:vertical;min-height:80px;line-height:1.5;}
 .cp-label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:var(--mid);margin-bottom:12px;}
 .cp-row{display:flex;gap:8px;align-items:baseline;margin-bottom:8px;font-size:13px;}
 .cp-row-key{color:var(--mid);width:80px;flex-shrink:0;font-size:12px;}
+.cp-senior-card{display:flex;align-items:flex-start;gap:12px;padding:12px 14px;border:1.5px solid rgba(0,0,0,0.07);border-radius:10px;background:var(--cream);margin-bottom:8px;}
+.cp-senior-av{width:38px;height:38px;border-radius:50%;background:linear-gradient(135deg,var(--sage-light),var(--sage));display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;color:#fff;flex-shrink:0;overflow:hidden;}
+.cp-senior-info{flex:1;min-width:0;}
+.cp-senior-name{font-size:13px;font-weight:600;margin-bottom:3px;}
+.cp-senior-meta{font-size:11px;color:var(--mid);}
 .cp-session{background:var(--cream);border-radius:10px;padding:10px 12px;margin-bottom:8px;font-size:12px;}
 .cp-session-title{font-weight:600;font-size:13px;margin-bottom:3px;}
 .cp-msg{padding:8px 0;border-bottom:1px solid rgba(0,0,0,0.05);font-size:12px;}
@@ -616,20 +621,20 @@ textarea.fi{resize:vertical;min-height:80px;line-height:1.5;}
       </div>
     </div>
 
-    <!-- Contact info + senior info -->
+    <!-- Contact info -->
     <div class="cp-grid">
-      <div class="cp-section">
+      <div class="cp-section" style="grid-column:1/-1">
         <div class="cp-label">Contact Information</div>
         <div class="cp-row"><span class="cp-row-key">Email</span><span id="cp-email">—</span></div>
         <div class="cp-row"><span class="cp-row-key">Phone</span><span id="cp-phone">—</span></div>
         <div class="cp-row"><span class="cp-row-key">Address</span><span id="cp-address">—</span></div>
       </div>
-      <div class="cp-section">
-        <div class="cp-label">Senior Information</div>
-        <div class="cp-row"><span class="cp-row-key">Name</span><span id="cp-senior-name">—</span></div>
-        <div class="cp-row"><span class="cp-row-key">Age</span><span id="cp-senior-age">—</span></div>
-        <div class="cp-row"><span class="cp-row-key">Notes</span><span id="cp-notes" style="color:var(--mid);font-style:italic">—</span></div>
-      </div>
+    </div>
+
+    <!-- Seniors list -->
+    <div class="cp-full" style="border-top:1px solid rgba(0,0,0,0.06)">
+      <div class="cp-label">Senior Clients</div>
+      <div id="cp-seniors-list"><div style="color:var(--mid);font-size:13px">Loading…</div></div>
     </div>
 
     <!-- Agreement status -->
@@ -1142,10 +1147,6 @@ function downloadCSV(type){
     document.getElementById('cp-address').textContent = addrParts.length ? addrParts.join(', ') : '—';
 
     // Senior info
-    document.getElementById('cp-senior-name').textContent = c.seniorName || '—';
-    document.getElementById('cp-senior-age').textContent  = c.seniorAge  || '—';
-    document.getElementById('cp-notes').textContent       = c.notes      || '—';
-
     // Waiver status
     const wSigned   = c.waiverSigned === true;
     const wUnsigned = document.getElementById('cp-waiver-unsigned');
@@ -1181,6 +1182,53 @@ function downloadCSV(type){
     };
 
     openModal('client-profile-modal');
+
+    // Load seniors async
+    const seniorsListEl = document.getElementById('cp-seniors-list');
+    if (seniorsListEl) {
+      seniorsListEl.innerHTML = '<div style="color:var(--mid);font-size:13px">Loading…</div>';
+      try {
+        const sSnap = await getDocs(collection(db, 'clients', uid, 'seniors'));
+        if (sSnap.empty) {
+          // Fall back to root-level senior data for legacy accounts
+          const legacyName = c.seniorName;
+          const legacyAge  = c.seniorAge;
+          const legacyNotes = c.notes;
+          if (legacyName) {
+            const ini = legacyName.split(' ').map(w=>w[0]).slice(0,2).join('').toUpperCase();
+            seniorsListEl.innerHTML = `
+              <div class="cp-senior-card">
+                <div class="cp-senior-av">${c.photoURL ? `<img src="${c.photoURL}" style="width:100%;height:100%;object-fit:cover">` : ini}</div>
+                <div class="cp-senior-info">
+                  <div class="cp-senior-name">${legacyName}</div>
+                  <div class="cp-senior-meta">${legacyAge ? `Age ${legacyAge}` : ''}${legacyAge && legacyNotes ? ' · ' : ''}${legacyNotes || ''}</div>
+                </div>
+              </div>`;
+          } else {
+            seniorsListEl.innerHTML = '<div style="color:var(--mid);font-size:13px">No seniors on file.</div>';
+          }
+        } else {
+          seniorsListEl.innerHTML = sSnap.docs.map(d => {
+            const s   = d.data();
+            const ini = (s.name || '?').split(' ').map(w=>w[0]).slice(0,2).join('').toUpperCase();
+            const addrParts = [s.address, s.city, s.state, s.zip].filter(Boolean);
+            return `
+              <div class="cp-senior-card">
+                <div class="cp-senior-av">${s.photoURL ? `<img src="${s.photoURL}" style="width:100%;height:100%;object-fit:cover">` : ini}</div>
+                <div class="cp-senior-info">
+                  <div class="cp-senior-name">${s.name || '—'}</div>
+                  <div class="cp-senior-meta">${[s.age ? `Age ${s.age}` : '', s.phone || ''].filter(Boolean).join(' · ')}</div>
+                  ${addrParts.length ? `<div class="cp-senior-meta" style="margin-top:2px">${addrParts.join(', ')}</div>` : ''}
+                  ${s.healthNotes ? `<div class="cp-senior-meta" style="margin-top:4px;font-style:italic">${s.healthNotes}</div>` : ''}
+                </div>
+              </div>`;
+          }).join('');
+        }
+      } catch(e) {
+        seniorsListEl.innerHTML = '<div style="color:var(--mid);font-size:13px">Could not load seniors.</div>';
+        console.warn('cp seniors load error:', e);
+      }
+    }
 
     // Load sessions async
     const sessionsEl = document.getElementById('cp-sessions');

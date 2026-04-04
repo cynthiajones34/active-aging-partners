@@ -556,7 +556,7 @@ textarea.form-input { resize: vertical; min-height: 90px; line-height: 1.6; }
           }
         }
 
-        const { getFirestore, doc, setDoc } =
+        const { getFirestore, doc, setDoc, addDoc, collection } =
           await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js');
         const db = getFirestore(app);
 
@@ -587,6 +587,33 @@ textarea.form-input { resize: vertical; min-height: 90px; line-height: 1.6; }
 
         await setDoc(doc(db, 'clients', user.uid), profileData, { merge: true });
         console.log('Onboarding data saved');
+
+        // Save first senior to subcollection
+        if (seniorName) {
+          try {
+            const seniorDoc = {
+              name:        seniorName,
+              age:         seniorAge ? parseInt(seniorAge) : '',
+              phone:       seniorPhone,
+              address,
+              city,
+              state,
+              zip,
+              healthNotes: notes,
+              mobility,
+              photoURL:    seniorPhotoUrl || '',
+              waiverSigned:      window._waiverName ? true : false,
+              waiverSignedAt:    window._waiverAt   || '',
+              waiverSignedName:  window._waiverName || '',
+              waiverSignedEmail: user.email,
+              createdAt:   new Date().toISOString(),
+            };
+            const seniorRef = await addDoc(collection(db, 'clients', user.uid, 'seniors'), seniorDoc);
+            console.log('Senior saved to subcollection:', seniorRef.id);
+          } catch (e) {
+            console.warn('Senior subcollection save failed (non-fatal):', e.message);
+          }
+        }
 
         // Send photo reminder email if no photo was uploaded
         if (!seniorPhotoUrl) {
