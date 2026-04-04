@@ -225,28 +225,29 @@ textarea.fi{resize:vertical;min-height:80px;line-height:1.5;}
 </style>
 </head>
 <body>
+<a href="#main-content" class="skip-link" style="position:absolute;top:-40px;left:0;background:var(--forest);color:#fff;padding:8px 16px;border-radius:0 0 8px 0;font-size:14px;font-weight:600;z-index:9999;text-decoration:none;transition:top 0.2s" onfocus="this.style.top='0'" onblur="this.style.top='-40px'">Skip to main content</a>
 <div class="app">
 
-<nav class="sidebar">
+<nav class="sidebar" id="sidebar" aria-label="Staff dashboard navigation">
   <div class="logo-area">
     <div class="logo-mark">🌿</div>
     <div class="logo-text">Active Aging Partners</div>
     <div class="logo-sub">Staff Dashboard</div>
   </div>
-  <div class="nav">
-    <div class="nl">Overview</div>
-    <div class="ni active" onclick="nav('dashboard',this)"><span class="ni-icon">📊</span> Dashboard</div>
-    <div class="ni" onclick="nav('schedule',this)"><span class="ni-icon">📅</span> Schedule <span class="nav-badge" id="pending-badge" style="display:none">0</span></div>
-    <div class="ni" onclick="nav('clients',this);window._clearStaffBadge&&window._clearStaffBadge('clients')"><span class="ni-icon">👥</span> Clients <span class="nav-badge" id="staff-clients-badge" style="display:none">0</span></div>
-    <div class="ni" onclick="nav('messages',this);window._clearStaffBadge&&window._clearStaffBadge('messages')"><span class="ni-icon">💬</span> Messages <span class="nav-badge" id="staff-messages-badge" style="display:none">0</span></div>
-    <div class="nl">Business</div>
-    <div class="ni" onclick="nav('reports',this); window.loadStaffReports && window.loadStaffReports()"><span class="ni-icon">📋</span> Session Reports</div>
-    <div class="ni" onclick="nav('payments',this)"><span class="ni-icon">💳</span> Payments</div>
-    <div class="ni" onclick="nav('availability',this);window.loadAvailability&&window.loadAvailability()"><span class="ni-icon">🚫</span> Availability</div>
-    <div class="nl">Settings</div>
-    <div class="ni" onclick="nav('profile',this)"><span class="ni-icon">👤</span> My Profile</div>
-    <div class="ni" onclick="nav('notifications',this)"><span class="ni-icon">🔔</span> Notifications</div>
-    <div class="ni" onclick="nav('export',this)"><span class="ni-icon">⬇️</span> Export Data</div>
+  <div class="nav" role="list">
+    <div class="nl" role="presentation">Overview</div>
+    <div class="ni active" role="listitem" tabindex="0" aria-current="page" onclick="nav('dashboard',this)" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();nav('dashboard',this)}"><span class="ni-icon" aria-hidden="true">📊</span> Dashboard</div>
+    <div class="ni" role="listitem" tabindex="0" onclick="nav('schedule',this)" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();nav('schedule',this)}"><span class="ni-icon" aria-hidden="true">📅</span> Schedule <span class="nav-badge" id="pending-badge" style="display:none" aria-label="pending requests">0</span></div>
+    <div class="ni" role="listitem" tabindex="0" onclick="nav('clients',this);window._clearStaffBadge&&window._clearStaffBadge('clients')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();nav('clients',this);window._clearStaffBadge&&window._clearStaffBadge('clients')}"><span class="ni-icon" aria-hidden="true">👥</span> Clients <span class="nav-badge" id="staff-clients-badge" style="display:none" aria-label="new clients">0</span></div>
+    <div class="ni" role="listitem" tabindex="0" onclick="nav('messages',this);window._clearStaffBadge&&window._clearStaffBadge('messages')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();nav('messages',this);window._clearStaffBadge&&window._clearStaffBadge('messages')}"><span class="ni-icon" aria-hidden="true">💬</span> Messages <span class="nav-badge" id="staff-messages-badge" style="display:none" aria-label="unread messages">0</span></div>
+    <div class="nl" role="presentation">Business</div>
+    <div class="ni" role="listitem" tabindex="0" onclick="nav('reports',this); window.loadStaffReports && window.loadStaffReports()" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();nav('reports',this);window.loadStaffReports&&window.loadStaffReports()}"><span class="ni-icon" aria-hidden="true">📋</span> Session Reports</div>
+    <div class="ni" role="listitem" tabindex="0" onclick="nav('payments',this)" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();nav('payments',this)}"><span class="ni-icon" aria-hidden="true">💳</span> Payments</div>
+    <div class="ni" role="listitem" tabindex="0" onclick="nav('availability',this);window.loadAvailability&&window.loadAvailability()" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();nav('availability',this);window.loadAvailability&&window.loadAvailability()}"><span class="ni-icon" aria-hidden="true">🚫</span> Availability</div>
+    <div class="nl" role="presentation">Settings</div>
+    <div class="ni" role="listitem" tabindex="0" onclick="nav('profile',this)" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();nav('profile',this)}"><span class="ni-icon" aria-hidden="true">👤</span> My Profile</div>
+    <div class="ni" role="listitem" tabindex="0" onclick="nav('notifications',this)" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();nav('notifications',this)}"><span class="ni-icon" aria-hidden="true">🔔</span> Notifications</div>
+    <div class="ni" role="listitem" tabindex="0" onclick="nav('export',this)" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();nav('export',this)}"><span class="ni-icon" aria-hidden="true">⬇️</span> Export Data</div>
   </div>
   <div class="sb-footer">
     <div class="user-pill" onclick="nav('profile',null)">
@@ -261,10 +262,10 @@ textarea.fi{resize:vertical;min-height:80px;line-height:1.5;}
 
 <div class="sidebar-backdrop" onclick="closeSidebar()"></div>
 
-<div class="main">
+<main class="main" id="main-content">
   <div class="topbar">
     <div style="display:flex;align-items:center;gap:8px">
-      <button class="mob-hamburger" onclick="toggleSidebar()" aria-label="Menu">
+      <button class="mob-hamburger" onclick="toggleSidebar()" aria-label="Open navigation menu" aria-expanded="false" aria-controls="sidebar">
         <span></span><span></span><span></span>
       </button>
       <div><div class="pt" id="ptitle">Dashboard</div><div class="ps" id="psub">Welcome back</div></div>
@@ -530,13 +531,13 @@ textarea.fi{resize:vertical;min-height:80px;line-height:1.5;}
     </div>
 
   </div>
-</div>
+</main>
 </div>
 
 <!-- MODALS -->
-<div class="modal-overlay" id="booking-modal">
+<div class="modal-overlay" id="booking-modal" role="dialog" aria-modal="true" aria-labelledby="booking-modal-title">
   <div class="modal">
-    <div class="mhdr"><div class="mtitle">Book a Session</div><button class="mclose" onclick="closeModal('booking-modal')">✕</button></div>
+    <div class="mhdr"><div class="mtitle" id="booking-modal-title">Book a Session</div><button class="mclose" onclick="closeModal('booking-modal')" aria-label="Close dialog">✕</button></div>
     <div class="mbody">
       <div id="bm-error" style="background:rgba(200,60,60,0.07);border:1px solid rgba(200,60,60,0.2);color:#b03030;border-radius:8px;padding:10px 12px;font-size:13px;margin-bottom:12px;display:none"></div>
       <div class="fg"><label class="fl">Client</label><select class="fi" id="bm-client"><option value="">Select client…</option></select></div>
@@ -563,9 +564,9 @@ textarea.fi{resize:vertical;min-height:80px;line-height:1.5;}
   </div>
 </div>
 
-<div class="modal-overlay" id="report-modal">
+<div class="modal-overlay" id="report-modal" role="dialog" aria-modal="true" aria-labelledby="report-modal-title">
   <div class="modal">
-    <div class="mhdr"><div class="mtitle">Write Session Report</div><button class="mclose" onclick="closeModal('report-modal')">✕</button></div>
+    <div class="mhdr"><div class="mtitle" id="report-modal-title">Write Session Report</div><button class="mclose" onclick="closeModal('report-modal')" aria-label="Close dialog">✕</button></div>
     <div class="mbody">
       <div class="fg"><label class="fl">Client</label><select class="fi" id="rm-client"><option value="">Select client…</option></select></div>
       <div class="fg"><label class="fl">Service Type</label><select class="fi" id="rm-type"><option>Walking &amp; Wellness</option><option>Companionship &amp; Engagement</option><option>Errand Support</option></select></div>
@@ -583,9 +584,9 @@ textarea.fi{resize:vertical;min-height:80px;line-height:1.5;}
   </div>
 </div>
 
-<div class="modal-overlay" id="client-modal">
+<div class="modal-overlay" id="client-modal" role="dialog" aria-modal="true" aria-labelledby="client-modal-title">
   <div class="modal">
-    <div class="mhdr"><div class="mtitle">Add New Client</div><button class="mclose" onclick="closeModal('client-modal')">✕</button></div>
+    <div class="mhdr"><div class="mtitle" id="client-modal-title">Add New Client</div><button class="mclose" onclick="closeModal('client-modal')" aria-label="Close dialog">✕</button></div>
     <div class="mbody">
       <div style="font-size:13px;color:var(--mid);margin-bottom:16px;line-height:1.6">Clients who sign up on the website are added automatically. Use this to add one manually.</div>
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
@@ -605,11 +606,11 @@ textarea.fi{resize:vertical;min-height:80px;line-height:1.5;}
 </div>
 
 <!-- Client Profile Modal -->
-<div class="modal-overlay" id="client-profile-modal">
+<div class="modal-overlay" id="client-profile-modal" role="dialog" aria-modal="true" aria-labelledby="cp-name">
   <div class="modal-wide">
     <div class="mhdr">
       <div style="display:flex;align-items:center;gap:14px">
-        <div id="cp-avatar" class="cav" style="width:46px;height:46px;font-size:15px;flex-shrink:0"></div>
+        <div id="cp-avatar" class="cav" style="width:46px;height:46px;font-size:15px;flex-shrink:0" aria-hidden="true"></div>
         <div>
           <div class="mtitle" id="cp-name">Client</div>
           <div style="font-size:12px;color:var(--mid)" id="cp-sub"></div>
@@ -617,7 +618,7 @@ textarea.fi{resize:vertical;min-height:80px;line-height:1.5;}
       </div>
       <div style="display:flex;align-items:center;gap:8px">
         <button class="btn btn-g btn-sm" id="cp-msg-btn">💬 Message</button>
-        <button class="mclose" onclick="closeModal('client-profile-modal')">✕</button>
+        <button class="mclose" onclick="closeModal('client-profile-modal')" aria-label="Close dialog">✕</button>
       </div>
     </div>
 
@@ -674,9 +675,9 @@ textarea.fi{resize:vertical;min-height:80px;line-height:1.5;}
 </div>
 
 <!-- Staff Waiver View Modal -->
-<div class="modal-overlay" id="staff-waiver-modal" style="align-items:flex-start;padding:40px 20px;overflow-y:auto">
+<div class="modal-overlay" id="staff-waiver-modal" style="align-items:flex-start;padding:40px 20px;overflow-y:auto" role="dialog" aria-modal="true" aria-labelledby="staff-waiver-modal-title">
   <div class="modal-wide" style="max-width:680px">
-    <div class="mhdr"><div class="mtitle">Client Service Agreement</div><button class="mclose" onclick="closeModal('staff-waiver-modal')">✕</button></div>
+    <div class="mhdr"><div class="mtitle" id="staff-waiver-modal-title">Client Service Agreement</div><button class="mclose" onclick="closeModal('staff-waiver-modal')" aria-label="Close dialog">✕</button></div>
     <div style="padding:4px 24px 20px;max-height:55vh;overflow-y:auto;font-size:13px;line-height:1.75;color:var(--charcoal)" id="staff-waiver-body"></div>
     <div style="padding:16px 24px;border-top:1px solid rgba(0,0,0,0.07);background:var(--warm);border-radius:0 0 20px 20px">
       <div style="font-size:11px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:var(--mid);margin-bottom:10px">Electronic Signature on File</div>
@@ -690,7 +691,7 @@ textarea.fi{resize:vertical;min-height:80px;line-height:1.5;}
 </div>
 
 <!-- Session Detail Modal -->
-<div class="modal-overlay" id="session-detail-modal">
+<div class="modal-overlay" id="session-detail-modal" role="dialog" aria-modal="true" aria-labelledby="sd-title">
   <div class="modal-wide">
     <div class="mhdr">
       <div>
@@ -699,7 +700,7 @@ textarea.fi{resize:vertical;min-height:80px;line-height:1.5;}
       </div>
       <div style="display:flex;align-items:center;gap:8px">
         <button class="btn btn-g btn-sm" id="sd-msg-btn">💬 Message</button>
-        <button class="mclose" onclick="closeModal('session-detail-modal')">✕</button>
+        <button class="mclose" onclick="closeModal('session-detail-modal')" aria-label="Close dialog">✕</button>
       </div>
     </div>
     <div class="cp-grid">
@@ -736,11 +737,11 @@ textarea.fi{resize:vertical;min-height:80px;line-height:1.5;}
 </div>
 
 <!-- Staff Session Cancel Modal -->
-<div class="modal-overlay" id="staff-session-cancel-modal">
+<div class="modal-overlay" id="staff-session-cancel-modal" role="dialog" aria-modal="true" aria-labelledby="staff-cancel-modal-title">
   <div class="modal">
     <div class="mhdr">
-      <div class="mtitle">Cancel Session</div>
-      <button class="mclose" onclick="closeModal('staff-session-cancel-modal')">✕</button>
+      <div class="mtitle" id="staff-cancel-modal-title">Cancel Session</div>
+      <button class="mclose" onclick="closeModal('staff-session-cancel-modal')" aria-label="Close dialog">✕</button>
     </div>
     <div class="mbody">
       <div style="font-size:13px;color:var(--mid);margin-bottom:16px;line-height:1.6">This will cancel the session and send an email notification to the client. This action cannot be undone.</div>
@@ -748,7 +749,7 @@ textarea.fi{resize:vertical;min-height:80px;line-height:1.5;}
         <label class="fl" for="staff-cancel-reason">Reason for cancellation (optional)</label>
         <textarea class="fi" id="staff-cancel-reason" rows="3" placeholder="e.g. Staff unavailable, scheduling conflict, inclement weather…"></textarea>
       </div>
-      <div id="staff-cancel-error" style="display:none;color:#b03030;font-size:13px;margin-top:8px"></div>
+      <div id="staff-cancel-error" style="display:none;color:#b03030;font-size:13px;margin-top:8px" role="alert" aria-live="assertive"></div>
     </div>
     <div class="mfoot">
       <button class="btn btn-ghost" onclick="closeModal('staff-session-cancel-modal')">Keep Session</button>
@@ -758,7 +759,7 @@ textarea.fi{resize:vertical;min-height:80px;line-height:1.5;}
   </div>
 </div>
 
-<div class="toast" id="toast"></div>
+<div class="toast" id="toast" role="status" aria-live="polite" aria-atomic="true"></div>
 
 <script>
 window._staffWaiverHtml = `
@@ -792,12 +793,16 @@ window._staffWaiverHtml = `
 <p style="margin-bottom:8px;color:var(--mid)">Electronic acceptance constitutes a valid signature under the Georgia Electronic Records and Signatures Act (O.C.G.A. § 10-12-1 et seq.).</p>`;
 
 function toggleSidebar(){
-  document.body.classList.toggle('sidebar-open');
+  const isOpen = document.body.classList.toggle('sidebar-open');
   document.querySelector('.sidebar').classList.toggle('open');
+  const btn = document.querySelector('.mob-hamburger');
+  if(btn){ btn.setAttribute('aria-expanded', isOpen?'true':'false'); btn.setAttribute('aria-label', isOpen?'Close navigation menu':'Open navigation menu'); }
 }
 function closeSidebar(){
   document.body.classList.remove('sidebar-open');
   document.querySelector('.sidebar').classList.remove('open');
+  const btn = document.querySelector('.mob-hamburger');
+  if(btn){ btn.setAttribute('aria-expanded','false'); btn.setAttribute('aria-label','Open navigation menu'); }
 }
 
 const pages = {
@@ -815,15 +820,39 @@ const pages = {
 function nav(view,el){
   document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));
   document.getElementById('view-'+view).classList.add('active');
-  document.querySelectorAll('.ni').forEach(n=>n.classList.remove('active'));
-  if(el)el.classList.add('active');
+  document.querySelectorAll('.ni').forEach(n=>{n.classList.remove('active');n.removeAttribute('aria-current');});
+  if(el){el.classList.add('active');el.setAttribute('aria-current','page');}
   document.getElementById('ptitle').textContent=pages[view].title;
   document.getElementById('psub').textContent=pages[view].sub;
   closeSidebar();
 }
-function openModal(id){document.getElementById(id).classList.add('open');}
-function closeModal(id){document.getElementById(id).classList.remove('open');}
-document.querySelectorAll('.modal-overlay').forEach(o=>{o.addEventListener('click',e=>{if(e.target===o)o.classList.remove('open');});});
+let _modalOpener=null;
+function _staffTrapFocus(e){
+  if(e.key!=='Tab')return;
+  const focusable=Array.from(this.querySelectorAll('button,[href],input,select,textarea,[tabindex]:not([tabindex="-1"])')).filter(el=>!el.disabled);
+  if(!focusable.length)return;
+  const first=focusable[0],last=focusable[focusable.length-1];
+  if(e.shiftKey){if(document.activeElement===first){e.preventDefault();last.focus();}}
+  else{if(document.activeElement===last){e.preventDefault();first.focus();}}
+}
+function openModal(id){
+  _modalOpener=document.activeElement;
+  const modal=document.getElementById(id);
+  modal.classList.add('open');
+  const focusable=modal.querySelectorAll('button,[href],input,select,textarea,[tabindex]:not([tabindex="-1"])');
+  if(focusable.length)focusable[0].focus();
+  modal.addEventListener('keydown',_staffTrapFocus);
+}
+function closeModal(id){
+  const modal=document.getElementById(id);
+  modal.classList.remove('open');
+  modal.removeEventListener('keydown',_staffTrapFocus);
+  if(_modalOpener){_modalOpener.focus();_modalOpener=null;}
+}
+document.querySelectorAll('.modal-overlay').forEach(o=>{
+  o.addEventListener('click',e=>{if(e.target===o){o.classList.remove('open');o.removeEventListener('keydown',_staffTrapFocus);if(_modalOpener){_modalOpener.focus();_modalOpener=null;}}});
+  o.addEventListener('keydown',e=>{if(e.key==='Escape'){o.classList.remove('open');o.removeEventListener('keydown',_staffTrapFocus);if(_modalOpener){_modalOpener.focus();_modalOpener=null;}}});
+});
 function showToast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),3000);}
 function saveToast(msg='Changes saved!'){showToast('✓ '+msg);}
 function previewStaffPhoto(input){

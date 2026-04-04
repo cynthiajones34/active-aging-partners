@@ -77,6 +77,7 @@ nav.scrolled { box-shadow: 0 2px 20px rgba(0,0,0,0.08); padding: 14px 60px; }
 .login-type-toggle { display: flex; gap: 8px; background: rgba(0,0,0,0.04); border-radius: 10px; padding: 4px; margin-bottom: 20px; }
 .ltt-btn { flex: 1; text-align: center; padding: 8px; border-radius: 8px; font-size: 12px; font-weight: 600; cursor: pointer; color: var(--mid); transition: all 0.2s; }
 .ltt-btn.active { background: #fff; color: var(--forest); box-shadow: 0 1px 4px rgba(0,0,0,0.1); }
+.ltt-btn:focus-visible { outline: 2px solid var(--forest); outline-offset: 2px; }
 
 /* Error message */
 .auth-error { background: rgba(200,60,60,0.08); border: 1px solid rgba(200,60,60,0.2); color: #b03030; border-radius: 8px; padding: 10px 12px; font-size: 13px; margin-bottom: 14px; display: none; }
@@ -132,7 +133,7 @@ nav.scrolled { box-shadow: 0 2px 20px rgba(0,0,0,0.08); padding: 14px 60px; }
 footer { background: var(--charcoal); padding: 60px 80px 30px; }
 .footer-grid { display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 60px; margin-bottom: 50px; }
 .footer-brand p { font-size: 14px; color: rgba(255,255,255,0.45); line-height: 1.7; margin-top: 14px; max-width: 280px; }
-.footer-col-title { font-size: 11px; letter-spacing: 0.15em; text-transform: uppercase; color: rgba(255,255,255,0.35); margin-bottom: 16px; }
+.footer-col-title { font-size: 11px; letter-spacing: 0.15em; text-transform: uppercase; color: rgba(255,255,255,0.7); margin-bottom: 16px; }
 .footer-links { list-style: none; }
 .footer-links li { margin-bottom: 10px; }
 .footer-links a { font-size: 14px; color: rgba(255,255,255,0.55); text-decoration: none; transition: color 0.2s; cursor: pointer; }
@@ -248,8 +249,10 @@ footer { background: var(--charcoal); padding: 60px 80px 30px; }
 </head>
 <body>
 
+<a href="#main-content" class="skip-link" style="position:absolute;top:-100px;left:0;padding:10px 18px;background:var(--forest);color:#fff;font-size:14px;font-weight:600;border-radius:0 0 8px 0;z-index:9999;transition:top 0.2s" onfocus="this.style.top='0'" onblur="this.style.top='-100px'">Skip to main content</a>
+
 <!-- NAV -->
-<nav id="navbar">
+<nav id="navbar" aria-label="Main navigation">
   <div class="nav-logo">
     <div class="nav-logo-leaf">🌿</div>
     Active Aging Partners
@@ -265,7 +268,7 @@ footer { background: var(--charcoal); padding: 60px 80px 30px; }
     <button class="btn btn-outline" onclick="openModal('login-modal')">Log In</button>
     <button class="btn btn-clay" onclick="document.getElementById('signup').scrollIntoView({behavior:'smooth'})">Sign Up Free</button>
   </div>
-  <button class="hamburger" id="hamburger" aria-label="Menu" onclick="toggleMobileNav()">
+  <button class="hamburger" id="hamburger" aria-label="Open navigation menu" aria-expanded="false" aria-controls="nav-links" onclick="toggleMobileNav()">
     <span></span><span></span><span></span>
   </button>
 </nav>
@@ -284,6 +287,7 @@ footer { background: var(--charcoal); padding: 60px 80px 30px; }
 </div>
 
 <!-- HERO -->
+<main id="main-content">
 <section class="hero">
   <div class="hero-left">
     <div class="hero-eyebrow">Companion Wellness Services · Atlanta, GA</div>
@@ -311,20 +315,20 @@ footer { background: var(--charcoal); padding: 60px 80px 30px; }
         <div class="card-sub">Log in to your account</div>
 
         <!-- Staff / Client toggle -->
-        <div class="login-type-toggle">
-          <div class="ltt-btn active" id="hero-type-client" onclick="setHeroLoginType('client')">👤 Client / Family</div>
-          <div class="ltt-btn" id="hero-type-staff" onclick="setHeroLoginType('staff')">🌿 Staff</div>
+        <div class="login-type-toggle" role="group" aria-label="Account type">
+          <div class="ltt-btn active" id="hero-type-client" role="button" tabindex="0" aria-pressed="true" onclick="setHeroLoginType('client')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();setHeroLoginType('client')}">👤 Client / Family</div>
+          <div class="ltt-btn" id="hero-type-staff" role="button" tabindex="0" aria-pressed="false" onclick="setHeroLoginType('staff')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();setHeroLoginType('staff')}">🌿 Staff</div>
         </div>
 
-        <div id="hero-auth-error" class="auth-error">Incorrect email or password. Please try again.</div>
+        <div id="hero-auth-error" class="auth-error" role="alert" aria-live="assertive"></div>
 
         <div class="form-group">
-          <label class="form-label">Email</label>
-          <input type="email" class="form-input" id="hero-email" placeholder="you@example.com">
+          <label class="form-label" for="hero-email">Email</label>
+          <input type="email" class="form-input" id="hero-email" placeholder="you@example.com" aria-describedby="hero-auth-error">
         </div>
         <div class="form-group">
-          <label class="form-label">Password</label>
-          <input type="password" class="form-input" id="hero-password" placeholder="••••••••" onkeydown="if(event.key==='Enter') heroLogin()">
+          <label class="form-label" for="hero-password">Password</label>
+          <input type="password" class="form-input" id="hero-password" placeholder="••••••••" aria-describedby="hero-auth-error" onkeydown="if(event.key==='Enter') heroLogin()">
         </div>
         <a href="#" class="forgot" onclick="handleForgotPassword(event, 'hero-email')">Forgot password?</a>
 
@@ -511,6 +515,8 @@ footer { background: var(--charcoal); padding: 60px 80px 30px; }
   </div>
 </section>
 
+</main>
+
 <!-- FOOTER -->
 <footer>
   <div class="footer-grid">
@@ -538,20 +544,20 @@ footer { background: var(--charcoal); padding: 60px 80px 30px; }
 </footer>
 
 <!-- LOGIN MODAL -->
-<div class="modal-overlay" id="login-modal">
+<div class="modal-overlay" id="login-modal" role="dialog" aria-modal="true" aria-labelledby="login-modal-title">
   <div class="modal">
     <div class="modal-header">
-      <div class="modal-title">Sign In</div>
-      <button class="modal-close" onclick="closeModal('login-modal')">✕</button>
+      <div class="modal-title" id="login-modal-title">Sign In</div>
+      <button class="modal-close" onclick="closeModal('login-modal')" aria-label="Close dialog">✕</button>
     </div>
     <div class="modal-body">
-      <div class="login-type-toggle">
-        <div class="ltt-btn active" id="modal-type-client" onclick="setModalLoginType('client')">👤 Client / Family</div>
-        <div class="ltt-btn" id="modal-type-staff" onclick="setModalLoginType('staff')">🌿 Staff</div>
+      <div class="login-type-toggle" role="group" aria-label="Account type">
+        <div class="ltt-btn active" id="modal-type-client" role="button" tabindex="0" aria-pressed="true" onclick="setModalLoginType('client')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();setModalLoginType('client')}">👤 Client / Family</div>
+        <div class="ltt-btn" id="modal-type-staff" role="button" tabindex="0" aria-pressed="false" onclick="setModalLoginType('staff')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();setModalLoginType('staff')}">🌿 Staff</div>
       </div>
-      <div id="modal-auth-error" class="auth-error"></div>
-      <div class="form-group"><label class="form-label">Email</label><input type="email" class="form-input" id="modal-email" placeholder="you@example.com"></div>
-      <div class="form-group"><label class="form-label">Password</label><input type="password" class="form-input" id="modal-password" placeholder="••••••••" onkeydown="if(event.key==='Enter') modalLogin()"></div>
+      <div id="modal-auth-error" class="auth-error" role="alert" aria-live="assertive"></div>
+      <div class="form-group"><label class="form-label" for="modal-email">Email</label><input type="email" class="form-input" id="modal-email" placeholder="you@example.com" aria-describedby="modal-auth-error"></div>
+      <div class="form-group"><label class="form-label" for="modal-password">Password</label><input type="password" class="form-input" id="modal-password" placeholder="••••••••" aria-describedby="modal-auth-error" onkeydown="if(event.key==='Enter') modalLogin()"></div>
       <a href="#" class="forgot" onclick="handleForgotPassword(event, 'modal-email')">Forgot your password?</a>
     </div>
     <div class="modal-footer">
@@ -562,17 +568,17 @@ footer { background: var(--charcoal); padding: 60px 80px 30px; }
 </div>
 
 <!-- FORGOT PASSWORD MODAL -->
-<div class="modal-overlay" id="forgot-modal">
+<div class="modal-overlay" id="forgot-modal" role="dialog" aria-modal="true" aria-labelledby="forgot-modal-title">
   <div class="modal">
     <div class="modal-header">
-      <div class="modal-title">Reset Password</div>
-      <button class="modal-close" onclick="closeModal('forgot-modal')">✕</button>
+      <div class="modal-title" id="forgot-modal-title">Reset Password</div>
+      <button class="modal-close" onclick="closeModal('forgot-modal')" aria-label="Close dialog">✕</button>
     </div>
     <div class="modal-body">
       <p style="font-size:14px;color:var(--mid);margin-bottom:18px;line-height:1.6">Enter your email address and we'll send you a link to reset your password.</p>
-      <div id="forgot-error" class="auth-error"></div>
-      <div id="forgot-success" style="background:rgba(45,74,50,0.08);border:1px solid rgba(45,74,50,0.2);color:var(--forest);border-radius:8px;padding:10px 12px;font-size:13px;margin-bottom:14px;display:none">✓ Reset email sent! Check your inbox.</div>
-      <div class="form-group"><label class="form-label">Email Address</label><input type="email" class="form-input" id="forgot-email" placeholder="you@example.com"></div>
+      <div id="forgot-error" class="auth-error" role="alert" aria-live="assertive"></div>
+      <div id="forgot-success" role="status" aria-live="polite" style="background:rgba(45,74,50,0.08);border:1px solid rgba(45,74,50,0.2);color:var(--forest);border-radius:8px;padding:10px 12px;font-size:13px;margin-bottom:14px;display:none">✓ Reset email sent! Check your inbox.</div>
+      <div class="form-group"><label class="form-label" for="forgot-email">Email Address</label><input type="email" class="form-input" id="forgot-email" placeholder="you@example.com" aria-describedby="forgot-error"></div>
     </div>
     <div class="modal-footer">
       <button class="btn btn-outline" onclick="closeModal('forgot-modal')">Cancel</button>
@@ -581,7 +587,7 @@ footer { background: var(--charcoal); padding: 60px 80px 30px; }
   </div>
 </div>
 
-<div class="toast" id="toast"></div>
+<div class="toast" id="toast" role="status" aria-live="polite" aria-atomic="true"></div>
 
 <!-- ============================================================
      FIREBASE AUTHENTICATION
@@ -850,13 +856,21 @@ footer { background: var(--charcoal); padding: 60px 80px 30px; }
 <script>
   // Mobile nav toggle
   function toggleMobileNav() {
-    document.getElementById('hamburger').classList.toggle('open');
-    document.getElementById('mob-nav').classList.toggle('open');
-    document.body.style.overflow = document.getElementById('mob-nav').classList.contains('open') ? 'hidden' : '';
+    const btn = document.getElementById('hamburger');
+    const nav = document.getElementById('mob-nav');
+    btn.classList.toggle('open');
+    nav.classList.toggle('open');
+    const isOpen = nav.classList.contains('open');
+    btn.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+    btn.setAttribute('aria-label', isOpen ? 'Close navigation menu' : 'Open navigation menu');
+    document.body.style.overflow = isOpen ? 'hidden' : '';
   }
   function closeMobileNav() {
-    document.getElementById('hamburger').classList.remove('open');
+    const btn = document.getElementById('hamburger');
+    btn.classList.remove('open');
     document.getElementById('mob-nav').classList.remove('open');
+    btn.setAttribute('aria-expanded', 'false');
+    btn.setAttribute('aria-label', 'Open navigation menu');
     document.body.style.overflow = '';
   }
 
@@ -887,23 +901,50 @@ footer { background: var(--charcoal); padding: 60px 80px 30px; }
   let heroLoginType = 'client';
   function setHeroLoginType(type) {
     heroLoginType = type;
-    document.getElementById('hero-type-client').classList.toggle('active', type === 'client');
-    document.getElementById('hero-type-staff').classList.toggle('active', type === 'staff');
+    const clientBtn = document.getElementById('hero-type-client');
+    const staffBtn  = document.getElementById('hero-type-staff');
+    clientBtn.classList.toggle('active', type === 'client');
+    staffBtn.classList.toggle('active', type === 'staff');
+    clientBtn.setAttribute('aria-pressed', type === 'client' ? 'true' : 'false');
+    staffBtn.setAttribute('aria-pressed', type === 'staff'  ? 'true' : 'false');
   }
 
   // Modal login type toggle
   let modalLoginType = 'client';
   function setModalLoginType(type) {
     modalLoginType = type;
-    document.getElementById('modal-type-client').classList.toggle('active', type === 'client');
-    document.getElementById('modal-type-staff').classList.toggle('active', type === 'staff');
+    const clientBtn = document.getElementById('modal-type-client');
+    const staffBtn  = document.getElementById('modal-type-staff');
+    clientBtn.classList.toggle('active', type === 'client');
+    staffBtn.classList.toggle('active', type === 'staff');
+    clientBtn.setAttribute('aria-pressed', type === 'client' ? 'true' : 'false');
+    staffBtn.setAttribute('aria-pressed', type === 'staff'  ? 'true' : 'false');
   }
 
-  function openModal(id) { document.getElementById(id).classList.add('open'); }
-  function closeModal(id) { document.getElementById(id).classList.remove('open'); }
+  let _modalOpener = null;
+  function openModal(id) {
+    _modalOpener = document.activeElement;
+    const overlay = document.getElementById(id);
+    overlay.classList.add('open');
+    const first = overlay.querySelector('button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])');
+    if (first) first.focus();
+  }
+  function closeModal(id) {
+    document.getElementById(id).classList.remove('open');
+    if (_modalOpener) { _modalOpener.focus(); _modalOpener = null; }
+  }
 
   document.querySelectorAll('.modal-overlay').forEach(o => {
-    o.addEventListener('click', e => { if (e.target === o) o.classList.remove('open'); });
+    o.addEventListener('click', e => { if (e.target === o) { o.classList.remove('open'); if (_modalOpener) { _modalOpener.focus(); _modalOpener = null; } } });
+    o.addEventListener('keydown', e => {
+      if (e.key === 'Escape') { o.classList.remove('open'); if (_modalOpener) { _modalOpener.focus(); _modalOpener = null; } }
+      if (e.key === 'Tab') {
+        const focusable = o.querySelectorAll('button:not([disabled]), [href], input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])');
+        const first = focusable[0], last = focusable[focusable.length - 1];
+        if (e.shiftKey) { if (document.activeElement === first) { e.preventDefault(); last.focus(); } }
+        else { if (document.activeElement === last) { e.preventDefault(); first.focus(); } }
+      }
+    });
   });
 
   function showToast(msg, isError) {

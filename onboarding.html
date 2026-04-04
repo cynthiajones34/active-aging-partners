@@ -143,8 +143,9 @@ textarea.form-input { resize: vertical; min-height: 90px; line-height: 1.6; }
 </style>
 </head>
 <body>
+<a href="#main-content" style="position:absolute;top:-40px;left:0;background:#2d4a32;color:#fff;padding:8px 16px;border-radius:0 0 8px 0;font-size:14px;font-weight:600;z-index:9999;text-decoration:none;transition:top 0.2s" onfocus="this.style.top='0'" onblur="this.style.top='-40px'">Skip to main content</a>
 
-<div class="progress-bar"><div class="progress-fill" id="progress" style="width:25%"></div></div>
+<div class="progress-bar" role="progressbar" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100" aria-label="Onboarding progress"><div class="progress-fill" id="progress" style="width:25%"></div></div>
 <div class="confetti-wrap" id="confetti"></div>
 
 <div class="topbar">
@@ -155,11 +156,11 @@ textarea.form-input { resize: vertical; min-height: 90px; line-height: 1.6; }
   <div class="step-indicator" id="step-label">Step 1 of 5</div>
 </div>
 
-<div class="page">
+<main class="page" id="main-content">
 
   <!-- SCREEN 1: WELCOME -->
   <div class="screen active" id="screen-1">
-    <span class="screen-icon">🎉</span>
+    <span class="screen-icon" aria-hidden="true">🎉</span>
     <div class="screen-eyebrow">You're in</div>
     <h1 class="screen-title">Welcome to the <em>family</em></h1>
     <p class="screen-body">Your account is verified and ready to go. It only takes a couple of minutes to finish setting up so we can serve you and your loved one as well as possible.</p>
@@ -170,7 +171,7 @@ textarea.form-input { resize: vertical; min-height: 90px; line-height: 1.6; }
 
   <!-- SCREEN 2: ABOUT YOUR LOVED ONE -->
   <div class="screen" id="screen-2">
-    <span class="screen-icon">👤</span>
+    <span class="screen-icon" aria-hidden="true">👤</span>
     <div class="screen-eyebrow">Step 2 of 5</div>
     <h2 class="screen-title">Tell us about <em>your loved one</em></h2>
     <p class="screen-body">This helps us personalize every session and make sure we're prepared from day one.</p>
@@ -224,11 +225,11 @@ textarea.form-input { resize: vertical; min-height: 90px; line-height: 1.6; }
       <div class="form-card-title">📸 Senior Client Photo <span style="font-weight:400;color:var(--mid);font-size:12px">(optional — you can add this later)</span></div>
       <p style="font-size:13px;color:var(--mid);margin-bottom:16px;line-height:1.6">A photo helps our staff recognize your loved one and creates a personalized experience. JPG or PNG, max 5MB.</p>
       <div style="display:flex;align-items:center;gap:20px">
-        <div id="ob-photo-circle" style="width:72px;height:72px;background:var(--sage-light);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:30px;flex-shrink:0;overflow:hidden;border:2px solid rgba(0,0,0,0.08)">👴</div>
+        <div id="ob-photo-circle" style="width:72px;height:72px;background:var(--sage-light);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:30px;flex-shrink:0;overflow:hidden;border:2px solid rgba(0,0,0,0.08)" role="img" aria-label="Senior client photo preview"><span aria-hidden="true">👴</span></div>
         <div>
-          <button type="button" class="btn btn-ghost" style="padding:9px 18px;font-size:13px;border:1.5px solid rgba(0,0,0,0.12);border-radius:10px" onclick="document.getElementById('ob-photo-input').click()">Choose Photo</button>
-          <input type="file" id="ob-photo-input" accept="image/jpeg,image/png,image/webp" style="display:none" onchange="window.previewSeniorPhoto && window.previewSeniorPhoto(this)">
-          <p style="font-size:12px;color:var(--mid);margin-top:6px" id="ob-photo-status">No photo selected</p>
+          <button type="button" class="btn btn-ghost" style="padding:9px 18px;font-size:13px;border:1.5px solid rgba(0,0,0,0.12);border-radius:10px" onclick="document.getElementById('ob-photo-input').click()" aria-describedby="ob-photo-status">Choose Photo</button>
+          <input type="file" id="ob-photo-input" accept="image/jpeg,image/png,image/webp" style="display:none" onchange="window.previewSeniorPhoto && window.previewSeniorPhoto(this)" aria-label="Upload senior client photo">
+          <p style="font-size:12px;color:var(--mid);margin-top:6px" id="ob-photo-status" aria-live="polite">No photo selected</p>
         </div>
       </div>
     </div>
@@ -241,7 +242,7 @@ textarea.form-input { resize: vertical; min-height: 90px; line-height: 1.6; }
 
   <!-- SCREEN 3: LIABILITY WAIVER -->
   <div class="screen" id="screen-3">
-    <span class="screen-icon">📋</span>
+    <span class="screen-icon" aria-hidden="true">📋</span>
     <div class="screen-eyebrow">Step 3 of 5</div>
     <h2 class="screen-title">Client Service <em>Agreement</em></h2>
     <p class="screen-body">Please read the full agreement below, then sign electronically to continue. This is required before your first session.</p>
@@ -336,7 +337,7 @@ textarea.form-input { resize: vertical; min-height: 90px; line-height: 1.6; }
 
   <!-- SCREEN 4: NOTIFICATIONS -->
   <div class="screen" id="screen-4">
-    <span class="screen-icon">🔔</span>
+    <span class="screen-icon" aria-hidden="true">🔔</span>
     <div class="screen-eyebrow">Step 4 of 5</div>
     <h2 class="screen-title">Stay <em>in the loop</em></h2>
     <p class="screen-body">Choose how you want to hear from us. You can change these anytime in your portal settings.</p>
@@ -344,16 +345,16 @@ textarea.form-input { resize: vertical; min-height: 90px; line-height: 1.6; }
       <div class="form-card-title">📧 Email Notifications</div>
       <div class="toggle-list">
         <div class="toggle-row">
-          <div class="toggle-info"><div class="toggle-title">Session reminders</div><div class="toggle-sub">Email 2 hours before each session</div></div>
-          <div class="tog on" id="tog-email-reminder" onclick="toggleTog(this)"><div class="tok"></div></div>
+          <div class="toggle-info"><div class="toggle-title" id="lbl-email-reminder">Session reminders</div><div class="toggle-sub">Email 2 hours before each session</div></div>
+          <div class="tog on" id="tog-email-reminder" role="switch" aria-checked="true" aria-labelledby="lbl-email-reminder" tabindex="0" onclick="toggleTog(this)" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleTog(this)}"><div class="tok"></div></div>
         </div>
         <div class="toggle-row">
-          <div class="toggle-info"><div class="toggle-title">Session reports</div><div class="toggle-sub">Detailed report emailed after every visit</div></div>
-          <div class="tog on" id="tog-email-report" onclick="toggleTog(this)"><div class="tok"></div></div>
+          <div class="toggle-info"><div class="toggle-title" id="lbl-email-report">Session reports</div><div class="toggle-sub">Detailed report emailed after every visit</div></div>
+          <div class="tog on" id="tog-email-report" role="switch" aria-checked="true" aria-labelledby="lbl-email-report" tabindex="0" onclick="toggleTog(this)" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleTog(this)}"><div class="tok"></div></div>
         </div>
         <div class="toggle-row">
-          <div class="toggle-info"><div class="toggle-title">Invoices & billing</div><div class="toggle-sub">Invoice emailed after each session</div></div>
-          <div class="tog on" id="tog-email-invoice" onclick="toggleTog(this)"><div class="tok"></div></div>
+          <div class="toggle-info"><div class="toggle-title" id="lbl-email-invoice">Invoices &amp; billing</div><div class="toggle-sub">Invoice emailed after each session</div></div>
+          <div class="tog on" id="tog-email-invoice" role="switch" aria-checked="true" aria-labelledby="lbl-email-invoice" tabindex="0" onclick="toggleTog(this)" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleTog(this)}"><div class="tok"></div></div>
         </div>
       </div>
     </div>
@@ -361,12 +362,12 @@ textarea.form-input { resize: vertical; min-height: 90px; line-height: 1.6; }
       <div class="form-card-title">📧 Email Notifications</div>
       <div class="toggle-list">
         <div class="toggle-row">
-          <div class="toggle-info"><div class="toggle-title">New message alerts</div><div class="toggle-sub">Email when your companion sends you a message</div></div>
-          <div class="tog on" id="tog-email-message" onclick="toggleTog(this)"><div class="tok"></div></div>
+          <div class="toggle-info"><div class="toggle-title" id="lbl-email-message">New message alerts</div><div class="toggle-sub">Email when your companion sends you a message</div></div>
+          <div class="tog on" id="tog-email-message" role="switch" aria-checked="true" aria-labelledby="lbl-email-message" tabindex="0" onclick="toggleTog(this)" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleTog(this)}"><div class="tok"></div></div>
         </div>
         <div class="toggle-row">
-          <div class="toggle-info"><div class="toggle-title">Session reports</div><div class="toggle-sub">Full report emailed after every visit</div></div>
-          <div class="tog on" id="tog-email-report" onclick="toggleTog(this)"><div class="tok"></div></div>
+          <div class="toggle-info"><div class="toggle-title" id="lbl-email-report2">Session reports</div><div class="toggle-sub">Full report emailed after every visit</div></div>
+          <div class="tog on" id="tog-email-report2" role="switch" aria-checked="true" aria-labelledby="lbl-email-report2" tabindex="0" onclick="toggleTog(this)" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleTog(this)}"><div class="tok"></div></div>
         </div>
       </div>
     </div>
@@ -374,12 +375,12 @@ textarea.form-input { resize: vertical; min-height: 90px; line-height: 1.6; }
       <button class="btn btn-ghost" onclick="prevScreen()">← Back</button>
       <button class="btn btn-solid btn-lg" onclick="nextScreen()">Continue →</button>
     </div>
-    <div class="skip-link" onclick="nextScreen()">Skip this step</div>
+    <button class="skip-link" onclick="nextScreen()" style="background:none;border:none;cursor:pointer;font-family:inherit">Skip this step</button>
   </div>
 
   <!-- SCREEN 5: ALL SET -->
   <div class="screen" id="screen-5">
-    <span class="screen-icon">🌿</span>
+    <span class="screen-icon" aria-hidden="true">🌿</span>
     <div class="screen-eyebrow">You're all set</div>
     <h2 class="screen-title">Here is everything waiting for you <em>inside the Client Portal</em></h2>
     <p class="screen-body">Take a look around, book your first session whenever you're ready, and don't hesitate to reach out if you need anything.</p>
@@ -410,7 +411,7 @@ textarea.form-input { resize: vertical; min-height: 90px; line-height: 1.6; }
     </div>
   </div>
 
-</div>
+</main>
 
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
@@ -679,7 +680,10 @@ textarea.form-input { resize: vertical; min-height: 90px; line-height: 1.6; }
       s.classList.toggle('active', i + 1 === num);
       setTimeout(() => s.classList.toggle('visible', i + 1 === num), 10);
     });
-    document.getElementById('progress').style.width = progressSteps[num - 1] + '%';
+    const pct = progressSteps[num - 1];
+    document.getElementById('progress').style.width = pct + '%';
+    const pb = document.querySelector('.progress-bar');
+    if (pb) pb.setAttribute('aria-valuenow', pct);
     document.getElementById('step-label').textContent = stepLabels[num - 1];
     window.scrollTo({ top: 0, behavior: 'smooth' });
     if (num === 3) initWaiverScroll();
@@ -755,7 +759,10 @@ textarea.form-input { resize: vertical; min-height: 90px; line-height: 1.6; }
 
   window.goToPortal  = function() { window.location.replace('client-portal.html'); };
 
-  window.toggleTog = function(el) { el.classList.toggle('on'); };
+  window.toggleTog = function(el) {
+    el.classList.toggle('on');
+    el.setAttribute('aria-checked', el.classList.contains('on') ? 'true' : 'false');
+  };
 </script>
 </body>
 </html>
