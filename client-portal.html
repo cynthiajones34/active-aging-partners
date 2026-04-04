@@ -1134,11 +1134,13 @@ function previewPhoto(input) {
   reader.onload = function(e) {
     const src = e.target.result;
     const preview = document.getElementById('photo-preview');
-    preview.src = src; preview.style.display = 'block';
-    document.getElementById('photo-initials').style.display = 'none';
+    if (preview) { preview.src = src; preview.style.display = 'block'; }
+    const photoIni = document.getElementById('photo-initials');
+    if (photoIni) photoIni.style.display = 'none';
     const sbPhoto = document.getElementById('sidebar-photo');
-    sbPhoto.src = src; sbPhoto.style.display = 'block';
-    document.getElementById('sidebar-initials').style.display = 'none';
+    if (sbPhoto) { sbPhoto.src = src; sbPhoto.style.display = 'block'; }
+    const sbIni = document.getElementById('sidebar-initials');
+    if (sbIni) sbIni.style.display = 'none';
     showToast('Uploading photo…');
   };
   reader.readAsDataURL(file);
@@ -1233,11 +1235,12 @@ function escapeHtml(str) {
     currentUser = user;
     window.loadClientBlockedDates && window.loadClientBlockedDates(); // pre-load so calendar has fresh data
 
-    // Populate sidebar name & initials (temporary until Firestore loads senior info)
     const displayName = user.displayName || user.email;
     const initials    = displayName.split(' ').map(w => w[0]).slice(0, 2).join('').toUpperCase();
-    document.getElementById('sidebar-name').textContent     = displayName;
-    document.getElementById('sidebar-initials').textContent = initials;
+    const sbNameEl = document.getElementById('sidebar-name');
+    const sbInitEl = document.getElementById('sidebar-initials');
+    if (sbNameEl) sbNameEl.textContent = displayName;
+    if (sbInitEl) sbInitEl.textContent = initials;
     const sbRoleEl = document.getElementById('sidebar-role');
     if (sbRoleEl) sbRoleEl.textContent = 'Client';
     const photoInitialsEl = document.getElementById('photo-initials');
@@ -1355,7 +1358,8 @@ function escapeHtml(str) {
           if (photoEl) photoEl.textContent = seniorInitials;
           const sbInit = document.getElementById('sidebar-initials');
           if (sbInit) sbInit.textContent = seniorInitials;
-          document.getElementById('sidebar-name').textContent = clientProfile.seniorName;
+          const sbNameEl2 = document.getElementById('sidebar-name');
+          if (sbNameEl2) sbNameEl2.textContent = clientProfile.seniorName;
           if (sbRole) sbRole.textContent = 'Senior Client';
           if (pdn) pdn.textContent = clientProfile.seniorName;
           if (prl) prl.textContent = 'Senior Contact';
