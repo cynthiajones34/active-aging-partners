@@ -684,11 +684,6 @@ body { font-family:'Jost',sans-serif; background:var(--cream); color:var(--charc
           </div>
 
           <div class="settings-card">
-            <div class="settings-title">Billing</div>
-            <p style="font-size:13px;color:var(--mid)">Invoices are emailed after each session and paid securely via Stripe. Contact <a href="mailto:cynthia@activeagingpartners.com" style="color:var(--forest)">cynthia@activeagingpartners.com</a> with any billing questions.</p>
-          </div>
-
-          <div class="settings-card" style="grid-column:1/-1">
             <div class="settings-title">Client Service Agreement</div>
             <div id="waiver-status-block">
               <div id="waiver-not-signed" style="display:none">
@@ -2047,6 +2042,7 @@ function escapeHtml(str) {
       _populateBookingSeniorSelect();
     } catch(e) {
       console.warn('loadSeniors error:', e.message);
+      _renderSeniorsInProfile(); // render empty state rather than leaving "Loading…"
     }
   };
 
