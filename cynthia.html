@@ -706,8 +706,8 @@
     If you're a woman building a business and you're tired of winging the operational side, let's talk. A 45-minute discovery call is free, and it might be the most useful conversation you have this quarter.
   </p>
   <div class="cta-buttons">
-    <a href="mailto:cynthiajones34@gmail.com" class="btn-primary">Book a Discovery Call</a>
-    <a href="mailto:cynthiajones34@gmail.com" class="btn-outline">Send a Message</a>
+    <a href="#" onclick="Calendly.initPopupWidget({url:'https://calendly.com/cynthiadjones98/30min?hide_event_type_details=1&hide_gdpr_banner=1'});return false;" class="btn-primary">Book a Discovery Call</a>
+    <a href="#" onclick="document.getElementById('contact-modal').style.display='flex';return false;" class="btn-outline">Send a Message</a>
   </div>
 </section>
 
@@ -722,6 +722,322 @@
   </ul>
   <span>&copy; 2026 Active Aging Partners · Cynthia Jones</span>
 </footer>
+
+
+
+
+        <div class="form-group">
+          <label for="cf-email">Email</label>
+          <input type="email" id="cf-email" placeholder="your@email.com" required>
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="cf-business">Business Name</label>
+        <input type="text" id="cf-business" placeholder="Your business (if applicable)">
+      </div>
+      <div class="form-group">
+        <label for="cf-interest">I'm interested in</label>
+        <select id="cf-interest">
+          <option value="">Select a service...</option>
+          <option>Operations Audit &amp; Roadmap</option>
+          <option>Systems &amp; Process Design</option>
+          <option>Customer Experience Setup</option>
+          <option>Team Building &amp; Hiring</option>
+          <option>Metrics &amp; Reporting Setup</option>
+          <option>VIP Strategy Day</option>
+          <option>Not sure yet</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label for="cf-message">Message</label>
+        <textarea id="cf-message" placeholder="Tell me a little about your business and what you're working on..." required></textarea>
+      </div>
+      <button type="submit" class="form-submit">Send Message</button>
+    </form>
+  </div>
+</div>
+
+
+
+
+<style>
+  #contact-modal {
+    display: none;
+    position: fixed;
+    inset: 0;
+    z-index: 999;
+    background: rgba(45,35,25,0.6);
+    align-items: center;
+    justify-content: center;
+    padding: 2rem;
+  }
+  .modal-box {
+    background: #FAF7F2;
+    max-width: 580px;
+    width: 100%;
+    padding: 3rem;
+    position: relative;
+    max-height: 90vh;
+    overflow-y: auto;
+  }
+  .modal-close {
+    position: absolute;
+    top: 1.25rem;
+    right: 1.5rem;
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    color: #7A7165;
+    cursor: pointer;
+    line-height: 1;
+  }
+  .modal-close:hover { color: #3D2B1A; }
+  .modal-eyebrow {
+    font-size: 0.7rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: #9A6E4A;
+    margin-bottom: 0.75rem;
+  }
+  .modal-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 2rem;
+    font-weight: 300;
+    color: #3D2B1A;
+    margin-bottom: 0.5rem;
+    line-height: 1.2;
+  }
+  .modal-sub {
+    font-size: 0.85rem;
+    color: #7A7165;
+    margin-bottom: 0.75rem;
+    line-height: 1.7;
+  }
+  .modal-notice {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.6rem;
+    background: #F0EBE3;
+    border-left: 3px solid #C4A882;
+    padding: 0.75rem 1rem;
+    margin-bottom: 1.75rem;
+    font-size: 0.8rem;
+    color: #7A7165;
+    line-height: 1.6;
+  }
+  .modal-notice strong { color: #3D2B1A; }
+  .form-group { margin-bottom: 1.1rem; }
+  .form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+  }
+  .form-group label {
+    display: block;
+    font-size: 0.7rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: #7A7165;
+    margin-bottom: 0.4rem;
+  }
+  .form-group input,
+  .form-group textarea,
+  .form-group select {
+    width: 100%;
+    padding: 0.75rem 1rem;
+    border: 1px solid #E8E0D4;
+    background: #FEFCF9;
+    font-family: 'Jost', sans-serif;
+    font-size: 0.88rem;
+    font-weight: 300;
+    color: #2C2C28;
+    outline: none;
+    transition: border-color 0.2s;
+    appearance: none;
+    -webkit-appearance: none;
+    border-radius: 0;
+  }
+  .form-group input:focus,
+  .form-group textarea:focus,
+  .form-group select:focus { border-color: #9A6E4A; }
+  .form-group textarea { resize: vertical; min-height: 110px; }
+  .select-wrap { position: relative; }
+  .select-wrap::after {
+    content: '▾';
+    position: absolute;
+    right: 1rem;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #9A6E4A;
+    pointer-events: none;
+    font-size: 0.8rem;
+  }
+  .required-note {
+    font-size: 0.72rem;
+    color: #9A6E4A;
+    margin-bottom: 1.25rem;
+  }
+  .form-submit {
+    width: 100%;
+    padding: 1rem;
+    background: #3D2B1A;
+    color: #FAF7F2;
+    border: none;
+    font-family: 'Jost', sans-serif;
+    font-size: 0.75rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    cursor: pointer;
+    margin-top: 0.5rem;
+    transition: background 0.2s;
+  }
+  .form-submit:hover { background: #7B5E3E; }
+  .form-submit:disabled { background: #B4B0A8; cursor: not-allowed; }
+  .form-success {
+    display: none;
+    text-align: center;
+    padding: 2rem 0;
+  }
+  .form-success-icon {
+    font-size: 2.5rem;
+    margin-bottom: 1rem;
+    display: block;
+  }
+  .form-success h3 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.75rem;
+    font-weight: 300;
+    color: #3D2B1A;
+    margin-bottom: 0.75rem;
+  }
+  .form-success p {
+    font-size: 0.88rem;
+    color: #7A7165;
+    line-height: 1.8;
+  }
+</style>
+
+<div id="contact-modal" onclick="if(event.target===this)closeModal()">
+  <div class="modal-box">
+    <button class="modal-close" onclick="closeModal()">&times;</button>
+
+    <div id="form-panel">
+      <p class="modal-eyebrow">Get In Touch</p>
+      <h2 class="modal-title">Send a Message</h2>
+      <p class="modal-sub">Fill out the form below and we'll get back to you within one business day.</p>
+      <div class="modal-notice">
+        <span>🕐</span>
+        <span><strong>We respond within 24 business hours.</strong> Messages sent on weekends or holidays will be answered the next business day.</span>
+      </div>
+      <p class="required-note">* Required fields</p>
+
+      <form id="contact-form" action="https://formspree.io/f/xbdqvjdr" method="POST" onsubmit="handleSubmit(event)">
+        <input type="hidden" name="_subject" value="New inquiry — Active Aging Partners Consulting">
+        <input type="text" name="_gotcha" style="display:none">
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="cf-first">First Name *</label>
+            <input type="text" id="cf-first" name="first_name" placeholder="First name" required>
+          </div>
+          <div class="form-group">
+            <label for="cf-last">Last Name *</label>
+            <input type="text" id="cf-last" name="last_name" placeholder="Last name" required>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="cf-email">Email Address *</label>
+          <input type="email" id="cf-email" name="email" placeholder="your@email.com" required>
+        </div>
+
+        <div class="form-group">
+          <label for="cf-who">I am a…</label>
+          <div class="select-wrap">
+            <select id="cf-who" name="i_am_a">
+              <option value="">Select one…</option>
+              <option>Woman entrepreneur / business owner</option>
+              <option>Aspiring business owner (pre-launch)</option>
+              <option>Small business owner seeking growth</option>
+              <option>Other</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="cf-interest">Area of Interest</label>
+          <div class="select-wrap">
+            <select id="cf-interest" name="area_of_interest">
+              <option value="">Select a service…</option>
+              <option>Operations Audit &amp; Roadmap</option>
+              <option>Systems &amp; Process Design</option>
+              <option>Customer Experience Setup</option>
+              <option>Team Building &amp; Hiring</option>
+              <option>Metrics &amp; Reporting Setup</option>
+              <option>VIP Strategy Day</option>
+              <option>General inquiry</option>
+              <option>Not sure yet</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="cf-message">Your Message *</label>
+          <textarea id="cf-message" name="message" placeholder="Tell me a little about your business and what you're working on…" required></textarea>
+        </div>
+
+        <button type="submit" class="form-submit" id="submit-btn">Send Message →</button>
+      </form>
+    </div>
+
+    <div class="form-success" id="success-panel">
+      <span class="form-success-icon">🌿</span>
+      <h3>Message sent successfully!</h3>
+      <p>Thank you for reaching out.<br>We'll respond within 24 business hours.</p>
+    </div>
+  </div>
+</div>
+
+<script>
+function closeModal() {
+  document.getElementById('contact-modal').style.display = 'none';
+  document.getElementById('form-panel').style.display = 'block';
+  document.getElementById('success-panel').style.display = 'none';
+  document.getElementById('contact-form').reset();
+  document.getElementById('submit-btn').disabled = false;
+  document.getElementById('submit-btn').textContent = 'Send Message →';
+}
+
+async function handleSubmit(e) {
+  e.preventDefault();
+  const btn = document.getElementById('submit-btn');
+  btn.disabled = true;
+  btn.textContent = 'Sending…';
+
+  const form = document.getElementById('contact-form');
+  const data = new FormData(form);
+
+  try {
+    const res = await fetch(form.action, {
+      method: 'POST',
+      body: data,
+      headers: { 'Accept': 'application/json' }
+    });
+    if (res.ok) {
+      document.getElementById('form-panel').style.display = 'none';
+      document.getElementById('success-panel').style.display = 'block';
+    } else {
+      btn.disabled = false;
+      btn.textContent = 'Send Message →';
+      alert('Something went wrong. Please try again or email cynthiajones34@gmail.com directly.');
+    }
+  } catch(err) {
+    btn.disabled = false;
+    btn.textContent = 'Send Message →';
+    alert('Something went wrong. Please try again or email cynthiajones34@gmail.com directly.');
+  }
+}
+</script>
 
 </body>
 </html>
