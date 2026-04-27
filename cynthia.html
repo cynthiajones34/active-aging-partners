@@ -617,11 +617,9 @@
 <!-- SERVICES -->
 <section id="services" class="services">
   <div class="services-header">
-    <div>
-      <p class="section-eyebrow">What I Offer</p>
-      <h2 class="section-title">Services designed<br>for <em>real businesses.</em></h2>
-      <div class="divider"></div>
-    </div>
+    <p class="section-eyebrow">What I Offer</p>
+    <h2 class="section-title">Services designed for <em>real businesses.</em></h2>
+    <div class="divider"></div>
     <p class="services-intro">
       Whether you're setting up from scratch or cleaning up what you've already built, these engagements are designed to give you a clear path forward — not more overwhelm.
     </p>
@@ -999,6 +997,7 @@
 </div>
 
 <script>
+<script>
 function closeModal() {
   document.getElementById('contact-modal').style.display = 'none';
   document.getElementById('form-panel').style.display = 'block';
@@ -1007,16 +1006,16 @@ function closeModal() {
   document.getElementById('submit-btn').disabled = false;
   document.getElementById('submit-btn').textContent = 'Send Message →';
 }
-
+ 
 async function handleSubmit(e) {
   e.preventDefault();
   const btn = document.getElementById('submit-btn');
   btn.disabled = true;
   btn.textContent = 'Sending…';
-
+ 
   const form = document.getElementById('contact-form');
   const data = new FormData(form);
-
+ 
   try {
     const res = await fetch(form.action, {
       method: 'POST',
@@ -1038,6 +1037,7 @@ async function handleSubmit(e) {
   }
 }
 </script>
-
+ 
 </body>
 </html>
+ 
