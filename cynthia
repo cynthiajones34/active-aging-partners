@@ -1,0 +1,759 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Active Aging Partners | Cynthia Jones</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Jost:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+  :root {
+    --cream: #FAF7F2;
+    --warm-white: #FEFCF9;
+    --sand: #E8E0D4;
+    --clay: #C4A882;
+    --sienna: #9A6E4A;
+    --deep: #3D2B1A;
+    --charcoal: #2C2C28;
+    --muted: #7A7165;
+    --accent: #7B5E3E;
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'Jost', sans-serif;
+    background: var(--warm-white);
+    color: var(--charcoal);
+    font-weight: 300;
+    line-height: 1.7;
+  }
+
+  /* NAV */
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1.5rem 4rem;
+    background: rgba(254,252,249,0.92);
+    backdrop-filter: blur(8px);
+    border-bottom: 1px solid var(--sand);
+  }
+  .nav-logo {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.15rem;
+    font-weight: 400;
+    letter-spacing: 0.08em;
+    color: var(--deep);
+    text-decoration: none;
+  }
+  .nav-links {
+    display: flex;
+    gap: 2.5rem;
+    list-style: none;
+  }
+  .nav-links a {
+    font-size: 0.78rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--muted);
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+  .nav-links a:hover { color: var(--accent); }
+
+  /* HERO */
+  .hero {
+    min-height: 100vh;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    padding-top: 80px;
+  }
+  .hero-left {
+    background: var(--cream);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 6rem 5rem 6rem 6rem;
+  }
+  .hero-eyebrow {
+    font-size: 0.72rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--sienna);
+    margin-bottom: 2rem;
+  }
+  .hero-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(3rem, 4.5vw, 5rem);
+    font-weight: 300;
+    line-height: 1.1;
+    color: var(--deep);
+    margin-bottom: 2rem;
+  }
+  .hero-title em {
+    font-style: italic;
+    color: var(--sienna);
+  }
+  .hero-sub {
+    font-size: 1rem;
+    color: var(--muted);
+    max-width: 400px;
+    margin-bottom: 3rem;
+    line-height: 1.8;
+  }
+  .btn-primary {
+    display: inline-block;
+    padding: 1rem 2.5rem;
+    background: var(--deep);
+    color: var(--cream);
+    text-decoration: none;
+    font-size: 0.75rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    transition: background 0.2s;
+    align-self: flex-start;
+  }
+  .btn-primary:hover { background: var(--accent); }
+  .btn-outline {
+    display: inline-block;
+    padding: 1rem 2.5rem;
+    border: 1px solid var(--deep);
+    color: var(--deep);
+    text-decoration: none;
+    font-size: 0.75rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    transition: all 0.2s;
+    margin-left: 1rem;
+  }
+  .btn-outline:hover { background: var(--deep); color: var(--cream); }
+
+  .hero-right {
+    background: var(--sand);
+    position: relative;
+    overflow: hidden;
+  }
+  .hero-photo-placeholder {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-end;
+    padding-bottom: 3rem;
+    background: linear-gradient(160deg, #DDD0BF 0%, #C8B99A 100%);
+  }
+  .hero-photo-figure {
+    width: 260px;
+    height: 380px;
+    background: rgba(61,43,26,0.12);
+    border-radius: 50% 50% 0 0 / 60% 60% 0 0;
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .hero-photo-label {
+    font-size: 0.7rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: rgba(61,43,26,0.5);
+  }
+  .hero-stat-bar {
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    display: flex;
+    background: var(--deep);
+    color: var(--cream);
+  }
+  .hero-stat {
+    flex: 1;
+    padding: 1.25rem 1.5rem;
+    border-right: 1px solid rgba(255,255,255,0.1);
+  }
+  .hero-stat:last-child { border-right: none; }
+  .hero-stat-num {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 2rem;
+    font-weight: 300;
+    display: block;
+  }
+  .hero-stat-label {
+    font-size: 0.65rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--clay);
+    display: block;
+  }
+
+  /* INTRO BAND */
+  .intro-band {
+    background: var(--deep);
+    color: var(--cream);
+    padding: 4rem 6rem;
+    display: flex;
+    align-items: center;
+    gap: 6rem;
+  }
+  .intro-quote {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.8rem;
+    font-weight: 300;
+    font-style: italic;
+    line-height: 1.5;
+    flex: 1;
+    color: var(--clay);
+  }
+  .intro-text {
+    flex: 1;
+    font-size: 0.9rem;
+    color: rgba(250,247,242,0.75);
+    line-height: 1.9;
+  }
+
+  /* SECTION BASE */
+  section { padding: 6rem 6rem; }
+
+  .section-eyebrow {
+    font-size: 0.7rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--sienna);
+    margin-bottom: 1.25rem;
+  }
+  .section-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(2rem, 3vw, 3rem);
+    font-weight: 300;
+    color: var(--deep);
+    line-height: 1.2;
+    margin-bottom: 1.5rem;
+  }
+  .section-title em { font-style: italic; color: var(--sienna); }
+  .divider {
+    width: 40px;
+    height: 1px;
+    background: var(--clay);
+    margin-bottom: 2.5rem;
+  }
+
+  /* ABOUT */
+  .about {
+    background: var(--warm-white);
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 6rem;
+    align-items: center;
+    padding: 7rem 6rem;
+  }
+  .about-image {
+    aspect-ratio: 4/5;
+    background: var(--sand);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .about-image-inner {
+    width: 75%;
+    height: 75%;
+    background: rgba(196,168,130,0.3);
+    border-radius: 50% 50% 50% 50% / 40% 40% 60% 60%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 0.85rem;
+    color: var(--muted);
+    letter-spacing: 0.1em;
+    text-align: center;
+    padding: 2rem;
+  }
+  .about-tag {
+    position: absolute;
+    bottom: 2rem;
+    right: -1rem;
+    background: var(--deep);
+    color: var(--cream);
+    padding: 1.5rem;
+    width: 160px;
+  }
+  .about-tag-num {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 2.5rem;
+    font-weight: 300;
+    display: block;
+    margin-bottom: 0.25rem;
+  }
+  .about-tag-text {
+    font-size: 0.65rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--clay);
+    line-height: 1.5;
+  }
+  .about-body {
+    font-size: 0.95rem;
+    color: var(--muted);
+    line-height: 1.9;
+    margin-bottom: 1.5rem;
+  }
+  .about-values {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    margin-bottom: 2.5rem;
+  }
+  .about-value {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    font-size: 0.85rem;
+    color: var(--charcoal);
+  }
+  .about-value::before {
+    content: '';
+    display: block;
+    width: 20px;
+    height: 1px;
+    background: var(--clay);
+    flex-shrink: 0;
+  }
+
+  /* SERVICES */
+  .services { background: var(--cream); }
+  .services-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    margin-bottom: 4rem;
+  }
+  .services-intro {
+    font-size: 0.9rem;
+    color: var(--muted);
+    max-width: 380px;
+    line-height: 1.9;
+  }
+  .services-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2px;
+  }
+  .service-card {
+    background: var(--warm-white);
+    padding: 2.5rem 2rem;
+    position: relative;
+    transition: background 0.3s;
+    cursor: default;
+  }
+  .service-card:hover { background: var(--deep); }
+  .service-card:hover .service-num,
+  .service-card:hover .service-name,
+  .service-card:hover .service-desc { color: var(--cream); }
+  .service-card:hover .service-line { background: var(--clay); }
+  .service-num {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 0.85rem;
+    color: var(--clay);
+    margin-bottom: 1.5rem;
+    display: block;
+  }
+  .service-line {
+    width: 30px;
+    height: 1px;
+    background: var(--sand);
+    margin-bottom: 1.5rem;
+    transition: background 0.3s;
+  }
+  .service-name {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.4rem;
+    font-weight: 400;
+    color: var(--deep);
+    margin-bottom: 1rem;
+    line-height: 1.3;
+    transition: color 0.3s;
+  }
+  .service-desc {
+    font-size: 0.82rem;
+    color: var(--muted);
+    line-height: 1.8;
+    transition: color 0.3s;
+  }
+  .service-card:hover .service-desc { color: rgba(250,247,242,0.7); }
+
+  /* PROCESS */
+  .process { background: var(--warm-white); }
+  .process-steps {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 3rem;
+    margin-top: 4rem;
+  }
+  .process-step { position: relative; }
+  .process-step::after {
+    content: '';
+    position: absolute;
+    top: 1.5rem;
+    right: -1.5rem;
+    width: 3rem;
+    height: 1px;
+    background: var(--sand);
+  }
+  .process-step:last-child::after { display: none; }
+  .step-circle {
+    width: 3rem;
+    height: 3rem;
+    border: 1px solid var(--clay);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 1.5rem;
+  }
+  .step-num {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.1rem;
+    color: var(--sienna);
+  }
+  .step-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.2rem;
+    font-weight: 400;
+    color: var(--deep);
+    margin-bottom: 0.75rem;
+  }
+  .step-desc {
+    font-size: 0.82rem;
+    color: var(--muted);
+    line-height: 1.8;
+  }
+
+  /* TESTIMONIALS */
+  .testimonials {
+    background: var(--deep);
+    color: var(--cream);
+    padding: 7rem 6rem;
+  }
+  .testimonials .section-title { color: var(--cream); }
+  .testimonials .section-eyebrow { color: var(--clay); }
+  .testimonials .divider { background: var(--clay); }
+  .testi-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2rem;
+    margin-top: 4rem;
+  }
+  .testi-card {
+    border: 1px solid rgba(196,168,130,0.2);
+    padding: 2rem;
+  }
+  .testi-quote-mark {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 4rem;
+    line-height: 1;
+    color: var(--clay);
+    margin-bottom: 1rem;
+    display: block;
+  }
+  .testi-text {
+    font-size: 0.88rem;
+    color: rgba(250,247,242,0.75);
+    line-height: 1.9;
+    font-style: italic;
+    margin-bottom: 1.5rem;
+  }
+  .testi-name {
+    font-size: 0.75rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--clay);
+  }
+  .testi-role {
+    font-size: 0.72rem;
+    color: rgba(250,247,242,0.4);
+  }
+
+  /* CTA */
+  .cta {
+    background: var(--cream);
+    text-align: center;
+    padding: 8rem 6rem;
+  }
+  .cta .section-title { max-width: 600px; margin: 0 auto 1.5rem; }
+  .cta .section-eyebrow { text-align: center; }
+  .cta .divider { margin: 0 auto 2.5rem; }
+  .cta-sub {
+    font-size: 0.9rem;
+    color: var(--muted);
+    max-width: 480px;
+    margin: 0 auto 3rem;
+    line-height: 1.9;
+  }
+  .cta-buttons { display: flex; justify-content: center; gap: 0; }
+
+  /* FOOTER */
+  footer {
+    background: var(--charcoal);
+    color: rgba(250,247,242,0.5);
+    padding: 3rem 6rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.75rem;
+    letter-spacing: 0.05em;
+  }
+  .footer-logo {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.1rem;
+    color: var(--cream);
+    font-weight: 300;
+  }
+  .footer-links {
+    display: flex;
+    gap: 2rem;
+    list-style: none;
+  }
+  .footer-links a {
+    color: rgba(250,247,242,0.4);
+    text-decoration: none;
+    font-size: 0.7rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    transition: color 0.2s;
+  }
+  .footer-links a:hover { color: var(--clay); }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a class="nav-logo" href="#">Active Aging Partners</a>
+  <ul class="nav-links">
+    <li><a href="#about">About</a></li>
+    <li><a href="#services">Services</a></li>
+    <li><a href="#process">Process</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-left">
+    <p class="hero-eyebrow">Women's Small Business Consulting</p>
+    <h1 class="hero-title">
+      Build the<br>
+      business that<br>
+      <em>runs itself.</em>
+    </h1>
+    <p class="hero-sub">
+      Operational strategy and systems design for women entrepreneurs who are ready to stop improvising and start scaling — with confidence, clarity, and a structure that lasts.
+    </p>
+    <div>
+      <a href="#contact" class="btn-primary">Work With Me</a>
+      <a href="#services" class="btn-outline">View Services</a>
+    </div>
+  </div>
+  <div class="hero-right">
+    <div class="hero-photo-placeholder">
+      <div class="hero-photo-figure">
+        <span style="font-family:'Cormorant Garamond',serif; font-size:0.8rem; color:rgba(61,43,26,0.4); letter-spacing:0.1em; text-align:center; padding:1.5rem;">Your photo here</span>
+      </div>
+    </div>
+    <div class="hero-stat-bar">
+      <div class="hero-stat">
+        <span class="hero-stat-num">10+</span>
+        <span class="hero-stat-label">Years in Operations</span>
+      </div>
+      <div class="hero-stat">
+        <span class="hero-stat-num">$200K</span>
+        <span class="hero-stat-label">Saved for Clients</span>
+      </div>
+      <div class="hero-stat">
+        <span class="hero-stat-num">183%</span>
+        <span class="hero-stat-label">Avg. Growth Achieved</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- INTRO BAND -->
+<div class="intro-band">
+  <p class="intro-quote">"Great businesses aren't built on hustle alone — they're built on systems."</p>
+  <p class="intro-text">
+    Most women start a business because they're brilliant at what they do. But passion alone doesn't keep the lights on — the back end does. I help women entrepreneurs build the operational foundation that turns their great idea into a great company: clear processes, smart tools, a team structure that scales, and metrics that actually tell you what's working.
+  </p>
+</div>
+
+<!-- ABOUT -->
+<section id="about" class="about">
+  <div class="about-image">
+    <div class="about-image-inner">Your photo here</div>
+    <div class="about-tag">
+      <span class="about-tag-num">10+</span>
+      <span class="about-tag-text">Years leading operations at scale</span>
+    </div>
+  </div>
+  <div class="about-content">
+    <p class="section-eyebrow">About Cynthia</p>
+    <h2 class="section-title">Operations is the work behind the <em>work.</em></h2>
+    <div class="divider"></div>
+    <p class="about-body">
+      I'm Cynthia Jones — an operations leader with over a decade of experience building the systems, teams, and support structures that make organizations run. I've led ops at coding bootcamps, online universities, and virtual education programs — always at the intersection of people, process, and technology.
+    </p>
+    <p class="about-body">
+      Now I bring that expertise directly to women who are building businesses of their own. Because the same operational thinking that helped me generate $200K in savings and 183% enrollment growth? It scales all the way down to a business of one — and it changes everything.
+    </p>
+    <div class="about-values">
+      <div class="about-value">Master's in Educational Leadership, Portland State</div>
+      <div class="about-value">Former VP of Operations, App Academy</div>
+      <div class="about-value">10+ years building from scratch</div>
+      <div class="about-value">Based in Atlanta, serving clients nationwide</div>
+    </div>
+    <a href="#contact" class="btn-primary">Let's Connect</a>
+  </div>
+</section>
+
+<!-- SERVICES -->
+<section id="services" class="services">
+  <div class="services-header">
+    <div>
+      <p class="section-eyebrow">What I Offer</p>
+      <h2 class="section-title">Services designed<br>for <em>real businesses.</em></h2>
+      <div class="divider"></div>
+    </div>
+    <p class="services-intro">
+      Whether you're setting up from scratch or cleaning up what you've already built, these engagements are designed to give you a clear path forward — not more overwhelm.
+    </p>
+  </div>
+  <div class="services-grid">
+    <div class="service-card">
+      <span class="service-num">01</span>
+      <div class="service-line"></div>
+      <p class="service-name">Operations Audit & Roadmap</p>
+      <p class="service-desc">A full diagnostic of your business operations — tools, workflows, team structure, and communications — with a prioritized roadmap for what to fix first and how to do it.</p>
+    </div>
+    <div class="service-card">
+      <span class="service-num">02</span>
+      <div class="service-line"></div>
+      <p class="service-name">Systems & Process Design</p>
+      <p class="service-desc">Custom SOPs, workflow documentation, and tool configuration that replace the improvised chaos with repeatable, teachable systems your whole team can follow.</p>
+    </div>
+    <div class="service-card">
+      <span class="service-num">03</span>
+      <div class="service-line"></div>
+      <p class="service-name">Customer Experience Setup</p>
+      <p class="service-desc">Design your client-facing experience from first touchpoint to ongoing relationship — onboarding flows, communication templates, support tiers, and retention strategy.</p>
+    </div>
+    <div class="service-card">
+      <span class="service-num">04</span>
+      <div class="service-line"></div>
+      <p class="service-name">Team Building & Hiring</p>
+      <p class="service-desc">Ready to bring someone on? I help you define the role, build the hiring process, create onboarding documentation, and set performance expectations from day one.</p>
+    </div>
+    <div class="service-card">
+      <span class="service-num">05</span>
+      <div class="service-line"></div>
+      <p class="service-name">Metrics & Reporting Setup</p>
+      <p class="service-desc">Identify the KPIs that actually matter for your business, then build simple dashboards and check-in rhythms so you always know where you stand — without spending hours in spreadsheets.</p>
+    </div>
+    <div class="service-card">
+      <span class="service-num">06</span>
+      <div class="service-line"></div>
+      <p class="service-name">VIP Strategy Day</p>
+      <p class="service-desc">A focused, single-day intensive where we tackle your biggest operational challenge together. Walk away with a clear plan, custom deliverables, and a 30-day action checklist.</p>
+    </div>
+  </div>
+</section>
+
+<!-- PROCESS -->
+<section id="process" class="process">
+  <p class="section-eyebrow">How It Works</p>
+  <h2 class="section-title">A clear path, from <em>day one.</em></h2>
+  <div class="divider"></div>
+  <div class="process-steps">
+    <div class="process-step">
+      <div class="step-circle"><span class="step-num">01</span></div>
+      <p class="step-title">Discovery Call</p>
+      <p class="step-desc">We spend 45 minutes getting clear on where you are, what's not working, and what kind of support you actually need. No pitch — just real conversation.</p>
+    </div>
+    <div class="process-step">
+      <div class="step-circle"><span class="step-num">02</span></div>
+      <p class="step-title">Proposal & Scope</p>
+      <p class="step-desc">I put together a custom proposal that matches your situation — not a package designed for someone else's business. You see the investment and outcomes before anything starts.</p>
+    </div>
+    <div class="process-step">
+      <div class="step-circle"><span class="step-num">03</span></div>
+      <p class="step-title">Deep Dive & Build</p>
+      <p class="step-desc">We work together to map, document, and build your operational systems — with regular check-ins, deliverables you can use immediately, and space for your questions.</p>
+    </div>
+    <div class="process-step">
+      <div class="step-circle"><span class="step-num">04</span></div>
+      <p class="step-title">Hand-Off & Support</p>
+      <p class="step-desc">You walk away with everything documented, trained, and ready to use. Optional ongoing support packages available if you want a long-term partner.</p>
+    </div>
+  </div>
+</section>
+
+<!-- TESTIMONIALS -->
+<section class="testimonials">
+  <p class="section-eyebrow">Client Stories</p>
+  <h2 class="section-title">Results that <em>speak.</em></h2>
+  <div class="divider"></div>
+  <div class="testi-grid">
+    <div class="testi-card">
+      <span class="testi-quote-mark">&ldquo;</span>
+      <p class="testi-text">Before working with Cynthia, I had zero documented processes. Six weeks later, I had a full operations playbook, a client onboarding system, and my first hire trained and running. She doesn't just give advice — she builds things with you.</p>
+      <p class="testi-name">Monique T.</p>
+      <p class="testi-role">Founder, Wellness Collective</p>
+    </div>
+    <div class="testi-card">
+      <span class="testi-quote-mark">&ldquo;</span>
+      <p class="testi-text">I was doing everything manually and drowning in my own business. Cynthia audited my entire operation in one week, identified the three things I needed to fix immediately, and had me automating them by week three. Game-changing.</p>
+      <p class="testi-name">Rashida M.</p>
+      <p class="testi-role">CEO, Social Impact Agency</p>
+    </div>
+    <div class="testi-card">
+      <span class="testi-quote-mark">&ldquo;</span>
+      <p class="testi-text">The VIP Strategy Day was worth every penny. I came in with chaos and left with a 90-day operational plan, three new SOPs, and a dashboard I actually understand. Cynthia has a rare ability to translate complexity into action.</p>
+      <p class="testi-name">Keisha B.</p>
+      <p class="testi-role">Owner, Digital Boutique Studio</p>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section id="contact" class="cta">
+  <p class="section-eyebrow">Ready to Begin?</p>
+  <h2 class="section-title">Your business deserves a <em>foundation.</em></h2>
+  <div class="divider"></div>
+  <p class="cta-sub">
+    If you're a woman building a business and you're tired of winging the operational side, let's talk. A 45-minute discovery call is free, and it might be the most useful conversation you have this quarter.
+  </p>
+  <div class="cta-buttons">
+    <a href="mailto:cynthiajones34@gmail.com" class="btn-primary">Book a Discovery Call</a>
+    <a href="mailto:cynthiajones34@gmail.com" class="btn-outline">Send a Message</a>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <span class="footer-logo">Active Aging Partners</span>
+  <ul class="footer-links">
+    <li><a href="#about">About</a></li>
+    <li><a href="#services">Services</a></li>
+    <li><a href="#process">Process</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ul>
+  <span>&copy; 2026 Active Aging Partners · Cynthia Jones</span>
+</footer>
+
+</body>
+</html>
