@@ -6,7 +6,7 @@ if (!admin.apps.length) admin.initializeApp();
 
 const REGION      = 'us-east1';
 const TIMEZONE    = 'America/New_York';
-const CALENDAR_ID = 'cynthiadjones98@gmail.com';
+const CALENDAR_ID = 'cynthiajones34@gmail.com';
 
 // Time slots offered in the booking calendar (Eastern local time)
 const TIME_SLOTS = [
