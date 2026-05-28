@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%232d4a32'/><text y='.9em' font-size='75' x='50%' text-anchor='middle' dominant-baseline='auto'>🌿</text></svg>">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Active Aging Partners — Live Fully. Move Freely.</title>
+<title>Active Aging Partners | Live Fully. Move Freely.</title>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Jost:wght@300;400;500;600&display=swap" rel="stylesheet">
 <style>
 :root {
@@ -265,7 +265,6 @@ footer { background: var(--charcoal); padding: 60px 80px 30px; }
     <li><a href="#signup">Get Started</a></li>
   </ul>
   <div class="nav-actions">
-    <button class="btn btn-outline" onclick="openModal('login-modal')">Log In</button>
     <button class="btn btn-clay" onclick="document.getElementById('signup').scrollIntoView({behavior:'smooth'})">Sign Up Free</button>
   </div>
   <button class="hamburger" id="hamburger" aria-label="Open navigation menu" aria-expanded="false" aria-controls="nav-links" onclick="toggleMobileNav()">
@@ -281,7 +280,6 @@ footer { background: var(--charcoal); padding: 60px 80px 30px; }
     <li><a href="contact.html" onclick="closeMobileNav()">Contact</a></li>
   </ul>
   <div class="mob-nav-actions">
-    <button class="btn btn-outline" onclick="closeMobileNav();openModal('login-modal')">Log In</button>
     <button class="btn btn-clay" onclick="closeMobileNav();document.getElementById('signup').scrollIntoView({behavior:'smooth'})">Sign Up Free</button>
   </div>
 </div>
@@ -292,7 +290,7 @@ footer { background: var(--charcoal); padding: 60px 80px 30px; }
   <div class="hero-left">
     <div class="hero-eyebrow">Companion Wellness Services · Atlanta, GA</div>
     <h1 class="hero-title">Live Fully.<br><em>Move Freely.</em><br>Age Boldly.</h1>
-    <p class="hero-body">Active Aging Partners provides personalized walking companionship, meaningful engagement visits, and errand support — helping seniors stay active, independent, and genuinely cared for.</p>
+    <p class="hero-body">Active Aging Partners provides personalized walking companionship, meaningful engagement visits, and errand support, helping seniors stay active, independent, and genuinely cared for.</p>
     <div class="hero-ctas">
       <button class="btn btn-solid btn-lg" onclick="document.getElementById('signup').scrollIntoView({behavior:'smooth'})">Get Started Today</button>
       <button class="btn btn-lg" style="border:1.5px solid rgba(255,255,255,0.4);color:#fff;background:transparent" onclick="window.location.href='services.html'">See Services</button>
@@ -304,11 +302,6 @@ footer { background: var(--charcoal); padding: 60px 80px 30px; }
 
     <!-- HERO LOGIN CARD -->
     <div class="hero-card-float">
-      <div class="login-tab-row">
-        <div class="login-tab active" onclick="switchHeroTab('login')">Log In</div>
-        <div class="login-tab" onclick="switchHeroTab('signup-quick')">Sign Up</div>
-      </div>
-
       <!-- LOGIN PANEL -->
       <div id="hero-tab-login">
         <div class="card-title">Welcome back 👋</div>
@@ -327,45 +320,7 @@ footer { background: var(--charcoal); padding: 60px 80px 30px; }
         <a href="#" class="forgot" onclick="handleForgotPassword(event, 'hero-email')">Forgot password?</a>
 
         <button class="btn btn-solid btn-full" id="hero-login-btn" onclick="heroLogin()">Sign In →</button>
-        <div class="signup-link">New here? <a href="#" onclick="switchHeroTab('signup-quick')">Create an account</a></div>
-      </div>
-
-      <!-- QUICK SIGNUP PANEL -->
-      <div id="hero-tab-signup" style="display:none">
-        <div class="card-title">Join today 🌿</div>
-        <div class="card-sub">Create your free account</div>
-        <div id="hero-signup-error" class="auth-error"></div>
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
-          <div class="form-group">
-            <label class="form-label" for="hero-signup-first">First Name</label>
-            <input type="text" class="form-input" id="hero-signup-first" placeholder="First name">
-          </div>
-          <div class="form-group">
-            <label class="form-label" for="hero-signup-last">Last Name</label>
-            <input type="text" class="form-input" id="hero-signup-last" placeholder="Last name">
-          </div>
-        </div>
-        <div class="form-group">
-          <label class="form-label" for="hero-signup-middle">Middle Initial <span style="font-weight:400;color:var(--mid)">(optional)</span></label>
-          <input type="text" class="form-input" id="hero-signup-middle" placeholder="M" maxlength="2" style="max-width:80px">
-        </div>
-        <div class="form-group">
-          <label class="form-label">Email</label>
-          <input type="email" class="form-input" id="hero-signup-email" placeholder="you@example.com">
-        </div>
-        <div class="form-group">
-          <label class="form-label">I am a…</label>
-          <select class="form-select" id="hero-signup-role">
-            <option value="client">Family member / Adult child</option>
-            <option value="client">Senior client (for myself)</option>
-          </select>
-        </div>
-        <div class="form-group">
-          <label class="form-label">Password</label>
-          <input type="password" class="form-input" id="hero-signup-password" placeholder="Choose a password (min 6 chars)">
-        </div>
-        <button class="btn btn-clay btn-full" id="hero-signup-btn" onclick="heroSignup()">Create Account →</button>
-        <div class="signup-link">Already have an account? <a href="#" onclick="switchHeroTab('login')">Log in</a></div>
+        <div class="signup-link">New here? <a href="#signup">Create an account</a></div>
       </div>
     </div>
   </div>
@@ -379,7 +334,7 @@ footer { background: var(--charcoal); padding: 60px 80px 30px; }
     <div class="service-card green">
       <span class="service-icon">🚶</span>
       <div class="service-title">Walking & Wellness</div>
-      <p class="service-desc">Regular walking sessions to keep seniors active, energized, and socially engaged. Parks, neighborhoods, trails — wherever feels right.</p>
+      <p class="service-desc">Regular walking sessions to keep seniors active, energized, and socially engaged. Parks, neighborhoods, trails, or wherever feels right.</p>
       <div class="service-price">$50 <span>/ hour</span></div>
     </div>
     <div class="service-card clay">
@@ -391,7 +346,7 @@ footer { background: var(--charcoal); padding: 60px 80px 30px; }
     <div class="service-card gold">
       <span class="service-icon">🛒</span>
       <div class="service-title">Errand Support</div>
-      <p class="service-desc">We run errands on your loved one's behalf — grocery shopping exactly as requested, pharmacy pickups, and more — so they get what they need without the hassle.</p>
+      <p class="service-desc">We run errands on your loved one's behalf, including grocery shopping exactly as requested, pharmacy pickups, and more, so they get what they need without the hassle.</p>
       <div class="service-price">$50 <span>/ hour</span></div>
     </div>
   </div>
@@ -421,28 +376,28 @@ footer { background: var(--charcoal); padding: 60px 80px 30px; }
           <div class="as-num">1</div>
           <div>
             <div class="as-title">We start with a conversation</div>
-            <p class="as-body">Before we begin each session, we take time to understand your loved one — their preferences, routines, mobility, and what makes them comfortable. Every client is different and we treat them that way.</p>
+            <p class="as-body">Before we begin each session, we take time to understand your loved one: their preferences, routines, mobility, and what makes them comfortable. Every client is different, and we treat them that way.</p>
           </div>
         </div>
         <div class="approach-step">
           <div class="as-num">2</div>
           <div>
             <div class="as-title">We handle the details families worry about</div>
-            <p class="as-body">Grocery shopping exactly as requested — no substitutions unless asked. Companionship visits tailored to what the senior enjoys. Walks at a pace that feels good, not rushed. We pay attention to the details that make a real difference.</p>
+            <p class="as-body">Grocery shopping exactly as requested, with no substitutions unless asked. Companionship visits tailored to what the senior enjoys. Walks at a pace that feels good, not rushed. We pay attention to the details that make a real difference.</p>
           </div>
         </div>
         <div class="approach-step">
           <div class="as-num">3</div>
           <div>
             <div class="as-title">We keep families informed</div>
-            <p class="as-body">Session reports are sent after every visit — mood, activities, anything notable. Family members who live far away can stay closely connected without being physically present.</p>
+            <p class="as-body">Session reports are sent after every visit, covering mood, activities, and anything notable. Family members who live far away can stay closely connected without being physically present.</p>
           </div>
         </div>
         <div class="approach-step">
           <div class="as-num">4</div>
           <div>
             <div class="as-title">We make it easy to manage everything</div>
-            <p class="as-body">Book sessions, read reports, send messages, and pay invoices — all from your client portal. Designed for busy families who need simplicity and reliability.</p>
+            <p class="as-body">Book sessions, read reports, send messages, and pay invoices, all from your client portal. Designed for busy families who need simplicity and reliability.</p>
           </div>
         </div>
       </div>
@@ -451,12 +406,12 @@ footer { background: var(--charcoal); padding: 60px 80px 30px; }
       <div class="approach-card">
         <div class="approach-card-title">What families can <em>count on</em></div>
         <div class="approach-promise">
-          <div class="ap-item"><div class="ap-check">✓</div><div class="ap-text"><strong>Punctual arrivals</strong> — we respect your loved one's time and schedule</div></div>
-          <div class="ap-item"><div class="ap-check">✓</div><div class="ap-text"><strong>Attentive companions</strong> — present, engaged, and genuinely interested</div></div>
-          <div class="ap-item"><div class="ap-check">✓</div><div class="ap-text"><strong>Post-visit reports</strong> — detailed notes sent to family after every session</div></div>
-          <div class="ap-item"><div class="ap-check">✓</div><div class="ap-text"><strong>Transparent invoicing</strong> — clear, itemized billing through Stripe</div></div>
-          <div class="ap-item"><div class="ap-check">✓</div><div class="ap-text"><strong>Direct communication</strong> — message us anytime through the client portal</div></div>
-          <div class="ap-item"><div class="ap-check">✓</div><div class="ap-text"><strong>Background checked staff</strong> — every team member, no exceptions</div></div>
+          <div class="ap-item"><div class="ap-check">✓</div><div class="ap-text"><strong>Punctual arrivals:</strong> we respect your loved one's time and schedule</div></div>
+          <div class="ap-item"><div class="ap-check">✓</div><div class="ap-text"><strong>Attentive companions:</strong> present, engaged, and genuinely interested</div></div>
+          <div class="ap-item"><div class="ap-check">✓</div><div class="ap-text"><strong>Post-visit reports:</strong> detailed notes sent to family after every session</div></div>
+          <div class="ap-item"><div class="ap-check">✓</div><div class="ap-text"><strong>Transparent invoicing:</strong> clear, itemized billing through Stripe</div></div>
+          <div class="ap-item"><div class="ap-check">✓</div><div class="ap-text"><strong>Direct communication:</strong> message us anytime through the client portal</div></div>
+          <div class="ap-item"><div class="ap-check">✓</div><div class="ap-text"><strong>Background checked staff:</strong> every team member, no exceptions</div></div>
         </div>
       </div>
       <div style="background:#fff;border-radius:16px;padding:22px 24px;border:1px solid rgba(0,0,0,0.06);box-shadow:0 4px 16px rgba(0,0,0,0.05)">
@@ -480,9 +435,9 @@ footer { background: var(--charcoal); padding: 60px 80px 30px; }
     <h2 class="section-title">Give your loved one the gift of <em>companionship</em></h2>
     <p style="font-size:16px;color:var(--mid);line-height:1.7;margin:24px 0 36px">Join seniors and families across Atlanta who trust Active Aging Partners to stay active, connected, and genuinely cared for.</p>
     <div style="display:flex;flex-direction:column;gap:14px">
-      <div style="display:flex;gap:12px;align-items:center"><div style="width:36px;height:36px;border-radius:50%;background:rgba(122,158,126,0.15);display:flex;align-items:center;justify-content:center;flex-shrink:0">✓</div><div style="font-size:14px;color:var(--mid)">No commitment required — book one session at a time</div></div>
+      <div style="display:flex;gap:12px;align-items:center"><div style="width:36px;height:36px;border-radius:50%;background:rgba(122,158,126,0.15);display:flex;align-items:center;justify-content:center;flex-shrink:0">✓</div><div style="font-size:14px;color:var(--mid)">No commitment required; book one session at a time</div></div>
       <div style="display:flex;gap:12px;align-items:center"><div style="width:36px;height:36px;border-radius:50%;background:rgba(122,158,126,0.15);display:flex;align-items:center;justify-content:center;flex-shrink:0">✓</div><div style="font-size:14px;color:var(--mid)">Detailed session reports after every visit</div></div>
-      <div style="display:flex;gap:12px;align-items:center"><div style="width:36px;height:36px;border-radius:50%;background:rgba(122,158,126,0.15);display:flex;align-items:center;justify-content:center;flex-shrink:0">✓</div><div style="font-size:14px;color:var(--mid)">Secure payments via Stripe — invoices automatically sent</div></div>
+      <div style="display:flex;gap:12px;align-items:center"><div style="width:36px;height:36px;border-radius:50%;background:rgba(122,158,126,0.15);display:flex;align-items:center;justify-content:center;flex-shrink:0">✓</div><div style="font-size:14px;color:var(--mid)">Secure payments via Stripe; invoices are automatically sent</div></div>
       <div style="display:flex;gap:12px;align-items:center"><div style="width:36px;height:36px;border-radius:50%;background:rgba(122,158,126,0.15);display:flex;align-items:center;justify-content:center;flex-shrink:0">✓</div><div style="font-size:14px;color:var(--mid)">SMS & email reminders for every session</div></div>
     </div>
   </div>
@@ -516,7 +471,7 @@ footer { background: var(--charcoal); padding: 60px 80px 30px; }
   <div class="footer-grid">
     <div class="footer-brand">
       <div class="nav-logo" style="font-size:18px"><div class="nav-logo-leaf">🌿</div>Active Aging Partners</div>
-      <p>Helping seniors across Atlanta live fully, move freely, and age boldly — one walk at a time.</p>
+      <p>Helping seniors across Atlanta live fully, move freely, and age boldly, one walk at a time.</p>
     </div>
     <div>
       <div class="footer-col-title">Services</div>
