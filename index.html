@@ -314,12 +314,6 @@ footer { background: var(--charcoal); padding: 60px 80px 30px; }
         <div class="card-title">Welcome back 👋</div>
         <div class="card-sub">Log in to your account</div>
 
-        <!-- Staff / Client toggle -->
-        <div class="login-type-toggle" role="group" aria-label="Account type">
-          <div class="ltt-btn active" id="hero-type-client" role="button" tabindex="0" aria-pressed="true" onclick="setHeroLoginType('client')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();setHeroLoginType('client')}">👤 Client / Family</div>
-          <div class="ltt-btn" id="hero-type-staff" role="button" tabindex="0" aria-pressed="false" onclick="setHeroLoginType('staff')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();setHeroLoginType('staff')}">🌿 Staff</div>
-        </div>
-
         <div id="hero-auth-error" class="auth-error" role="alert" aria-live="assertive"></div>
 
         <div class="form-group">
