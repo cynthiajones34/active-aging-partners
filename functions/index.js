@@ -61,9 +61,9 @@ exports.getAvailability = functions.region(REGION).https.onCall(async (data) => 
     const auth     = getAuthClient();
     const calendar = google.calendar({ version: 'v3', auth });
 
-    // Request freebusy for the entire month (UTC boundaries are fine here)
-    const timeMin = new Date(Date.UTC(year, month, 1)).toISOString();
-    const timeMax = new Date(Date.UTC(year, month + 1, 1)).toISOString();
+    // Use Eastern midnight as boundaries so no slots are cut off by UTC conversion
+    const timeMin = easternToUTC(year, month, 1, 0, 0).toISOString();
+    const timeMax = easternToUTC(year, month + 1, 1, 0, 0).toISOString();
 
     const res = await calendar.freebusy.query({
       requestBody: {
@@ -75,6 +75,7 @@ exports.getAvailability = functions.region(REGION).https.onCall(async (data) => 
     });
 
     const busyPeriods = res.data.calendars[CALENDAR_ID]?.busy || [];
+    console.log(`[getAvailability] ${year}-${month + 1}: ${busyPeriods.length} busy period(s)`, JSON.stringify(busyPeriods));
 
     // For each day, determine which time slots are blocked
     const daysInMonth  = new Date(year, month + 1, 0).getDate();

@@ -1022,7 +1022,7 @@ function selectDay(el) {
   if(label) label.textContent = `Available Times — ${document.getElementById('cal-month-label').textContent.split(' — ')[0]} ${day}`;
   const allTimes = ['9:00 AM','10:00 AM','11:00 AM','1:00 PM','2:00 PM','3:00 PM','4:00 PM'];
   const blockedEntry = window._clientBlockedDates && window._clientBlockedDates[dateStr];
-  const blockedTimes = (blockedEntry && !blockedEntry.allDay && blockedEntry.times) ? blockedEntry.times : [];
+  const blockedTimes = (blockedEntry && blockedEntry.times) ? blockedEntry.times : [];
   if(grid) grid.innerHTML = allTimes.map(t => {
     if(blockedTimes.includes(t))
       return `<div class="time-chip unavail" title="Not available on this date">${t}</div>`;
@@ -1268,10 +1268,19 @@ function escapeHtml(str) {
   window.loadClientBlockedDates = async function(year, month) {
     try {
       const result = await _getAvailability({ year, month });
-      // Merge results — keeps other cached months intact
-      Object.assign(window._clientBlockedDates, result.data.blockedDates);
+      const blocked = result.data.blockedDates || {};
+      console.log('[AAP] Availability loaded — blocked dates:', JSON.stringify(blocked));
+      Object.assign(window._clientBlockedDates, blocked);
     } catch(e) {
-      console.warn('Could not load Google Calendar availability:', e);
+      console.error('[AAP] Could not load Google Calendar availability:', e);
+      // Show a visible warning on the calendar
+      const grid = document.getElementById('cal-grid');
+      if (grid) {
+        const warn = document.createElement('div');
+        warn.style.cssText = 'grid-column:1/-1;font-size:12px;color:#b05000;padding:6px 0;text-align:center';
+        warn.textContent = '⚠ Could not verify availability — please call us to confirm your time.';
+        grid.prepend(warn);
+      }
     }
   };
 
@@ -1766,7 +1775,7 @@ function escapeHtml(str) {
 
     // ── Verify time is still available on Google Calendar ──
     try {
-      const check = await _getAvailability({ year: monthIndex === 0 ? parseInt(yearStr) : parseInt(yearStr), month: monthIndex });
+      const check = await _getAvailability({ year: parseInt(yearStr), month: monthIndex });
       const blockedEntry = check.data.blockedDates?.[dateStr];
       const blockedTimes = blockedEntry?.times || [];
       if (blockedTimes.includes(timeText)) {
