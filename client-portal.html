@@ -1762,7 +1762,26 @@ function escapeHtml(str) {
     const timeStr = `${String(timeParsed.getHours()).padStart(2,'0')}:${String(timeParsed.getMinutes()).padStart(2,'0')}`;
 
     const btn = document.querySelector('#view-book .btn-primary');
-    if (btn) { btn.textContent = 'Sending…'; btn.disabled = true; }
+    if (btn) { btn.textContent = 'Checking availability…'; btn.disabled = true; }
+
+    // ── Verify time is still available on Google Calendar ──
+    try {
+      const check = await _getAvailability({ year: monthIndex === 0 ? parseInt(yearStr) : parseInt(yearStr), month: monthIndex });
+      const blockedEntry = check.data.blockedDates?.[dateStr];
+      const blockedTimes = blockedEntry?.times || [];
+      if (blockedTimes.includes(timeText)) {
+        showToast('⚠️ That time is no longer available. Please choose another time.');
+        if (btn) { btn.textContent = '✓ Send Booking Request'; btn.disabled = false; }
+        // Refresh calendar so the blocked slot is now visible
+        Object.assign(window._clientBlockedDates, check.data.blockedDates);
+        renderCalendar();
+        return;
+      }
+    } catch (e) {
+      console.warn('Availability re-check failed, proceeding with booking:', e);
+    }
+
+    if (btn) { btn.textContent = 'Sending…'; }
 
     try {
       await addDoc(collection(db, 'sessions'), {
