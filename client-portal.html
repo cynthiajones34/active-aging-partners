@@ -1041,18 +1041,22 @@ function initCalendar() {
   const now = new Date();
   calYear  = now.getFullYear();
   calMonth = now.getMonth();
-  // Refresh blocked dates then render
-  if(window.loadClientBlockedDates) {
-    window.loadClientBlockedDates().then(() => renderCalendar());
-  } else {
-    renderCalendar();
-  }
+  _fetchAndRenderCalendar();
 }
 function changeCalMonth(dir) {
   calMonth += dir;
   if(calMonth > 11){ calMonth = 0; calYear++; }
   if(calMonth < 0) { calMonth = 11; calYear--; }
-  renderCalendar();
+  _fetchAndRenderCalendar();
+}
+function _fetchAndRenderCalendar() {
+  const grid = document.getElementById('cal-grid');
+  if(grid) grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:24px;color:var(--mid);font-size:13px">Checking availability…</div>';
+  if(window.loadClientBlockedDates) {
+    window.loadClientBlockedDates(calYear, calMonth).then(() => renderCalendar());
+  } else {
+    renderCalendar();
+  }
 }
 function renderCalendar() {
   const monthNames = ['January','February','March','April','May','June','July','August','September','October','November','December'];
@@ -1257,14 +1261,18 @@ function escapeHtml(str) {
   let currentUser    = null;
   let clientProfile  = {};  // stores emailOptIn and other prefs
 
-  // ── LOAD BLOCKED DATES (for booking calendar) ────────────
+  // ── LOAD AVAILABILITY FROM GOOGLE CALENDAR ───────────────
   window._clientBlockedDates = {};
-  window.loadClientBlockedDates = async function() {
+  const _getAvailability = httpsCallable(functions, 'getAvailability');
+
+  window.loadClientBlockedDates = async function(year, month) {
     try {
-      const snap = await getDocs(collection(db, 'blockedDates'));
-      window._clientBlockedDates = {};
-      snap.forEach(d => { window._clientBlockedDates[d.id] = d.data(); });
-    } catch(e) { console.warn('Could not load blocked dates', e); }
+      const result = await _getAvailability({ year, month });
+      // Merge results — keeps other cached months intact
+      Object.assign(window._clientBlockedDates, result.data.blockedDates);
+    } catch(e) {
+      console.warn('Could not load Google Calendar availability:', e);
+    }
   };
 
   // ── AUTH GUARD ────────────────────────────────────────────
@@ -1273,7 +1281,9 @@ function escapeHtml(str) {
     if (!user.emailVerified) { window.location.href = 'verify-email.html'; return; }
 
     currentUser = user;
-    window.loadClientBlockedDates && window.loadClientBlockedDates(); // pre-load so calendar has fresh data
+    // Pre-load current month availability so calendar renders fast when opened
+    const _now = new Date();
+    window.loadClientBlockedDates && window.loadClientBlockedDates(_now.getFullYear(), _now.getMonth());
 
     const displayName = user.displayName || user.email;
     const initials    = displayName.split(' ').map(w => w[0]).slice(0, 2).join('').toUpperCase();

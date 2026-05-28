@@ -1,0 +1,17 @@
+{
+  "name": "active-aging-partners-functions",
+  "description": "Cloud Functions for Active Aging Partners",
+  "scripts": {
+    "deploy": "firebase deploy --only functions:getAvailability,functions:onSessionStatusChanged"
+  },
+  "engines": {
+    "node": "22"
+  },
+  "main": "index.js",
+  "dependencies": {
+    "firebase-admin": "^11.0.1",
+    "firebase-functions": "^4.3.1",
+    "googleapis": "^140.0.0"
+  },
+  "private": true
+}
